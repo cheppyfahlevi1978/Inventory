@@ -1,0 +1,1829 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<base target="_top">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>HAIMS</title>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&family=Manrope:wght@400;500;600;700&family=Amatic+SC:wght@400;700&family=Lexend:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<style>
+:root{
+  --bg:#f2e8e6; --acc:#c97b6a; --txt:#5a4038; --sh1:#d6c6c2; --sh2:#ffffff;
+  --danger:#c0524a; --success:#5c8a5c; --muted:#9b7d70;
+  --font-display:'Comfortaa',sans-serif;
+}
+body.dark-mode{ --bg:#252230; --txt:#e8dfe6; --sh1:#1a1722; --sh2:#302a3d; --muted:#a696a8; }
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Manrope',sans-serif;background:var(--bg);min-height:100vh;color:var(--txt);transition:background .3s,color .3s;}
+h1,h2,h3,.brand,.logo-text{font-family:var(--font-display);}
+button,input,select,textarea{font-family:'Manrope',sans-serif;}
+::-webkit-scrollbar{width:8px;height:8px;}
+::-webkit-scrollbar-thumb{background:var(--sh1);border-radius:8px;}
+
+.neu-out{background:var(--bg);box-shadow:8px 8px 18px var(--sh1),-8px -8px 18px var(--sh2);}
+.neu-in{background:var(--bg);box-shadow:inset 4px 4px 10px var(--sh1),inset -4px -4px 10px var(--sh2);}
+.neu-card{background:var(--bg);border-radius:24px;box-shadow:10px 10px 26px var(--sh1),-10px -10px 26px var(--sh2);}
+.neu-btn{border:none;border-radius:14px;background:var(--bg);color:var(--txt);cursor:pointer;padding:12px 20px;box-shadow:6px 6px 14px var(--sh1),-6px -6px 14px var(--sh2);transition:.15s;}
+.neu-btn:active{box-shadow:inset 3px 3px 8px var(--sh1),inset -3px -3px 8px var(--sh2);}
+.neu-btn.primary{background:var(--acc);color:#fff;}
+.neu-btn.small{padding:6px 12px;font-size:11px;}
+.neu-btn.danger{background:var(--danger);color:#fff;}
+.neu-btn.big{padding:18px;font-size:16px;font-weight:700;}
+.neu-btn.selected{background:var(--acc);color:#fff;}
+.neu-input{width:100%;padding:12px 14px;border-radius:14px;border:none;background:var(--bg);color:var(--txt);font-size:14px;outline:none;box-shadow:inset 4px 4px 10px var(--sh1),inset -4px -4px 10px var(--sh2);}
+textarea.neu-input{resize:vertical;min-height:70px;}
+
+.hidden{display:none !important;}
+img.avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;background:var(--sh1);}
+
+.lang-switch{position:fixed;top:16px;right:16px;z-index:200;display:flex;gap:4px;background:var(--bg);border-radius:30px;padding:5px;box-shadow:6px 6px 14px var(--sh1),-6px -6px 14px var(--sh2);}
+.lang-switch button{border:none;background:transparent;padding:6px 14px;border-radius:20px;cursor:pointer;font-size:12px;color:var(--txt);}
+.lang-switch button.active{background:var(--acc);color:#fff;font-weight:700;}
+
+#view-login{display:flex;min-height:100vh;}
+.login-left{flex:1;display:flex;flex-direction:column;justify-content:center;padding:70px;}
+.login-right{flex:1;display:flex;align-items:center;justify-content:center;padding:40px;}
+.brand{font-weight:700;font-size:28px;color:var(--acc);}
+.tagline{margin-top:16px;font-size:16px;color:var(--muted);max-width:380px;line-height:1.6;}
+.login-card{width:100%;max-width:380px;padding:44px 36px;}
+.login-card h2{font-size:22px;margin-bottom:6px;}
+.login-card p.sub{color:var(--muted);font-size:13px;margin-bottom:28px;}
+
+#view-register{display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px;}
+.reg-card{width:100%;max-width:460px;padding:40px 34px;}
+.field{margin-bottom:16px;}
+.field label{font-size:12px;color:var(--muted);display:block;margin-bottom:7px;}
+.photo-upload{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+.photo-preview{width:64px;height:64px;border-radius:50%;object-fit:cover;background:var(--sh1);}
+.photo-preview.square{border-radius:14px;}
+
+#view-app{display:none;min-height:100vh;}
+.app-shell{display:flex;min-height:100vh;}
+.sidebar{width:230px;flex-shrink:0;background:var(--bg);box-shadow:6px 0 18px var(--sh1);padding:24px 16px;position:sticky;top:0;height:100vh;overflow-y:auto;transition:.25s;}
+.sidebar .brand{font-size:20px;margin-bottom:26px;padding-left:6px;}
+.nav-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:14px;margin-bottom:6px;cursor:pointer;font-size:14px;color:var(--txt);}
+.nav-item .nlabel{display:flex;align-items:center;gap:10px;}
+.nav-item:hover{background:var(--bg);box-shadow:4px 4px 10px var(--sh1),-4px -4px 10px var(--sh2);}
+.nav-item.active{background:var(--acc);color:#fff;box-shadow:none;font-weight:700;}
+.nav-badge{background:var(--danger);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:2px 7px;}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;background:var(--bg);box-shadow:0 6px 16px var(--sh1);position:sticky;top:0;z-index:20;}
+.topbar-left{display:flex;align-items:center;gap:14px;}
+.hamburger{display:none;background:none;border:none;font-size:22px;color:var(--txt);cursor:pointer;}
+.clock{font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--acc);padding:8px 16px;border-radius:14px;}
+.topbar-right{display:flex;align-items:center;gap:16px;}
+.content{padding:26px 28px;flex:1;}
+.page{display:none;}
+.page.active{display:block;}
+
+.bell-wrap{position:relative;}
+.bell-btn{border:none;background:var(--bg);border-radius:50%;width:38px;height:38px;cursor:pointer;font-size:16px;box-shadow:5px 5px 12px var(--sh1),-5px -5px 12px var(--sh2);}
+.bell-badge{position:absolute;top:-4px;right:-4px;background:var(--danger);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;}
+.notif-dropdown{display:none;position:absolute;right:0;top:48px;width:300px;max-height:360px;overflow-y:auto;padding:14px;z-index:250;}
+.notif-dropdown.open{display:block;}
+.notif-item{padding:10px 0;border-bottom:1px solid var(--sh1);font-size:12px;}
+.notif-item .jenis{font-weight:700;color:var(--acc);}
+
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:22px;}
+.kpi{padding:20px;}
+.kpi p.l{font-size:12px;color:var(--muted);}
+.kpi h2{font-size:24px;margin-top:8px;color:var(--acc);}
+.panels{display:grid;grid-template-columns:2fr 1fr;gap:18px;}
+.panel{padding:22px;min-height:220px;}
+.panel h3{font-size:15px;margin-bottom:14px;}
+.bar{height:10px;border-radius:6px;margin-bottom:12px;overflow:hidden;}
+.bar span{display:block;height:100%;background:var(--acc);border-radius:6px;}
+.row-line{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding:9px 0;}
+.dept-stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:16px;}
+.dept-stat-card{padding:16px;border-radius:16px;text-align:center;}
+.dept-stat-card .dcode{font-family:var(--font-display);font-weight:700;color:var(--acc);font-size:14px;}
+.dept-stat-card .dcount{font-size:20px;font-weight:700;margin:6px 0 2px;}
+.dept-stat-card .dval{font-size:11px;color:var(--muted);}
+
+table.data-table{width:100%;border-collapse:collapse;font-size:13px;}
+table.data-table th{text-align:left;padding:10px 12px;color:var(--muted);font-weight:600;border-bottom:2px solid var(--sh1);white-space:nowrap;}
+table.data-table td{padding:10px 12px;border-bottom:1px solid var(--sh1);white-space:nowrap;}
+table.data-table td img.thumb{width:32px;height:32px;border-radius:8px;object-fit:cover;}
+.badge{padding:4px 10px;border-radius:10px;font-size:11px;font-weight:700;}
+.badge.aktif{background:#dcecdc;color:var(--success);}
+.badge.nonaktif{background:#f3dcda;color:var(--danger);}
+.badge.pending{background:#f6e6c8;color:#9a6b1e;}
+.badge.disetujui{background:#dcecdc;color:var(--success);}
+.badge.ditolak{background:#f3dcda;color:var(--danger);}
+.badge.selesai{background:#dce4f3;color:#4a5f9a;}
+.badge.overdue{background:#f3dcda;color:var(--danger);}
+.badge.upcoming{background:#f6e6c8;color:#9a6b1e;}
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+
+.sort-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.sort-row button{font-size:11px;padding:8px 14px;}
+.sort-row button.selected{background:var(--acc);color:#fff;}
+
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.pill{padding:9px 16px;border-radius:20px;font-size:12px;cursor:pointer;background:var(--bg);box-shadow:5px 5px 12px var(--sh1),-5px -5px 12px var(--sh2);color:var(--txt);}
+.pill.active{background:var(--acc);color:#fff;box-shadow:none;font-weight:700;}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:300;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.active{display:flex;}
+.modal-box{width:100%;max-width:480px;max-height:90vh;overflow-y:auto;padding:32px;}
+.modal-box h3{margin-bottom:18px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+#toast-wrap{position:fixed;bottom:24px;right:24px;z-index:500;display:flex;flex-direction:column;gap:10px;}
+.toast{padding:14px 20px;min-width:220px;font-size:13px;}
+.toast.success{border-left:4px solid var(--success);}
+.toast.error{border-left:4px solid var(--danger);}
+
+.qr-result{display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 0;}
+.log-item{padding:12px 0;border-bottom:1px solid var(--sh1);font-size:13px;}
+.log-item .aksi{font-weight:700;color:var(--acc);}
+.log-item .meta{color:var(--muted);font-size:11px;margin-top:2px;}
+
+#qrReader{width:100%;max-width:340px;margin:0 auto;border-radius:18px;overflow:hidden;}
+.opname-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
+
+.font-preview-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px;}
+.font-preview-card{padding:18px;border-radius:16px;cursor:pointer;text-align:center;}
+.font-preview-card.selected{background:var(--acc);color:#fff;}
+.font-preview-card .fname{font-size:20px;margin-bottom:4px;}
+.theme-toggle-row{display:flex;gap:10px;margin-top:14px;}
+
+.stepper{display:flex;gap:8px;margin:14px 0;}
+.step{flex:1;text-align:center;padding:10px;border-radius:12px;font-size:11px;}
+.step.done{background:#dcecdc;color:var(--success);font-weight:700;}
+.step.pending{background:#f6e6c8;color:#9a6b1e;}
+.step.rejected{background:#f3dcda;color:var(--danger);font-weight:700;}
+
+@media(max-width:1024px){.kpi-row{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:768px){
+  #view-login{flex-direction:column;}
+  .login-left{padding:34px 24px 10px;}
+  .login-right{padding:24px;}
+  .sidebar{position:fixed;left:-250px;top:0;z-index:150;width:220px;}
+  .sidebar.open{left:0;}
+  .hamburger{display:block;}
+  .panels{grid-template-columns:1fr;}
+  .grid-2{grid-template-columns:1fr;}
+  .content{padding:18px;}
+  .clock{display:none;}
+  .opname-summary{grid-template-columns:1fr;}
+  .font-preview-row{grid-template-columns:1fr;}
+  .notif-dropdown{width:260px;right:-40px;}
+}
+@media(max-width:480px){
+  .kpi-row{grid-template-columns:1fr;}
+  .login-card,.reg-card{padding:26px 20px;}
+}
+</style>
+</head>
+<body>
+
+<div class="lang-switch" id="langSwitchAuth">
+  <button data-lang="id" onclick="setLanguage('id')">ID</button>
+  <button data-lang="en" onclick="setLanguage('en')">EN</button>
+</div>
+
+<!-- ================= LOGIN ================= -->
+<div id="view-login">
+  <div class="login-left">
+    <div class="brand">HAIMS</div>
+    <div class="tagline" data-i18n="login_tagline">Sistem inventory aset hotel terpadu untuk ASTON Pekalongan & ASTON Mampang.</div>
+  </div>
+  <div class="login-right">
+    <div class="login-card neu-card">
+      <h2 data-i18n="login_title">Masuk ke Akun</h2>
+      <p class="sub" data-i18n="login_sub">Gunakan akun Google hotel Anda untuk masuk</p>
+      <button class="neu-btn primary" style="width:100%;" onclick="startLogin()" data-i18n="login_btn">Masuk dengan Google</button>
+      <p style="font-size:12px;color:var(--muted);margin-top:16px;" data-i18n="login_note">Anda akan diminta konfirmasi akun Google yang sedang aktif di perangkat ini.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= REGISTRASI ================= -->
+<div id="view-register" class="neu-card" style="margin:auto;">
+  <div class="reg-card">
+    <h2 data-i18n="reg_title">Registrasi Akun</h2>
+    <p class="sub" style="color:var(--muted);font-size:13px;margin-bottom:22px;" data-i18n="reg_sub">Lengkapi data Anda untuk mengakses HAIMS</p>
+    <div class="photo-upload">
+      <img id="regPhotoPreview" class="photo-preview" src="https://ui-avatars.com/api/?background=c97b6a&color=fff&name=U">
+      <div>
+        <input type="file" id="regPhotoInput" accept="image/*" style="display:none" onchange="handlePhotoSelect(event,'regPhotoPreview')">
+        <button class="neu-btn" onclick="document.getElementById('regPhotoInput').click()" data-i18n="upload_photo">Unggah Foto</button>
+      </div>
+    </div>
+    <div class="field"><label data-i18n="field_email">Email</label><input class="neu-input" id="regEmail" disabled></div>
+    <div class="field"><label data-i18n="field_name">Nama Lengkap</label><input class="neu-input" id="regNama" placeholder="Nama lengkap"></div>
+    <div class="field" id="regRoleWrap">
+      <label data-i18n="field_role">Role</label>
+      <select class="neu-input" id="regRole">
+        <option value="Admin" data-i18n="role_admin">Admin</option>
+        <option value="Manager" data-i18n="role_manager">Manager</option>
+        <option value="Security" data-i18n="role_security">Security</option>
+      </select>
+    </div>
+    <div class="field">
+      <label data-i18n="field_hotel">Unit Hotel</label>
+      <select class="neu-input" id="regHotel"></select>
+    </div>
+    <button class="neu-btn primary" style="width:100%;" onclick="submitRegistration()" data-i18n="reg_submit">Daftar & Masuk</button>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="view-app">
+  <div class="app-shell">
+    <div class="sidebar neu-out" id="sidebar">
+      <div class="brand">HAIMS</div>
+      <div class="nav-item active" data-page="dashboard" onclick="goPage('dashboard')"><span class="nlabel">🏠 <span data-i18n="menu_dashboard">Dashboard</span></span></div>
+      <div class="nav-item" data-page="aset" onclick="goPage('aset')"><span class="nlabel">📦 <span data-i18n="menu_aset">Master Aset</span></span></div>
+      <div class="nav-item" data-page="lokasi" onclick="goPage('lokasi')"><span class="nlabel">📍 <span data-i18n="menu_lokasi">Lokasi</span></span></div>
+      <div class="nav-item" data-page="mutasi" onclick="goPage('mutasi')"><span class="nlabel">🔄 <span data-i18n="menu_mutasi">Mutasi Aset</span></span><span class="nav-badge hidden" id="badgeMutasi">0</span></div>
+      <div class="nav-item" data-page="departemen" onclick="goPage('departemen')"><span class="nlabel">🏢 <span data-i18n="menu_departemen">Departement</span></span></div>
+      <div class="nav-item" data-page="mpl" onclick="goPage('mpl')"><span class="nlabel">📋 <span data-i18n="menu_mpl">MPL</span></span></div>
+      <div class="nav-item" data-page="opname" onclick="goPage('opname')"><span class="nlabel">📷 <span data-i18n="menu_opname">Stock Opname</span></span></div>
+      <div class="nav-item" data-page="maintenance" onclick="goPage('maintenance')"><span class="nlabel">🛠️ <span data-i18n="menu_maintenance">Maintenance</span></span><span class="nav-badge hidden" id="badgeMaintenance">0</span></div>
+      <div class="nav-item" data-page="depresiasi" onclick="goPage('depresiasi')"><span class="nlabel">📉 <span data-i18n="menu_depresiasi">Depresiasi</span></span></div>
+      <div class="nav-item" data-page="writeoff" onclick="goPage('writeoff')"><span class="nlabel">🗑️ <span data-i18n="menu_writeoff">Write-Off</span></span></div>
+      <div class="nav-item" data-page="laporan" onclick="goPage('laporan')"><span class="nlabel">📑 <span data-i18n="menu_laporan">Laporan Gabungan</span></span></div>
+      <div class="nav-item" data-page="adduser" onclick="goPage('adduser')"><span class="nlabel">👤 <span data-i18n="menu_adduser">Add User</span></span></div>
+      <div class="nav-item" data-page="activities" onclick="goPage('activities')"><span class="nlabel">🕒 <span data-i18n="menu_activities">ActivitiesLog</span></span></div>
+      <div class="nav-item" data-page="pengaturan" onclick="goPage('pengaturan')"><span class="nlabel">⚙️ <span data-i18n="menu_pengaturan">Pengaturan</span></span></div>
+      <div class="nav-item" onclick="doAppLogout()"><span class="nlabel">🚪 <span data-i18n="menu_logout">Logout</span></span></div>
+    </div>
+
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-left">
+          <button class="hamburger" onclick="toggleSidebar()">☰</button>
+          <select class="neu-input" id="hotelSelector" style="width:auto;" onchange="onHotelChange()"></select>
+        </div>
+        <div class="topbar-right">
+          <div class="clock neu-in" id="digitalClock">--:--:--</div>
+          <div class="lang-switch" style="position:static;">
+            <button data-lang="id" onclick="setLanguage('id')">ID</button>
+            <button data-lang="en" onclick="setLanguage('en')">EN</button>
+          </div>
+          <div class="bell-wrap">
+            <button class="bell-btn" onclick="toggleNotifDropdown()">🔔<span class="bell-badge hidden" id="notifBadge">0</span></button>
+            <div class="notif-dropdown neu-card" id="notifDropdown">
+              <div class="toolbar" style="margin-bottom:8px;"><h3 style="font-size:13px;" data-i18n="notif_title">Notifikasi</h3>
+                <button class="neu-btn small" onclick="markAllRead()" data-i18n="notif_read_all">Tandai Semua</button></div>
+              <div id="notifList"></div>
+            </div>
+          </div>
+          <img class="avatar" id="topbarAvatar" src="https://ui-avatars.com/api/?background=c97b6a&color=fff&name=U">
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- DASHBOARD -->
+        <div class="page active" id="page-dashboard">
+          <h1 data-i18n="dash_title" style="font-size:20px;margin-bottom:20px;">Dashboard Inventory Aset</h1>
+          <div class="kpi-row">
+            <div class="kpi neu-card"><p class="l" data-i18n="kpi_value">Total Nilai Aset</p><h2 id="kpiNilai">Rp 0</h2></div>
+            <div class="kpi neu-card"><p class="l" data-i18n="kpi_total">Total Aset</p><h2 id="kpiTotal">0</h2></div>
+            <div class="kpi neu-card"><p class="l" data-i18n="kpi_hotel">Unit Hotel</p><h2 id="kpiHotel">0</h2></div>
+            <div class="kpi neu-card"><p class="l" data-i18n="kpi_pending">Mutasi Pending</p><h2 id="kpiPending">0</h2></div>
+          </div>
+          <div class="panels">
+            <div class="panel neu-card">
+              <h3 data-i18n="dash_dept">Distribusi Aset per Departemen (Master Aset)</h3>
+              <div id="deptChart"></div>
+            </div>
+            <div class="panel neu-card">
+              <h3 data-i18n="dash_activities">Aktivitas Terbaru</h3>
+              <div id="dashActivities"></div>
+            </div>
+          </div>
+          <div class="panel neu-card" style="margin-top:18px;">
+            <h3 data-i18n="dash_dept_stat">Statistik & Grafik per Sub-Departemen</h3>
+            <div class="dept-stat-grid" id="deptStatGrid"></div>
+          </div>
+        </div>
+
+        <!-- MASTER ASET -->
+        <div class="page" id="page-aset">
+          <div class="toolbar">
+            <h1 style="font-size:20px;" data-i18n="menu_aset">Master Aset</h1>
+            <button class="neu-btn primary" onclick="openModal('modalAset')" data-i18n="btn_add_aset">+ Tambah Aset</button>
+          </div>
+          <div class="neu-card" style="padding:20px;overflow-x:auto;">
+            <table class="data-table" id="tableAset">
+              <thead><tr>
+                <th data-i18n="th_code">Kode</th><th data-i18n="th_name">Nama</th><th data-i18n="th_category">Kategori</th>
+                <th data-i18n="th_dept">Departemen</th><th data-i18n="th_status">Status</th><th data-i18n="th_action">Aksi</th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- LOKASI -->
+        <div class="page" id="page-lokasi">
+          <div class="toolbar">
+            <h1 style="font-size:20px;" data-i18n="menu_lokasi">Master Lokasi</h1>
+            <button class="neu-btn primary" onclick="openModal('modalLokasi')" data-i18n="btn_add_lokasi">+ Tambah Lokasi</button>
+          </div>
+          <div class="neu-card" style="padding:20px;overflow-x:auto;">
+            <table class="data-table" id="tableLokasi">
+              <thead><tr>
+                <th data-i18n="field_hotel">Hotel</th><th data-i18n="th_building">Gedung</th><th data-i18n="th_floor">Lantai</th><th data-i18n="th_room">Ruangan/Outlet</th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- MUTASI ASET -->
+        <div class="page" id="page-mutasi">
+          <div class="toolbar">
+            <h1 style="font-size:20px;" data-i18n="menu_mutasi">Mutasi Aset</h1>
+            <button class="neu-btn primary" onclick="openModalMutasi()" data-i18n="btn_add_mutasi">+ Ajukan Mutasi</button>
+          </div>
+          <div class="pill-row">
+            <div class="pill active" data-status="" onclick="filterMutasi('',this)" data-i18n="filter_all">Semua</div>
+            <div class="pill" data-status="Pending" onclick="filterMutasi('Pending',this)" data-i18n="filter_pending">Pending</div>
+            <div class="pill" data-status="Disetujui" onclick="filterMutasi('Disetujui',this)" data-i18n="filter_approved">Disetujui</div>
+            <div class="pill" data-status="Ditolak" onclick="filterMutasi('Ditolak',this)" data-i18n="filter_rejected">Ditolak</div>
+          </div>
+          <div class="neu-card" style="padding:20px;overflow-x:auto;">
+            <table class="data-table" id="tableMutasi">
+              <thead><tr>
+                <th data-i18n="th_code">Kode Aset</th><th data-i18n="th_from">Dari</th><th data-i18n="th_to">Ke</th>
+                <th data-i18n="th_reason">Alasan</th><th data-i18n="th_status">Status</th><th data-i18n="th_action">Aksi</th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- DEPARTEMENT -->
+        <div class="page" id="page-departemen">
+          <div class="toolbar">
+            <h1 style="font-size:20px;" data-i18n="menu_departemen">Departement</h1>
+            <button class="neu-btn primary" onclick="openModalAsetDept()" data-i18n="btn_add_dept_aset">+ Tambah Aset Departemen</button>
+          </div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:10px;" data-i18n="dept_sync_note">Setiap sub-departemen otomatis tersimpan ke sheet & folder Drive terpisah miliknya sendiri.</p>
+          <div class="pill-row" id="deptPillRow"></div>
+          <div class="sort-row">
+            <button class="neu-btn small selected" onclick="setSortDept('date_desc',this)" data-i18n="sort_newest">Terbaru</button>
+            <button class="neu-btn small" onclick="setSortDept('date_asc',this)" data-i18n="sort_oldest">Terlama</button>
+            <button class="neu-btn small" onclick="setSortDept('az',this)">A-Z</button>
+            <button class="neu-btn small" onclick="setSortDept('za',this)">Z-A</button>
+          </div>
+          <div class="neu-card" style="padding:20px;overflow-x:auto;">
+            <table class="data-table" id="tableAsetDept">
+              <thead><tr>
+                <th>ID ASSET</th><th data-i18n="th_date_buy">Tgl Pembelian</th><th data-i18n="th_type">Jenis</th>
+                <th data-i18n="th_warranty">Garansi</th><th data-i18n="th_loc">Lokasi</th><th data-i18n="th_brand2">Merk</th>
+                <th data-i18n="field_price">Harga</th><th>PIC</th><th data-i18n="th_qr">QR</th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- MPL (FASE 5) -->
+        <div class="page" id="page-mpl">
+          <div class="toolbar">
+            <h1 style="font-size:20px;" data-i18n="menu_mpl">MPL</h1>
+            <button class="neu-btn primary" onclick="openModalAsetMpl()" data-i18n="btn_add_mpl_aset">+ Tambah Aset MPL</button>
+          </div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:10px;" data-i18n="mpl_sync_note">Setiap sub-MPL otomatis tersimpan ke sheet & folder Drive terpisah miliknya sendiri; foto otomatis diresize jika ukuran besar.</p>
+          <div class="pill-row" id="mplPillRow"></div>
+          <div class="sort-row">
+            <button class="neu-btn small selected" onclick="setSortMpl('date_desc',this)" data-i18n="sort_newest">Terbaru</button>
+            <button class="neu-btn small" onclick="setSortMpl('date_asc',this)" data-i18n="sort_oldest">Terlama</button>
+            <button class="neu-btn small" onclick="setSortMpl('az',this)">A-Z</button>
+            <button class="neu-btn small" onclick="setSortMpl('za',this)">Z-A</button>
+          </div>
+          <div class="neu-card" style="padding:20px;overflow-x:auto;">
+            <table class="data-table" id="tableAsetMpl">
+              <thead><tr>
+                <th data-i18n="th_photo">Foto</th><th>ID ASSET</th><th data-i18n="th_date_buy">Tgl Pembelian</th><th data-i18n="th_type">Jenis</th>
+                <th data-i18n="th_warranty">Garansi</th><th data-i18n="th_brand2">Merk</th><th data-i18n="field_price">Harga</th>
+                <th>PIC</th><th data-i18n="field_vendor">Vendor</th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- STOCK OPNAME -->
+        <div class="page" id="page-opname">
+          <div class="toolbar">
+            <h1 style="font-size:20px;" data-i18n="menu_opname">Stock Opname</h1>
+            <button class="neu-btn primary" onclick="openModal('modalSesiOpname')" data-i18n="btn_add_sesi">+ Buat Sesi Opname</button>
+          </div>
+          <div class="neu-card" style="padding:20px;overflow-x:auto;margin-bottom:20px;">
+            <table class="data-table" id="tableSesiOpname">
+              <thead><tr>
+                <th data-i18n="th_session">Sesi</th><th data-i18n="field_hotel">Hotel</th><th data-i18n="th_dept">Departemen</th>
+                <th data-i18n="th_status">Status</th><th data-i18n="th_action">Aksi</th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="neu-card hidden" id="opnameScanPanel" style="padding:24px;">
+            <div class="toolbar">
+              <h3 id="opnameScanTitle" data-i18n="opname_scan_title">Scan Aset — Sesi Aktif</h3>
+              <button class="neu-btn small" onclick="closeScanPanel()" data-i18n="btn_close">Tutup</button>
+            </div>
+            <div class="opname-summary">
+              <div class="kpi neu-card"><p class="l" data-i18n="opname_total_scan">Total Scan</p><h2 id="opnTotalScan">0</h2></div>
+              <div class="kpi neu-card"><p class="l" data-i18n="opname_found">Ditemukan</p><h2 id="opnFound">0</h2></div>
+              <div class="kpi neu-card"><p class="l" data-i18n="opname_accuracy">Akurasi</p><h2 id="opnAccuracy">0%</h2></div>
+            </div>
+            <div id="qrReader"></div>
+            <div style="text-align:center;margin-top:14px;">
+              <button class="neu-btn primary big" id="btnStartScan" onclick="toggleScanner()" data-i18n="btn_start_scan">▶ Mulai Scan Kamera</button>
+            </div>
+            <div class="field" style="margin-top:16px;">
+              <label data-i18n="opname_manual_input">Atau input kode aset manual</label>
+              <div style="display:flex;gap:8px;">
+                <input class="neu-input" id="opnameManualKode" placeholder="Kode / ID Aset">
+                <button class="neu-btn" onclick="submitManualScan()" data-i18n="btn_submit">Ajukan</button>
+              </div>
+            </div>
+            <div style="margin-top:18px;">
+              <h3 style="font-size:14px;margin-bottom:10px;" data-i18n="opname_result_list">Hasil Scan</h3>
+              <div id="opnameResultList"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAINTENANCE -->
+        <div class="page" id="page-maintenance">
+          <div class="toolbar">
+            <h1 style="font-size:20px;" data-i18n="menu_maintenance">Maintenance</h1>
+            <button class="neu-btn primary" onclick="openModal('modalMaintenance')" data-i18n="btn_add_maintenance">+ Catat Maintenance</button>
+          </div>
+          <div class="neu-card" style="padding:20px;margin-bottom:20px;">
+            <h3 style="font-size:14px;margin-bottom:12px;" data-i18n="maintenance_due">Jadwal Servis Mendatang / Terlambat</h3>
+            <div id="maintenanceDueList"></div>
+          </div>
+          <div class="neu-card" style="padding:20px;overflow-x:auto;">
+            <table class="data-table" id="tableMaintenance">
+              <thead><tr>
+                <th data-i18n="th_code">Kode Aset</th><th data-i18n="th_service_date">Tgl Servis</th><th data-i18n="th_type2">Jenis</th>
+                <th data-i18n="field_cost">Biaya</th><th data-i18n="field_vendor">Vendor</th><th data-i18n="th_next_service">Servis Berikutnya</th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- DEPRESIASI -->
+        <div class="page" id="page-depresiasi">
+          <div class="toolbar">
+            <h1 style="font-size:20px;" data-i18n="menu_depresiasi">Depresiasi Aset</h1>
+            <button class="neu-btn primary" onclick="jalankanDepresiasi()" data-i18n="btn_calc_dep">Hitung Depresiasi Bulan Ini</button>
+          </div>
+          <div class="kpi-row">
+            <div class="kpi neu-card"><p class="l" data-i18n="dep_awal">Total Nilai Awal</p><h2 id="depAwal">Rp 0</h2></div>
+            <div class="kpi neu-card"><p class="l" data-i18n="dep_susut">Total Penyusutan</p><h2 id="depSusut">Rp 0</h2></div>
+            <div class="kpi neu-card"><p class="l" data-i18n="dep_buku">Total Nilai Buku</p><h2 id="depBuku">Rp 0</h2></div>
+          </div>
+          <div class="neu-card" style="padding:20px;overflow-x:auto;">
+            <table class="data-table" id="tableDepresiasi">
+              <thead><tr>
+                <th data-i18n="th_code">Kode Aset</th><th data-i18n="th_period">Periode</th><th data-i18n="dep_awal">Nilai Awal</th>
+                <th data-i18n="th_monthly_dep">Penyusutan</th><th data-i18n="dep_buku">Nilai Buku</th><th data-i18n="th_method">Metode</th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- WRITE-OFF (FASE 5) -->
+        <div class="page" id="page-writeoff">
+          <div class="toolbar">
+            <h1 style="font-size:20px;" data-i18n="menu_writeoff">Write-Off</h1>
+            <button class="neu-btn primary" onclick="openModal('modalWriteOff')" data-i18n="btn_add_writeoff">+ Ajukan Write-Off</button>
+          </div>
+          <div id="writeoffCards"></div>
+        </div>
+
+        <!-- LAPORAN GABUNGAN (FASE 5) -->
+        <div class="page" id="page-laporan">
+          <h1 style="font-size:20px;margin-bottom:14px;" data-i18n="menu_laporan">Laporan Gabungan Semua Input</h1>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:14px;" data-i18n="laporan_desc">Gabungan seluruh hasil input dari Master Aset, Departement, dan MPL — bisa diurutkan A-Z atau berdasarkan tanggal input.</p>
+          <div class="sort-row">
+            <button class="neu-btn small selected" onclick="setSortLaporan('date_desc',this)" data-i18n="sort_newest">Terbaru</button>
+            <button class="neu-btn small" onclick="setSortLaporan('date_asc',this)" data-i18n="sort_oldest">Terlama</button>
+            <button class="neu-btn small" onclick="setSortLaporan('az',this)">A-Z</button>
+            <button class="neu-btn small" onclick="setSortLaporan('za',this)">Z-A</button>
+          </div>
+          <div class="neu-card" style="padding:20px;overflow-x:auto;">
+            <table class="data-table" id="tableLaporan">
+              <thead><tr>
+                <th data-i18n="th_source">Sumber</th><th data-i18n="th_code">Kode</th><th data-i18n="th_name">Nama</th><th data-i18n="th_input_date">Tgl Input</th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ADD USER -->
+        <div class="page" id="page-adduser">
+          <div class="toolbar">
+            <h1 style="font-size:20px;" data-i18n="menu_adduser">Add User</h1>
+            <button class="neu-btn primary" onclick="openModal('modalUser')" data-i18n="btn_add_user">+ Tambah User</button>
+          </div>
+          <div class="neu-card" style="padding:20px;overflow-x:auto;">
+            <table class="data-table" id="tableUser">
+              <thead><tr>
+                <th></th><th data-i18n="field_name">Nama</th><th data-i18n="field_email">Email</th><th data-i18n="field_role">Role</th><th data-i18n="th_status">Status</th><th></th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ACTIVITIES LOG -->
+        <div class="page" id="page-activities">
+          <h1 style="font-size:20px;margin-bottom:20px;" data-i18n="menu_activities">ActivitiesLog</h1>
+          <div class="neu-card" style="padding:24px;">
+            <div id="activitiesFullList"></div>
+          </div>
+        </div>
+
+        <!-- PENGATURAN -->
+        <div class="page" id="page-pengaturan">
+          <h1 style="font-size:20px;margin-bottom:20px;" data-i18n="menu_pengaturan">Pengaturan</h1>
+          <div class="neu-card" style="padding:24px;margin-bottom:20px;">
+            <h3 style="margin-bottom:14px;" data-i18n="setting_lang">Bahasa Aplikasi</h3>
+            <div style="display:flex;gap:10px;">
+              <button class="neu-btn" onclick="setLanguage('id')" data-i18n="lang_id">Bahasa Indonesia</button>
+              <button class="neu-btn" onclick="setLanguage('en')" data-i18n="lang_en">English</button>
+            </div>
+          </div>
+          <div class="neu-card" style="padding:24px;margin-bottom:20px;">
+            <h3 style="margin-bottom:6px;" data-i18n="setting_font">Font Aplikasi</h3>
+            <p style="font-size:12px;color:var(--muted);" data-i18n="setting_font_desc">Pilih gaya font untuk judul & tampilan aplikasi</p>
+            <div class="font-preview-row" id="fontPreviewRow">
+              <div class="font-preview-card neu-in" data-font="Comfortaa" onclick="setFont('Comfortaa',this)"><div class="fname" style="font-family:'Comfortaa';">Comfortaa</div>Aa Bb Cc</div>
+              <div class="font-preview-card neu-in" data-font="Amatic SC" onclick="setFont('Amatic SC',this)"><div class="fname" style="font-family:'Amatic SC';font-size:26px;">Amatic SC</div>Aa Bb Cc</div>
+              <div class="font-preview-card neu-in" data-font="Lexend" onclick="setFont('Lexend',this)"><div class="fname" style="font-family:'Lexend';">Lexend</div>Aa Bb Cc</div>
+              <div class="font-preview-card neu-in" data-font="Playfair Display" onclick="setFont('Playfair Display',this)"><div class="fname" style="font-family:'Playfair Display';">Playfair Display</div>Aa Bb Cc</div>
+            </div>
+          </div>
+          <div class="neu-card" style="padding:24px;margin-bottom:20px;">
+            <h3 style="margin-bottom:14px;" data-i18n="setting_theme">Mode Tampilan</h3>
+            <div class="theme-toggle-row">
+              <button class="neu-btn" id="btnLightMode" onclick="setTheme('light')" data-i18n="theme_light">☀ Light Mode</button>
+              <button class="neu-btn" id="btnDarkMode" onclick="setTheme('dark')" data-i18n="theme_dark">🌙 Dark Mode</button>
+            </div>
+          </div>
+          <div class="neu-card" style="padding:24px;">
+            <div class="toolbar">
+              <h3 data-i18n="setting_units">Manajemen Unit Hotel</h3>
+              <button class="neu-btn primary" onclick="openModal('modalHotel')" data-i18n="btn_add_unit">+ Tambah Unit</button>
+            </div>
+            <div id="hotelManageList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: TAMBAH ASET ===== -->
+<div class="modal-overlay" id="modalAset">
+  <div class="modal-box neu-card">
+    <h3 data-i18n="btn_add_aset">+ Tambah Aset</h3>
+    <div class="photo-upload">
+      <img id="asetPhotoPreview" class="photo-preview" src="https://ui-avatars.com/api/?background=d6c6c2&color=5a4038&name=A">
+      <input type="file" id="asetPhotoInput" accept="image/*" style="display:none" onchange="handlePhotoSelect(event,'asetPhotoPreview')">
+      <button class="neu-btn" onclick="document.getElementById('asetPhotoInput').click()" data-i18n="upload_photo">Unggah Foto</button>
+    </div>
+    <div class="grid-2">
+      <div class="field"><label data-i18n="field_name">Nama Aset</label><input class="neu-input" id="asetNama"></div>
+      <div class="field"><label data-i18n="th_category">Kategori</label><input class="neu-input" id="asetKategori" placeholder="FFE/OSE/Elektronik"></div>
+      <div class="field"><label data-i18n="field_brand">Brand/Model</label><input class="neu-input" id="asetBrand"></div>
+      <div class="field"><label data-i18n="field_serial">No. Serial</label><input class="neu-input" id="asetSerial"></div>
+      <div class="field"><label data-i18n="field_price">Harga Beli</label><input class="neu-input" type="number" id="asetHarga"></div>
+      <div class="field"><label data-i18n="field_vendor">Vendor</label><input class="neu-input" id="asetVendor"></div>
+      <div class="field"><label data-i18n="field_hotel">Hotel</label><select class="neu-input" id="asetHotel"></select></div>
+      <div class="field"><label data-i18n="th_dept">Departemen</label><input class="neu-input" id="asetDept" placeholder="HK/FB/ENG"></div>
+      <div class="field"><label data-i18n="th_building">Gedung</label><input class="neu-input" id="asetGedung"></div>
+      <div class="field"><label data-i18n="th_floor">Lantai</label><input class="neu-input" id="asetLantai"></div>
+      <div class="field"><label data-i18n="th_room">Ruangan</label><input class="neu-input" id="asetRuangan"></div>
+      <div class="field"><label data-i18n="field_age">Umur (bulan)</label><input class="neu-input" type="number" id="asetUmur" value="36"></div>
+      <div class="field"><label data-i18n="th_method">Metode Depresiasi</label>
+        <select class="neu-input" id="asetMetodeDepresiasi">
+          <option value="Garis Lurus">Garis Lurus</option>
+          <option value="Saldo Menurun">Saldo Menurun</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:10px;">
+      <button class="neu-btn" style="flex:1;" onclick="closeModal('modalAset')" data-i18n="btn_cancel">Batal</button>
+      <button class="neu-btn primary" style="flex:1;" onclick="submitAset()" data-i18n="btn_save">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: TAMBAH LOKASI ===== -->
+<div class="modal-overlay" id="modalLokasi">
+  <div class="modal-box neu-card">
+    <h3 data-i18n="btn_add_lokasi">+ Tambah Lokasi</h3>
+    <div class="field"><label data-i18n="field_hotel">Hotel</label><select class="neu-input" id="lokasiHotel"></select></div>
+    <div class="field"><label data-i18n="th_building">Gedung</label><input class="neu-input" id="lokasiGedung"></div>
+    <div class="field"><label data-i18n="th_floor">Lantai</label><input class="neu-input" id="lokasiLantai"></div>
+    <div class="field"><label data-i18n="th_room">Ruangan/Outlet</label><input class="neu-input" id="lokasiRuangan"></div>
+    <div style="display:flex;gap:10px;margin-top:10px;">
+      <button class="neu-btn" style="flex:1;" onclick="closeModal('modalLokasi')" data-i18n="btn_cancel">Batal</button>
+      <button class="neu-btn primary" style="flex:1;" onclick="submitLokasi()" data-i18n="btn_save">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: TAMBAH USER ===== -->
+<div class="modal-overlay" id="modalUser">
+  <div class="modal-box neu-card">
+    <h3 data-i18n="btn_add_user">+ Tambah User</h3>
+    <div class="photo-upload">
+      <img id="userPhotoPreview" class="photo-preview" src="https://ui-avatars.com/api/?background=d6c6c2&color=5a4038&name=U">
+      <input type="file" id="userPhotoInput" accept="image/*" style="display:none" onchange="handlePhotoSelect(event,'userPhotoPreview')">
+      <button class="neu-btn" onclick="document.getElementById('userPhotoInput').click()" data-i18n="upload_photo">Unggah Foto</button>
+    </div>
+    <div class="field"><label data-i18n="field_email">Email</label><input class="neu-input" id="userEmail" placeholder="nama@astonhotel.com"></div>
+    <div class="field"><label data-i18n="field_name">Nama</label><input class="neu-input" id="userNama"></div>
+    <div class="field">
+      <label data-i18n="field_role">Role</label>
+      <select class="neu-input" id="userRole">
+        <option value="Admin" data-i18n="role_admin_full">Admin - Full Akses</option>
+        <option value="Manager" data-i18n="role_manager_full">Manager - Full Akses</option>
+        <option value="User" data-i18n="role_user_input">User - Input Only</option>
+      </select>
+    </div>
+    <div class="field"><label data-i18n="field_hotel">Unit Hotel</label><select class="neu-input" id="userHotel"></select></div>
+    <div style="display:flex;gap:10px;margin-top:10px;">
+      <button class="neu-btn" style="flex:1;" onclick="closeModal('modalUser')" data-i18n="btn_cancel">Batal</button>
+      <button class="neu-btn primary" style="flex:1;" onclick="submitUser()" data-i18n="btn_save">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: TAMBAH UNIT HOTEL ===== -->
+<div class="modal-overlay" id="modalHotel">
+  <div class="modal-box neu-card">
+    <h3 data-i18n="btn_add_unit">+ Tambah Unit Hotel</h3>
+    <div class="photo-upload">
+      <img id="hotelPhotoPreview" class="photo-preview" src="https://ui-avatars.com/api/?background=d6c6c2&color=5a4038&name=H">
+      <input type="file" id="hotelPhotoInput" accept="image/*" style="display:none" onchange="handlePhotoSelect(event,'hotelPhotoPreview')">
+      <button class="neu-btn" onclick="document.getElementById('hotelPhotoInput').click()" data-i18n="upload_photo">Unggah Foto</button>
+    </div>
+    <div class="field"><label data-i18n="field_code">Kode Unit</label><input class="neu-input" id="hotelKode" placeholder="Mis. APK"></div>
+    <div class="field"><label data-i18n="field_hotel_name">Nama Unit Hotel</label><input class="neu-input" id="hotelNama" placeholder="Mis. ASTON Pekalongan"></div>
+    <div class="field"><label data-i18n="field_address">Alamat</label><input class="neu-input" id="hotelAlamat"></div>
+    <div style="display:flex;gap:10px;margin-top:10px;">
+      <button class="neu-btn" style="flex:1;" onclick="closeModal('modalHotel')" data-i18n="btn_cancel">Batal</button>
+      <button class="neu-btn primary" style="flex:1;" onclick="submitHotel()" data-i18n="btn_save">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: AJUKAN MUTASI ===== -->
+<div class="modal-overlay" id="modalMutasi">
+  <div class="modal-box neu-card">
+    <h3 data-i18n="btn_add_mutasi">+ Ajukan Mutasi</h3>
+    <div class="field"><label data-i18n="th_code">Kode Aset</label><input class="neu-input" id="mutasiKodeAset" placeholder="Mis. APK-HK-FFE-00001"></div>
+    <div class="field"><label data-i18n="th_from">Lokasi Asal</label><input class="neu-input" id="mutasiDari" placeholder="Gedung/Lantai/Ruangan"></div>
+    <div class="field"><label data-i18n="th_to">Lokasi Tujuan</label><input class="neu-input" id="mutasiKe" placeholder="Gedung/Lantai/Ruangan"></div>
+    <div class="field"><label data-i18n="th_reason">Alasan</label><textarea class="neu-input" id="mutasiAlasan"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:10px;">
+      <button class="neu-btn" style="flex:1;" onclick="closeModal('modalMutasi')" data-i18n="btn_cancel">Batal</button>
+      <button class="neu-btn primary" style="flex:1;" onclick="submitMutasi()" data-i18n="btn_submit">Ajukan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: TAMBAH ASET DEPARTEMEN ===== -->
+<div class="modal-overlay" id="modalAsetDept">
+  <div class="modal-box neu-card">
+    <h3><span data-i18n="btn_add_dept_aset">+ Tambah Aset Departemen</span> — <span id="modalDeptLabel">FO</span></h3>
+    <div class="photo-upload">
+      <img id="deptPhotoPreview" class="photo-preview square" src="https://ui-avatars.com/api/?background=d6c6c2&color=5a4038&name=D">
+      <input type="file" id="deptPhotoInput" accept="image/*" style="display:none" onchange="handlePhotoSelect(event,'deptPhotoPreview')">
+      <button class="neu-btn" onclick="document.getElementById('deptPhotoInput').click()" data-i18n="upload_photo">Unggah Foto</button>
+    </div>
+    <div class="grid-2">
+      <div class="field"><label data-i18n="th_date_buy">Tgl Pembelian Asset</label><input class="neu-input" type="date" id="deptTglBeli"></div>
+      <div class="field"><label data-i18n="th_type">Jenis Asset</label><input class="neu-input" id="deptJenis"></div>
+      <div class="field"><label data-i18n="th_warranty">Garansi Asset</label><input class="neu-input" id="deptGaransi" placeholder="Mis. 12 bulan"></div>
+      <div class="field"><label data-i18n="th_loc">Lokasi Asset</label><input class="neu-input" id="deptLokasi"></div>
+      <div class="field"><label data-i18n="th_brand2">Merk Asset</label><input class="neu-input" id="deptMerk"></div>
+      <div class="field"><label data-i18n="field_price">Harga Asset</label><input class="neu-input" type="number" id="deptHarga"></div>
+      <div class="field"><label>PIC Asset</label><input class="neu-input" id="deptPic"></div>
+      <div class="field"><label data-i18n="field_hotel">Unit Hotel</label><select class="neu-input" id="deptHotel"></select></div>
+    </div>
+    <div class="field"><label data-i18n="th_desc">Description Asset</label><textarea class="neu-input" id="deptDescription"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:10px;">
+      <button class="neu-btn" style="flex:1;" onclick="closeModal('modalAsetDept')" data-i18n="btn_cancel">Batal</button>
+      <button class="neu-btn primary" style="flex:1;" onclick="submitAsetDept()" data-i18n="btn_save">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: TAMBAH ASET MPL (FASE 5) ===== -->
+<div class="modal-overlay" id="modalAsetMpl">
+  <div class="modal-box neu-card">
+    <h3><span data-i18n="btn_add_mpl_aset">+ Tambah Aset MPL</span> — <span id="modalMplLabel">FO</span></h3>
+    <div class="photo-upload">
+      <img id="mplPhotoPreview" class="photo-preview square" src="https://ui-avatars.com/api/?background=d6c6c2&color=5a4038&name=M">
+      <input type="file" id="mplPhotoInput" accept="image/*" style="display:none" onchange="handlePhotoSelect(event,'mplPhotoPreview')">
+      <button class="neu-btn" onclick="document.getElementById('mplPhotoInput').click()" data-i18n="upload_photo">Unggah Foto</button>
+    </div>
+    <div class="grid-2">
+      <div class="field"><label data-i18n="th_date_buy">Tgl Pembelian Asset</label><input class="neu-input" type="date" id="mplTglBeli"></div>
+      <div class="field"><label data-i18n="th_type">Jenis Asset</label><input class="neu-input" id="mplJenis"></div>
+      <div class="field"><label data-i18n="th_warranty">Garansi Asset</label><input class="neu-input" id="mplGaransi" placeholder="Mis. 12 bulan"></div>
+      <div class="field"><label data-i18n="th_brand2">Merk Asset</label><input class="neu-input" id="mplMerk"></div>
+      <div class="field"><label data-i18n="field_price">Harga Asset</label><input class="neu-input" type="number" id="mplHarga"></div>
+      <div class="field"><label>PIC Asset</label><input class="neu-input" id="mplPic"></div>
+      <div class="field"><label data-i18n="field_vendor">Vendor Asset</label><input class="neu-input" id="mplVendor"></div>
+      <div class="field"><label data-i18n="field_hotel">Unit Hotel</label><select class="neu-input" id="mplHotel"></select></div>
+    </div>
+    <div class="field"><label data-i18n="th_desc">Description Asset</label><textarea class="neu-input" id="mplDescription"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:10px;">
+      <button class="neu-btn" style="flex:1;" onclick="closeModal('modalAsetMpl')" data-i18n="btn_cancel">Batal</button>
+      <button class="neu-btn primary" style="flex:1;" onclick="submitAsetMpl()" data-i18n="btn_save">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: HASIL QR ===== -->
+<div class="modal-overlay" id="modalQr">
+  <div class="modal-box neu-card" style="max-width:340px;">
+    <h3 data-i18n="qr_title">Aset Berhasil Ditambahkan</h3>
+    <div class="qr-result">
+      <div id="qrCanvasWrap"></div>
+      <p id="qrIdLabel" style="font-weight:700;"></p>
+    </div>
+    <button class="neu-btn primary" style="width:100%;" onclick="closeModal('modalQr')" data-i18n="btn_close">Tutup</button>
+  </div>
+</div>
+
+<!-- ===== MODAL: BUAT SESI OPNAME ===== -->
+<div class="modal-overlay" id="modalSesiOpname">
+  <div class="modal-box neu-card">
+    <h3 data-i18n="btn_add_sesi">+ Buat Sesi Opname</h3>
+    <div class="field"><label data-i18n="th_session">Nama Sesi</label><input class="neu-input" id="sesiNama" placeholder="Mis. Opname HK Juli 2026"></div>
+    <div class="field"><label data-i18n="field_hotel">Hotel</label><select class="neu-input" id="sesiHotel"></select></div>
+    <div class="field"><label data-i18n="th_dept">Departemen (opsional)</label>
+      <select class="neu-input" id="sesiDept"><option value="">Semua Departemen</option></select>
+    </div>
+    <div class="field"><label data-i18n="th_date_start">Tanggal Mulai</label><input class="neu-input" type="date" id="sesiTglMulai"></div>
+    <div style="display:flex;gap:10px;margin-top:10px;">
+      <button class="neu-btn" style="flex:1;" onclick="closeModal('modalSesiOpname')" data-i18n="btn_cancel">Batal</button>
+      <button class="neu-btn primary" style="flex:1;" onclick="submitSesiOpname()" data-i18n="btn_save">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: CATAT MAINTENANCE ===== -->
+<div class="modal-overlay" id="modalMaintenance">
+  <div class="modal-box neu-card">
+    <h3 data-i18n="btn_add_maintenance">+ Catat Maintenance</h3>
+    <div class="field"><label data-i18n="th_code">Kode Aset</label><input class="neu-input" id="mtnKodeAset" placeholder="Mis. APK-HK-FFE-00001"></div>
+    <div class="grid-2">
+      <div class="field"><label data-i18n="th_service_date">Tgl Servis</label><input class="neu-input" type="date" id="mtnTglServis"></div>
+      <div class="field"><label data-i18n="th_type2">Jenis</label>
+        <select class="neu-input" id="mtnJenis">
+          <option value="Rutin">Rutin</option>
+          <option value="Perbaikan">Perbaikan</option>
+          <option value="Kalibrasi">Kalibrasi</option>
+        </select>
+      </div>
+      <div class="field"><label data-i18n="field_cost">Biaya</label><input class="neu-input" type="number" id="mtnBiaya"></div>
+      <div class="field"><label data-i18n="field_vendor">Vendor/Teknisi</label><input class="neu-input" id="mtnVendor"></div>
+      <div class="field" style="grid-column:1/-1;"><label data-i18n="th_next_service">Servis Berikutnya</label><input class="neu-input" type="date" id="mtnTglBerikutnya"></div>
+    </div>
+    <div class="field"><label data-i18n="th_reason">Catatan</label><textarea class="neu-input" id="mtnCatatan"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:10px;">
+      <button class="neu-btn" style="flex:1;" onclick="closeModal('modalMaintenance')" data-i18n="btn_cancel">Batal</button>
+      <button class="neu-btn primary" style="flex:1;" onclick="submitMaintenance()" data-i18n="btn_save">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: AJUKAN WRITE-OFF (FASE 5) ===== -->
+<div class="modal-overlay" id="modalWriteOff">
+  <div class="modal-box neu-card">
+    <h3 data-i18n="btn_add_writeoff">+ Ajukan Write-Off</h3>
+    <div class="photo-upload">
+      <img id="woPhotoPreview" class="photo-preview square" src="https://ui-avatars.com/api/?background=d6c6c2&color=5a4038&name=WO">
+      <input type="file" id="woPhotoInput" accept="image/*" style="display:none" onchange="handlePhotoSelect(event,'woPhotoPreview')">
+      <button class="neu-btn" onclick="document.getElementById('woPhotoInput').click()" data-i18n="upload_photo_evidence">Unggah Foto Bukti</button>
+    </div>
+    <div class="field"><label data-i18n="th_code">Kode Aset</label><input class="neu-input" id="woKodeAset" placeholder="Mis. APK-HK-FFE-00001"></div>
+    <div class="field"><label data-i18n="th_reason">Alasan</label><textarea class="neu-input" id="woAlasan" placeholder="Rusak berat / hilang / usang"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:10px;">
+      <button class="neu-btn" style="flex:1;" onclick="closeModal('modalWriteOff')" data-i18n="btn_cancel">Batal</button>
+      <button class="neu-btn primary" style="flex:1;" onclick="submitWriteOff()" data-i18n="btn_submit">Ajukan</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-wrap"></div>
+
+<script>
+/* ================= I18N ================= */
+var I18N = {
+  id: {
+    login_tagline:'Sistem inventory aset hotel terpadu untuk ASTON Pekalongan & ASTON Mampang.',
+    login_title:'Masuk ke Akun', login_sub:'Gunakan akun Google hotel Anda untuk masuk',
+    login_btn:'Masuk dengan Google', login_note:'Anda akan diminta konfirmasi akun Google yang sedang aktif di perangkat ini.',
+    reg_title:'Registrasi Akun', reg_sub:'Lengkapi data Anda untuk mengakses HAIMS', reg_submit:'Daftar & Masuk',
+    field_email:'Email', field_name:'Nama Lengkap', field_role:'Role', field_hotel:'Unit Hotel',
+    role_admin:'Admin', role_manager:'Manager', role_security:'Security',
+    role_admin_full:'Admin - Full Akses', role_manager_full:'Manager - Full Akses', role_user_input:'User - Input Only',
+    upload_photo:'Unggah Foto', upload_photo_evidence:'Unggah Foto Bukti',
+    menu_dashboard:'Dashboard', menu_aset:'Master Aset', menu_lokasi:'Lokasi', menu_adduser:'Add User',
+    menu_mutasi:'Mutasi Aset', menu_departemen:'Departement', menu_mpl:'MPL', menu_activities:'ActivitiesLog', menu_opname:'Stock Opname',
+    menu_maintenance:'Maintenance', menu_depresiasi:'Depresiasi', menu_writeoff:'Write-Off', menu_laporan:'Laporan Gabungan',
+    menu_pengaturan:'Pengaturan', menu_logout:'Logout',
+    dash_title:'Dashboard Inventory Aset', kpi_value:'Total Nilai Aset', kpi_total:'Total Aset',
+    kpi_hotel:'Unit Hotel', kpi_pending:'Mutasi Pending', dash_dept:'Distribusi Aset per Departemen (Master Aset)',
+    dash_activities:'Aktivitas Terbaru', dash_dept_stat:'Statistik & Grafik per Sub-Departemen',
+    btn_add_aset:'+ Tambah Aset', btn_add_lokasi:'+ Tambah Lokasi', btn_add_user:'+ Tambah User', btn_add_unit:'+ Tambah Unit',
+    btn_add_mutasi:'+ Ajukan Mutasi', btn_add_dept_aset:'+ Tambah Aset Departemen', btn_add_mpl_aset:'+ Tambah Aset MPL', btn_add_sesi:'+ Buat Sesi Opname',
+    btn_add_maintenance:'+ Catat Maintenance', btn_calc_dep:'Hitung Depresiasi Bulan Ini', btn_add_writeoff:'+ Ajukan Write-Off',
+    th_code:'Kode', th_name:'Nama', th_category:'Kategori', th_dept:'Departemen', th_status:'Status', th_action:'Aksi',
+    th_building:'Gedung', th_floor:'Lantai', th_room:'Ruangan/Outlet', th_from:'Dari', th_to:'Ke', th_reason:'Alasan',
+    th_date_buy:'Tgl Pembelian', th_type:'Jenis', th_warranty:'Garansi', th_loc:'Lokasi', th_brand2:'Merk', th_qr:'QR', th_desc:'Description Asset',
+    th_session:'Sesi', th_date_start:'Tanggal Mulai', th_service_date:'Tgl Servis', th_type2:'Jenis', field_cost:'Biaya',
+    th_next_service:'Servis Berikutnya', th_period:'Periode', th_monthly_dep:'Penyusutan', th_method:'Metode',
+    th_photo:'Foto', th_source:'Sumber', th_input_date:'Tgl Input',
+    field_brand:'Brand/Model', field_serial:'No. Serial', field_price:'Harga Beli', field_vendor:'Vendor', field_age:'Umur (bulan)',
+    field_code:'Kode Unit', field_hotel_name:'Nama Unit Hotel', field_address:'Alamat',
+    btn_cancel:'Batal', btn_save:'Simpan', btn_submit:'Ajukan', btn_close:'Tutup',
+    setting_lang:'Bahasa Aplikasi', lang_id:'Bahasa Indonesia', lang_en:'English', setting_units:'Manajemen Unit Hotel',
+    setting_font:'Font Aplikasi', setting_font_desc:'Pilih gaya font untuk judul & tampilan aplikasi',
+    setting_theme:'Mode Tampilan', theme_light:'☀ Light Mode', theme_dark:'🌙 Dark Mode',
+    filter_all:'Semua', filter_pending:'Pending', filter_approved:'Disetujui', filter_rejected:'Ditolak',
+    qr_title:'Aset Berhasil Ditambahkan', dept_sync_note:'Setiap sub-departemen otomatis tersimpan ke sheet & folder Drive terpisah miliknya sendiri.',
+    mpl_sync_note:'Setiap sub-MPL otomatis tersimpan ke sheet & folder Drive terpisah miliknya sendiri; foto otomatis diresize jika ukuran besar.',
+    opname_scan_title:'Scan Aset — Sesi Aktif', opname_total_scan:'Total Scan', opname_found:'Ditemukan', opname_accuracy:'Akurasi',
+    opname_manual_input:'Atau input kode aset manual', opname_result_list:'Hasil Scan', btn_start_scan:'▶ Mulai Scan Kamera', btn_stop_scan:'⏹ Hentikan Scan',
+    maintenance_due:'Jadwal Servis Mendatang / Terlambat', dep_awal:'Total Nilai Awal', dep_susut:'Total Penyusutan', dep_buku:'Total Nilai Buku',
+    sort_newest:'Terbaru', sort_oldest:'Terlama', laporan_desc:'Gabungan seluruh hasil input dari Master Aset, Departement, dan MPL — bisa diurutkan A-Z atau berdasarkan tanggal input.',
+    notif_title:'Notifikasi', notif_read_all:'Tandai Semua',
+    toast_saved:'Data berhasil disimpan', toast_error:'Terjadi kesalahan', toast_reg_success:'Registrasi berhasil!'
+  },
+  en: {
+    login_tagline:'Integrated hotel asset inventory system for ASTON Pekalongan & ASTON Mampang.',
+    login_title:'Sign In', login_sub:'Use your hotel Google account to sign in',
+    login_btn:'Sign in with Google', login_note:'You will be asked to confirm the active Google account on this device.',
+    reg_title:'Account Registration', reg_sub:'Complete your details to access HAIMS', reg_submit:'Register & Continue',
+    field_email:'Email', field_name:'Full Name', field_role:'Role', field_hotel:'Hotel Unit',
+    role_admin:'Admin', role_manager:'Manager', role_security:'Security',
+    role_admin_full:'Admin - Full Access', role_manager_full:'Manager - Full Access', role_user_input:'User - Input Only',
+    upload_photo:'Upload Photo', upload_photo_evidence:'Upload Evidence Photo',
+    menu_dashboard:'Dashboard', menu_aset:'Asset Master', menu_lokasi:'Location', menu_adduser:'Add User',
+    menu_mutasi:'Asset Transfer', menu_departemen:'Department', menu_mpl:'MPL', menu_activities:'ActivitiesLog', menu_opname:'Stock Opname',
+    menu_maintenance:'Maintenance', menu_depresiasi:'Depreciation', menu_writeoff:'Write-Off', menu_laporan:'Combined Report',
+    menu_pengaturan:'Settings', menu_logout:'Logout',
+    dash_title:'Asset Inventory Dashboard', kpi_value:'Total Asset Value', kpi_total:'Total Assets',
+    kpi_hotel:'Hotel Units', kpi_pending:'Pending Transfers', dash_dept:'Asset Distribution by Department (Asset Master)',
+    dash_activities:'Recent Activities', dash_dept_stat:'Statistics & Chart per Sub-Department',
+    btn_add_aset:'+ Add Asset', btn_add_lokasi:'+ Add Location', btn_add_user:'+ Add User', btn_add_unit:'+ Add Unit',
+    btn_add_mutasi:'+ Request Transfer', btn_add_dept_aset:'+ Add Department Asset', btn_add_mpl_aset:'+ Add MPL Asset', btn_add_sesi:'+ Create Opname Session',
+    btn_add_maintenance:'+ Log Maintenance', btn_calc_dep:'Calculate This Month Depreciation', btn_add_writeoff:'+ Request Write-Off',
+    th_code:'Code', th_name:'Name', th_category:'Category', th_dept:'Department', th_status:'Status', th_action:'Action',
+    th_building:'Building', th_floor:'Floor', th_room:'Room/Outlet', th_from:'From', th_to:'To', th_reason:'Reason',
+    th_date_buy:'Purchase Date', th_type:'Type', th_warranty:'Warranty', th_loc:'Location', th_brand2:'Brand', th_qr:'QR', th_desc:'Asset Description',
+    th_session:'Session', th_date_start:'Start Date', th_service_date:'Service Date', th_type2:'Type', field_cost:'Cost',
+    th_next_service:'Next Service', th_period:'Period', th_monthly_dep:'Depreciation', th_method:'Method',
+    th_photo:'Photo', th_source:'Source', th_input_date:'Input Date',
+    field_brand:'Brand/Model', field_serial:'Serial No.', field_price:'Purchase Price', field_vendor:'Vendor', field_age:'Age (months)',
+    field_code:'Unit Code', field_hotel_name:'Hotel Unit Name', field_address:'Address',
+    btn_cancel:'Cancel', btn_save:'Save', btn_submit:'Submit', btn_close:'Close',
+    setting_lang:'Application Language', lang_id:'Bahasa Indonesia', lang_en:'English', setting_units:'Hotel Unit Management',
+    setting_font:'Application Font', setting_font_desc:'Choose the font style for titles & app display',
+    setting_theme:'Display Mode', theme_light:'☀ Light Mode', theme_dark:'🌙 Dark Mode',
+    filter_all:'All', filter_pending:'Pending', filter_approved:'Approved', filter_rejected:'Rejected',
+    qr_title:'Asset Added Successfully', dept_sync_note:'Each sub-department automatically syncs to its own sheet & Drive folder.',
+    mpl_sync_note:'Each sub-MPL automatically syncs to its own sheet & Drive folder; photos auto-resize when large.',
+    opname_scan_title:'Scan Asset — Active Session', opname_total_scan:'Total Scans', opname_found:'Found', opname_accuracy:'Accuracy',
+    opname_manual_input:'Or enter asset code manually', opname_result_list:'Scan Results', btn_start_scan:'▶ Start Camera Scan', btn_stop_scan:'⏹ Stop Scan',
+    maintenance_due:'Upcoming / Overdue Service Schedule', dep_awal:'Total Initial Value', dep_susut:'Total Depreciation', dep_buku:'Total Book Value',
+    sort_newest:'Newest', sort_oldest:'Oldest', laporan_desc:'Combined view of all input from Asset Master, Department, and MPL — sortable A-Z or by input date.',
+    notif_title:'Notifications', notif_read_all:'Mark All Read',
+    toast_saved:'Data saved successfully', toast_error:'An error occurred', toast_reg_success:'Registration successful!'
+  }
+};
+var currentLang = localStorage.getItem('haims_lang') || 'id';
+var currentDept = 'FO';
+var currentMpl = 'FO';
+var currentMutasiFilter = '';
+var currentSesiOpname = null;
+var html5QrScanner = null;
+var scannerRunning = false;
+var sortDeptMode = 'date_desc';
+var sortMplMode = 'date_desc';
+var sortLaporanMode = 'date_desc';
+var appCache = { hotels: [], settings: {}, counts: {}, syncedAt: null };
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('haims_lang', lang);
+  applyTranslations();
+  document.querySelectorAll('.lang-switch button').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-lang') === lang); });
+}
+function applyTranslations() {
+  var dict = I18N[currentLang];
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key = el.getAttribute('data-i18n');
+    if (dict[key]) el.textContent = dict[key];
+  });
+}
+function t(key){ return I18N[currentLang][key] || key; }
+
+/* ================= FONT & THEME ================= */
+function setFont(fontName, el) {
+  document.documentElement.style.setProperty('--font-display', "'" + fontName + "', sans-serif");
+  localStorage.setItem('haims_font', fontName);
+  document.querySelectorAll('.font-preview-card').forEach(function(c){ c.classList.remove('selected'); });
+  if (el) el.classList.add('selected');
+}
+function applyStoredFont() {
+  var saved = localStorage.getItem('haims_font') || 'Comfortaa';
+  document.documentElement.style.setProperty('--font-display', "'" + saved + "', sans-serif");
+  var card = document.querySelector('.font-preview-card[data-font="' + saved + '"]');
+  if (card) card.classList.add('selected');
+}
+function setTheme(mode) {
+  document.body.classList.toggle('dark-mode', mode === 'dark');
+  localStorage.setItem('haims_theme', mode);
+  document.getElementById('btnLightMode').classList.toggle('selected', mode === 'light');
+  document.getElementById('btnDarkMode').classList.toggle('selected', mode === 'dark');
+}
+function applyStoredTheme() {
+  var saved = localStorage.getItem('haims_theme') || 'light';
+  setTheme(saved);
+}
+
+/* ================= TOAST ================= */
+function showToast(message, type) {
+  var wrap = document.getElementById('toast-wrap');
+  var el = document.createElement('div');
+  el.className = 'toast neu-card ' + (type || 'success');
+  el.textContent = message;
+  wrap.appendChild(el);
+  setTimeout(function(){ el.remove(); }, 3500);
+}
+
+/* ================= DIGITAL CLOCK ================= */
+function tickClock() {
+  var el = document.getElementById('digitalClock');
+  if (!el) return;
+  var now = new Date();
+  el.textContent = ('0'+now.getHours()).slice(-2) + ':' + ('0'+now.getMinutes()).slice(-2) + ':' + ('0'+now.getSeconds()).slice(-2);
+}
+setInterval(tickClock, 1000);
+
+/* ================= PHOTO UPLOAD + AUTO RESIZE ================= */
+var MAX_KB = 800;
+var photoBase64Store = {};
+function handlePhotoSelect(evt, previewId) {
+  var file = evt.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = new Image();
+    img.onload = function() {
+      var sizeKB = (e.target.result.length * 0.75) / 1024;
+      var canvas = document.createElement('canvas');
+      var maxDim = 1000;
+      var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+      if (sizeKB > MAX_KB) scale = Math.min(scale, 0.6);
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      var quality = sizeKB > MAX_KB ? 0.7 : 0.9;
+      var resizedBase64 = canvas.toDataURL('image/jpeg', quality);
+      photoBase64Store[previewId] = resizedBase64;
+      document.getElementById(previewId).src = resizedBase64; // auto terdisplay setelah resize
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ================= AUTH FLOW ================= */
+function requestSessionCheck() {
+  google.script.run.withSuccessHandler(handleSessionResult).withFailureHandler(handleAuthError).checkSession();
+}
+function startLogin() {
+  syncAppData(function(){ requestSessionCheck(); }, true);
+}
+function handleAuthError(err) { showToast(t('toast_error') + ': ' + (err.message || err), 'error'); }
+function handleSessionResult(res) {
+  if (!res.loggedIn) { showToast(t('toast_error'), 'error'); return; }
+  if (res.blocked) { showToast('Akun Anda dinonaktifkan.', 'error'); return; }
+  if (res.registered) { enterApp(res.user); }
+  else {
+    document.getElementById('view-login').style.display = 'none';
+    document.getElementById('view-register').style.display = 'flex';
+    document.getElementById('regEmail').value = res.email;
+    document.getElementById('regPhotoPreview').src = 'https://ui-avatars.com/api/?background=c97b6a&color=fff&name=' + encodeURIComponent(res.email[0]);
+    if (res.isFirstUser) document.getElementById('regRoleWrap').style.display = 'none';
+    loadHotelsIntoSelect('regHotel', true);
+  }
+}
+function submitRegistration() {
+  var payload = {
+    nama: document.getElementById('regNama').value, role: document.getElementById('regRole').value,
+    hotelAkses: document.getElementById('regHotel').value, fotoBase64: photoBase64Store['regPhotoPreview'] || '',
+    fotoName: 'profile_' + new Date().getTime() + '.jpg'
+  };
+  if (!payload.nama) { showToast('Nama wajib diisi', 'error'); return; }
+  if (!payload.hotelAkses) { showToast('Unit hotel wajib dipilih', 'error'); return; }
+  google.script.run.withSuccessHandler(function(res){
+    if (res.success) { showToast(t('toast_reg_success')); google.script.run.withSuccessHandler(handleSessionResult).checkSession(); }
+    else showToast(res.message, 'error');
+  }).withFailureHandler(handleAuthError).registerUser(payload);
+}
+function enterApp(user) {
+  document.getElementById('view-login').style.display = 'none';
+  document.getElementById('view-register').style.display = 'none';
+  document.getElementById('langSwitchAuth').style.display = 'none';
+  document.getElementById('view-app').style.display = 'block';
+  document.getElementById('topbarAvatar').src = user.fotoUrl || ('https://ui-avatars.com/api/?background=c97b6a&color=fff&name=' + encodeURIComponent(user.nama || 'U'));
+  applyTranslations();
+  document.querySelectorAll('.lang-switch button').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-lang') === currentLang); });
+  applyStoredFont();
+  applyStoredTheme();
+  renderDeptPills();
+  renderMplPills();
+  loadAllData();
+}
+function doAppLogout() {
+  stopScanner();
+  google.script.run.withSuccessHandler(function(){
+    window.top.location.href = window.top.location.href.split('?')[0];
+  }).doLogout();
+}
+
+/* ================= NOTIFIKASI (FASE 5) ================= */
+function toggleNotifDropdown() {
+  var dd = document.getElementById('notifDropdown');
+  dd.classList.toggle('open');
+  if (dd.classList.contains('open')) refreshNotif();
+}
+function refreshNotif() {
+  google.script.run.withSuccessHandler(function(list){
+    var wrap = document.getElementById('notifList');
+    wrap.innerHTML = '';
+    list.slice(0,20).forEach(function(n){
+      wrap.innerHTML += '<div class="notif-item"><span class="jenis">' + n.jenis + '</span><br>' + n.isi +
+        '<div style="color:var(--muted);font-size:10px;margin-top:2px;">' + formatTime(n.tgl) + '</div></div>';
+    });
+    if (list.length === 0) wrap.innerHTML = '<p style="color:var(--muted);font-size:12px;">Tidak ada notifikasi.</p>';
+  }).getNotifikasi(30);
+}
+function refreshNotifBadge() {
+  google.script.run.withSuccessHandler(function(count){
+    var badge = document.getElementById('notifBadge');
+    if (count > 0) { badge.textContent = count; badge.classList.remove('hidden'); }
+    else badge.classList.add('hidden');
+  }).getUnreadNotifCount();
+}
+function markAllRead() {
+  google.script.run.withSuccessHandler(function(){ refreshNotif(); refreshNotifBadge(); }).markAllNotifRead();
+}
+
+/* ================= NAVIGASI SIDEBAR ================= */
+function goPage(page) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
+  document.querySelector('.nav-item[data-page="' + page + '"]').classList.add('active');
+  if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+  if (page === 'activities') refreshActivitiesFull();
+  if (page === 'mutasi') refreshMutasiTable();
+  if (page === 'departemen') refreshAsetDeptTable();
+  if (page === 'mpl') refreshAsetMplTable();
+  if (page === 'opname') { refreshSesiOpnameTable(); closeScanPanel(); }
+  else { stopScanner(); }
+  if (page === 'maintenance') refreshMaintenanceTable();
+  if (page === 'depresiasi') refreshDepresiasiPage();
+  if (page === 'writeoff') refreshWriteOffList();
+  if (page === 'laporan') refreshLaporanGabungan();
+}
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+/* ================= MODAL ================= */
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+/* ================= LOAD DATA ================= */
+function normalizeHotelList(hotels) {
+  var seen = {};
+  return (hotels || []).map(function(h){
+    return {
+      kode: String((h && h.kode) || '').trim(),
+      nama: String((h && h.nama) || '').trim(),
+      alamat: String((h && h.alamat) || '').trim(),
+      fotoUrl: String((h && h.fotoUrl) || '').trim(),
+      tglDibuat: (h && h.tglDibuat) || ''
+    };
+  }).filter(function(h){
+    if (!h.nama && h.kode) h.nama = h.kode;
+    if (!h.kode && h.nama) h.kode = h.nama.substring(0, 6).toUpperCase();
+    if (!h.nama) return false;
+    var key = (h.kode + '|' + h.nama).toLowerCase();
+    if (seen[key]) return false;
+    seen[key] = true;
+    return true;
+  });
+}
+function setSelectLoading(sel) {
+  sel.innerHTML = '';
+  sel.add(new Option(currentLang === 'id' ? 'Memuat...' : 'Loading...', ''));
+}
+function setHotelSelectOptions(sel, hotels, includeAll) {
+  var current = sel.value;
+  sel.innerHTML = '';
+  if (includeAll) sel.add(new Option(currentLang === 'id' ? 'Semua Unit' : 'All Units', ''));
+  if (!hotels || hotels.length === 0) {
+    var empty = new Option(currentLang === 'id' ? 'Belum ada unit hotel' : 'No hotel unit yet', '');
+    empty.disabled = true;
+    sel.add(empty);
+    return;
+  }
+  hotels.forEach(function(h){
+    sel.add(new Option(h.nama, h.nama));
+  });
+  if (current) sel.value = current;
+}
+function applyHotelMasterData(hotels) {
+  var list = normalizeHotelList(hotels || appCache.hotels);
+  appCache.hotels = list;
+  fillHotelSelectors(list);
+  renderHotelManageList(list);
+  document.getElementById('kpiHotel').textContent = list.length;
+}
+function syncAppData(callback, silent) {
+  if (!isGasEnvironment()) {
+    if (callback) callback(null);
+    return;
+  }
+  google.script.run.withSuccessHandler(function(sync){
+    if (sync && sync.success) {
+      appCache.hotels = normalizeHotelList(sync.hotels);
+      appCache.settings = sync.settings || {};
+      appCache.counts = sync.counts || {};
+      appCache.syncedAt = sync.syncedAt || new Date().toISOString();
+    }
+    if (callback) callback(sync || null);
+  }).withFailureHandler(function(err){
+    if (!silent) showToast((err && err.message ? err.message : err), 'error');
+    if (callback) callback(null);
+  }).autoSync();
+}
+function loadAllData() {
+  syncAppData(function(sync){
+    applyHotelMasterData(sync && sync.hotels ? sync.hotels : appCache.hotels);
+    refreshDashboard();
+    refreshAsetTable();
+    refreshLokasiTable();
+    refreshUserTable();
+    refreshMutasiBadge();
+    refreshDashActivities();
+    refreshDeptStat();
+    refreshMaintenanceBadge();
+    refreshNotifBadge();
+  }, true);
+}
+function onHotelChange() { refreshDashboard(); refreshAsetTable(); }
+
+function refreshDashboard() {
+  var hotel = document.getElementById('hotelSelector').value;
+  google.script.run.withSuccessHandler(function(data){
+    document.getElementById('kpiNilai').textContent = 'Rp ' + Number(data.totalNilai).toLocaleString('id-ID');
+    document.getElementById('kpiTotal').textContent = data.totalAset;
+    document.getElementById('kpiPending').textContent = data.pendingMutasi;
+    var deptWrap = document.getElementById('deptChart');
+    deptWrap.innerHTML = '';
+    var total = data.totalAset || 1;
+    Object.keys(data.perDept).forEach(function(dept){
+      var pct = Math.round((data.perDept[dept] / total) * 100);
+      deptWrap.innerHTML += '<div class="row-line"><span>' + dept + '</span><span>' + pct + '%</span></div>' +
+        '<div class="bar neu-in"><span style="width:' + pct + '%"></span></div>';
+    });
+    if (Object.keys(data.perDept).length === 0) deptWrap.innerHTML = '<p style="color:var(--muted);font-size:13px;">Belum ada data aset.</p>';
+  }).getDashboardData(hotel || null);
+}
+function refreshDeptStat() {
+  google.script.run.withSuccessHandler(function(stats){
+    var wrap = document.getElementById('deptStatGrid');
+    wrap.innerHTML = '';
+    stats.forEach(function(s){
+      wrap.innerHTML += '<div class="dept-stat-card neu-in">' +
+        '<div class="dcode">' + s.departemen + '</div>' +
+        '<div class="dcount">' + s.jumlah + '</div>' +
+        '<div class="dval">Rp ' + Number(s.totalNilai).toLocaleString('id-ID') + '</div></div>';
+    });
+  }).getDeptStatistik();
+}
+function refreshDashActivities() {
+  google.script.run.withSuccessHandler(function(logs){
+    var wrap = document.getElementById('dashActivities');
+    wrap.innerHTML = '';
+    logs.slice(0,6).forEach(function(l){
+      wrap.innerHTML += '<div class="row-line"><span>' + l.aksi + '</span><span>' + formatTime(l.timestamp) + '</span></div>';
+    });
+    if (logs.length === 0) wrap.innerHTML = '<p style="color:var(--muted);font-size:13px;">Belum ada aktivitas.</p>';
+  }).getActivitiesLog(6);
+}
+function refreshActivitiesFull() {
+  google.script.run.withSuccessHandler(function(logs){
+    var wrap = document.getElementById('activitiesFullList');
+    wrap.innerHTML = '';
+    logs.forEach(function(l){
+      wrap.innerHTML += '<div class="log-item"><span class="aksi">' + l.aksi + '</span> — ' + l.detail +
+        '<div class="meta">' + l.nama + ' (' + l.email + ') · ' + formatTime(l.timestamp) + '</div></div>';
+    });
+    if (logs.length === 0) wrap.innerHTML = '<p style="color:var(--muted);font-size:13px;">Belum ada aktivitas tercatat.</p>';
+  }).getActivitiesLog(200);
+}
+function formatTime(d) {
+  var date = new Date(d);
+  return date.toLocaleString('id-ID', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+}
+
+function fillHotelSelectors(hotels) {
+  var list = normalizeHotelList(hotels);
+  ['hotelSelector','regHotel','asetHotel','lokasiHotel','userHotel','deptHotel','sesiHotel','mplHotel'].forEach(function(id){
+    var sel = document.getElementById(id);
+    if (!sel) return;
+    setHotelSelectOptions(sel, list, id === 'hotelSelector');
+  });
+}
+function loadHotelsIntoSelect(id, forceSync) {
+  var sel = document.getElementById(id);
+  if (!sel) return;
+  var cached = normalizeHotelList(appCache.hotels);
+  if (cached.length && !forceSync) {
+    setHotelSelectOptions(sel, cached, id === 'hotelSelector');
+    return;
+  }
+  setSelectLoading(sel);
+  syncAppData(function(sync){
+    var hotels = normalizeHotelList(sync && sync.hotels ? sync.hotels : appCache.hotels);
+    setHotelSelectOptions(sel, hotels, id === 'hotelSelector');
+  }, false);
+}
+function renderHotelManageList(hotels) {
+  var wrap = document.getElementById('hotelManageList');
+  wrap.innerHTML = '';
+  hotels.forEach(function(h){
+    wrap.innerHTML += '<div class="row-line" style="align-items:center;">' +
+      '<span style="display:flex;align-items:center;gap:10px;">' +
+      '<img src="' + (h.fotoUrl || 'https://ui-avatars.com/api/?background=d6c6c2&color=5a4038&name=' + encodeURIComponent(h.nama)) + '" style="width:32px;height:32px;border-radius:10px;object-fit:cover;">' +
+      h.nama + ' (' + h.kode + ')</span><span>' + h.alamat + '</span></div>';
+  });
+}
+
+function refreshAsetTable() {
+  var hotel = document.getElementById('hotelSelector').value;
+  google.script.run.withSuccessHandler(function(list){
+    var tbody = document.querySelector('#tableAset tbody');
+    tbody.innerHTML = '';
+    list.forEach(function(a){
+      tbody.innerHTML += '<tr><td>' + a.kode + '</td><td>' + a.nama + '</td><td>' + a.kategori + '</td><td>' + a.departemen + '</td>' +
+        '<td><span class="badge aktif">' + a.status + '</span></td>' +
+        '<td><button class="neu-btn small" onclick="prefillMutasi(\'' + a.kode + '\',\'' + a.gedung + '/' + a.lantai + '/' + a.ruangan + '\')">Mutasi</button> ' +
+        '<button class="neu-btn small" onclick="prefillMaintenance(\'' + a.kode + '\')">Servis</button> ' +
+        '<button class="neu-btn small danger" onclick="prefillWriteOff(\'' + a.kode + '\')">Write-Off</button></td></tr>';
+    });
+  }).getAsetList(hotel || null);
+}
+function refreshLokasiTable() {
+  google.script.run.withSuccessHandler(function(list){
+    var tbody = document.querySelector('#tableLokasi tbody');
+    tbody.innerHTML = '';
+    list.forEach(function(l){
+      tbody.innerHTML += '<tr><td>' + l.hotel + '</td><td>' + l.gedung + '</td><td>' + l.lantai + '</td><td>' + l.ruangan + '</td></tr>';
+    });
+  }).getLokasi();
+}
+function refreshUserTable() {
+  google.script.run.withSuccessHandler(function(list){
+    var tbody = document.querySelector('#tableUser tbody');
+    tbody.innerHTML = '';
+    list.forEach(function(u){
+      tbody.innerHTML += '<tr><td><img class="avatar" style="width:30px;height:30px;" src="' + (u.fotoUrl || 'https://ui-avatars.com/api/?background=d6c6c2&color=5a4038&name=' + encodeURIComponent(u.nama)) + '"></td>' +
+        '<td>' + u.nama + '</td><td>' + u.email + '</td><td>' + u.role + '</td>' +
+        '<td><span class="badge ' + (u.status === 'Aktif' ? 'aktif' : 'nonaktif') + '">' + u.status + '</span></td>' +
+        '<td><button class="neu-btn small" onclick="toggleUserStatus(\'' + u.email + '\',\'' + u.status + '\')">' +
+        (u.status === 'Aktif' ? 'Nonaktifkan' : 'Aktifkan') + '</button></td></tr>';
+    });
+  }).getUsers();
+}
+function toggleUserStatus(email, current) {
+  var newStatus = current === 'Aktif' ? 'Nonaktif' : 'Aktif';
+  google.script.run.withSuccessHandler(function(){ refreshUserTable(); showToast(t('toast_saved')); })
+    .withFailureHandler(function(e){ showToast(e.message, 'error'); }).updateUserStatus(email, newStatus);
+}
+
+/* ================= MUTASI ASET ================= */
+function openModalMutasi() {
+  document.getElementById('mutasiKodeAset').value = '';
+  document.getElementById('mutasiDari').value = '';
+  document.getElementById('mutasiKe').value = '';
+  document.getElementById('mutasiAlasan').value = '';
+  openModal('modalMutasi');
+}
+function prefillMutasi(kode, dari) {
+  document.getElementById('mutasiKodeAset').value = kode;
+  document.getElementById('mutasiDari').value = dari;
+  openModal('modalMutasi');
+}
+function submitMutasi() {
+  var payload = { kodeAset: val('mutasiKodeAset'), dariLokasi: val('mutasiDari'), keLokasi: val('mutasiKe'), alasan: val('mutasiAlasan') };
+  if (!payload.kodeAset || !payload.keLokasi) { showToast('Kode aset & lokasi tujuan wajib diisi', 'error'); return; }
+  google.script.run.withSuccessHandler(function(){
+    showToast(t('toast_saved')); closeModal('modalMutasi'); refreshMutasiTable(); refreshMutasiBadge();
+  }).withFailureHandler(function(e){ showToast(e.message, 'error'); }).ajukanMutasi(payload);
+}
+function filterMutasi(status, el) {
+  currentMutasiFilter = status;
+  document.querySelectorAll('#page-mutasi .pill').forEach(function(p){ p.classList.remove('active'); });
+  el.classList.add('active');
+  refreshMutasiTable();
+}
+function refreshMutasiTable() {
+  google.script.run.withSuccessHandler(function(list){
+    var tbody = document.querySelector('#tableMutasi tbody');
+    tbody.innerHTML = '';
+    list.forEach(function(m){
+      var badgeClass = m.status === 'Pending' ? 'pending' : (m.status === 'Disetujui' ? 'disetujui' : 'ditolak');
+      var actionBtn = m.status === 'Pending'
+        ? '<button class="neu-btn small" onclick="approveMutasi(\'' + m.id + '\',\'Disetujui\')">✓</button> ' +
+          '<button class="neu-btn small danger" onclick="approveMutasi(\'' + m.id + '\',\'Ditolak\')">✕</button>'
+        : '-';
+      tbody.innerHTML += '<tr><td>' + m.kodeAset + '</td><td>' + m.dari + '</td><td>' + m.ke + '</td><td>' + m.alasan + '</td>' +
+        '<td><span class="badge ' + badgeClass + '">' + m.status + '</span></td><td>' + actionBtn + '</td></tr>';
+    });
+  }).getMutasiList(currentMutasiFilter || null);
+}
+function approveMutasi(id, keputusan) {
+  google.script.run.withSuccessHandler(function(res){
+    if (res.success) { showToast(t('toast_saved')); refreshMutasiTable(); refreshMutasiBadge(); refreshAsetTable(); }
+    else showToast(res.message, 'error');
+  }).withFailureHandler(function(e){ showToast(e.message, 'error'); }).prosesApprovalMutasi(id, keputusan, '');
+}
+function refreshMutasiBadge() {
+  google.script.run.withSuccessHandler(function(list){
+    var badge = document.getElementById('badgeMutasi');
+    if (list.length > 0) { badge.textContent = list.length; badge.classList.remove('hidden'); }
+    else badge.classList.add('hidden');
+  }).getMutasiList('Pending');
+}
+
+/* ================= DEPARTEMENT MODULE ================= */
+function renderDeptPills() {
+  google.script.run.withSuccessHandler(function(list){
+    var wrap = document.getElementById('deptPillRow');
+    wrap.innerHTML = '';
+    list.forEach(function(d, idx){
+      wrap.innerHTML += '<div class="pill ' + (idx===0?'active':'') + '" onclick="selectDept(\'' + d + '\',this)">' + d + '</div>';
+    });
+    currentDept = list[0];
+    var sel = document.getElementById('sesiDept');
+    if (sel) { list.forEach(function(d){ sel.innerHTML += '<option value="' + d + '">' + d + '</option>'; }); }
+  }).getSubDepartemenList();
+}
+function selectDept(dept, el) {
+  currentDept = dept;
+  document.querySelectorAll('#deptPillRow .pill').forEach(function(p){ p.classList.remove('active'); });
+  el.classList.add('active');
+  refreshAsetDeptTable();
+}
+function setSortDept(mode, el) {
+  sortDeptMode = mode;
+  document.querySelectorAll('#page-departemen .sort-row button').forEach(function(b){ b.classList.remove('selected'); });
+  el.classList.add('selected');
+  refreshAsetDeptTable();
+}
+function openModalAsetDept() {
+  document.getElementById('modalDeptLabel').textContent = currentDept;
+  document.getElementById('deptTglBeli').value = '';
+  document.getElementById('deptJenis').value = '';
+  document.getElementById('deptGaransi').value = '';
+  document.getElementById('deptLokasi').value = '';
+  document.getElementById('deptMerk').value = '';
+  document.getElementById('deptHarga').value = '';
+  document.getElementById('deptPic').value = '';
+  document.getElementById('deptDescription').value = '';
+  openModal('modalAsetDept');
+}
+function submitAsetDept() {
+  var payload = {
+    departemen: currentDept, tglPembelian: val('deptTglBeli'), jenisAsset: val('deptJenis'), garansi: val('deptGaransi'),
+    lokasi: val('deptLokasi'), merk: val('deptMerk'), harga: val('deptHarga'), pic: val('deptPic'),
+    description: val('deptDescription'), hotel: val('deptHotel'),
+    fotoBase64: photoBase64Store['deptPhotoPreview'] || '', fotoName: 'dept_' + currentDept + '_' + new Date().getTime() + '.jpg'
+  };
+  google.script.run.withSuccessHandler(function(res){
+    if (res.success) {
+      closeModal('modalAsetDept'); showToast(t('toast_saved'));
+      refreshAsetDeptTable(); refreshDeptStat(); showQrResult(res.idAsset);
+    } else showToast(res.message || t('toast_error'), 'error');
+  }).withFailureHandler(function(e){ showToast(e.message, 'error'); }).addAsetDepartemen(payload);
+}
+function showQrResult(idAsset) {
+  document.getElementById('qrIdLabel').textContent = idAsset;
+  var wrap = document.getElementById('qrCanvasWrap');
+  wrap.innerHTML = '';
+  new QRCode(wrap, { text: idAsset, width: 160, height: 160, colorDark:'#5a4038', colorLight:'#f2e8e6' });
+  openModal('modalQr');
+}
+function refreshAsetDeptTable() {
+  google.script.run.withSuccessHandler(function(list){
+    var tbody = document.querySelector('#tableAsetDept tbody');
+    tbody.innerHTML = '';
+    list.forEach(function(a){
+      tbody.innerHTML += '<tr><td>' + a.idAsset + '</td><td>' + fmtDate(a.tglPembelian) + '</td><td>' + a.jenisAsset + '</td>' +
+        '<td>' + a.garansi + '</td><td>' + a.lokasi + '</td><td>' + a.merk + '</td>' +
+        '<td>Rp ' + Number(a.harga||0).toLocaleString('id-ID') + '</td><td>' + a.pic + '</td>' +
+        '<td><button class="neu-btn small" onclick="showQrResult(\'' + a.idAsset + '\')">QR</button></td></tr>';
+    });
+    if (list.length === 0) tbody.innerHTML = '<tr><td colspan="9" style="color:var(--muted);">Belum ada data.</td></tr>';
+  }).getAsetDepartemen(currentDept, null, sortDeptMode);
+}
+function fmtDate(d) {
+  if (!d) return '-';
+  var date = new Date(d);
+  if (isNaN(date)) return d;
+  return date.toLocaleDateString('id-ID');
+}
+
+/* ================= MPL MODULE (FASE 5) ================= */
+function renderMplPills() {
+  google.script.run.withSuccessHandler(function(list){
+    var wrap = document.getElementById('mplPillRow');
+    wrap.innerHTML = '';
+    list.forEach(function(d, idx){
+      wrap.innerHTML += '<div class="pill ' + (idx===0?'active':'') + '" onclick="selectMpl(\'' + d + '\',this)">' + d + '</div>';
+    });
+    currentMpl = list[0];
+  }).getSubDepartemenList();
+}
+function selectMpl(mpl, el) {
+  currentMpl = mpl;
+  document.querySelectorAll('#mplPillRow .pill').forEach(function(p){ p.classList.remove('active'); });
+  el.classList.add('active');
+  refreshAsetMplTable();
+}
+function setSortMpl(mode, el) {
+  sortMplMode = mode;
+  document.querySelectorAll('#page-mpl .sort-row button').forEach(function(b){ b.classList.remove('selected'); });
+  el.classList.add('selected');
+  refreshAsetMplTable();
+}
+function openModalAsetMpl() {
+  document.getElementById('modalMplLabel').textContent = currentMpl;
+  document.getElementById('mplTglBeli').value = '';
+  document.getElementById('mplJenis').value = '';
+  document.getElementById('mplGaransi').value = '';
+  document.getElementById('mplMerk').value = '';
+  document.getElementById('mplHarga').value = '';
+  document.getElementById('mplPic').value = '';
+  document.getElementById('mplVendor').value = '';
+  document.getElementById('mplDescription').value = '';
+  document.getElementById('mplPhotoPreview').src = 'https://ui-avatars.com/api/?background=d6c6c2&color=5a4038&name=M';
+  delete photoBase64Store['mplPhotoPreview'];
+  openModal('modalAsetMpl');
+}
+function submitAsetMpl() {
+  var payload = {
+    mpl: currentMpl, tglPembelian: val('mplTglBeli'), jenisAsset: val('mplJenis'), garansi: val('mplGaransi'),
+    merk: val('mplMerk'), harga: val('mplHarga'), pic: val('mplPic'), vendor: val('mplVendor'),
+    description: val('mplDescription'), hotel: val('mplHotel'),
+    fotoBase64: photoBase64Store['mplPhotoPreview'] || '', fotoName: 'mpl_' + currentMpl + '_' + new Date().getTime() + '.jpg'
+  };
+  google.script.run.withSuccessHandler(function(res){
+    if (res.success) { closeModal('modalAsetMpl'); showToast(t('toast_saved')); refreshAsetMplTable(); }
+    else showToast(res.message || t('toast_error'), 'error');
+  }).withFailureHandler(function(e){ showToast(e.message, 'error'); }).addAsetMpl(payload);
+}
+function refreshAsetMplTable() {
+  google.script.run.withSuccessHandler(function(list){
+    var tbody = document.querySelector('#tableAsetMpl tbody');
+    tbody.innerHTML = '';
+    list.forEach(function(a){
+      tbody.innerHTML += '<tr><td>' + (a.fotoUrl ? '<img class="thumb" src="'+a.fotoUrl+'">' : '-') + '</td><td>' + a.idAsset + '</td>' +
+        '<td>' + fmtDate(a.tglPembelian) + '</td><td>' + a.jenisAsset + '</td><td>' + a.garansi + '</td>' +
+        '<td>' + a.merk + '</td><td>Rp ' + Number(a.harga||0).toLocaleString('id-ID') + '</td><td>' + a.pic + '</td><td>' + a.vendor + '</td></tr>';
+    });
+    if (list.length === 0) tbody.innerHTML = '<tr><td colspan="9" style="color:var(--muted);">Belum ada data.</td></tr>';
+  }).getAsetMpl(currentMpl, null, sortMplMode);
+}
+
+/* ================= STOCK OPNAME ================= */
+function submitSesiOpname() {
+  var payload = { namaSesi: val('sesiNama'), hotel: val('sesiHotel'), departemen: val('sesiDept'), tglMulai: new Date().toISOString() };
+  if (!payload.namaSesi) { showToast('Nama sesi wajib diisi', 'error'); return; }
+  google.script.run.withSuccessHandler(function(res){
+    if (res.success) { showToast(t('toast_saved')); closeModal('modalSesiOpname'); refreshSesiOpnameTable(); }
+    else showToast(res.message || t('toast_error'), 'error');
+  }).withFailureHandler(function(e){ showToast(e.message, 'error'); }).buatSesiOpname(payload);
+}
+function refreshSesiOpnameTable() {
+  google.script.run.withSuccessHandler(function(list){
+    var tbody = document.querySelector('#tableSesiOpname tbody');
+    tbody.innerHTML = '';
+    list.forEach(function(s){
+      var badgeClass = s.status === 'Aktif' ? 'pending' : 'selesai';
+      var actionBtn = s.status === 'Aktif'
+        ? '<button class="neu-btn small" onclick="openScanPanel(\'' + s.id + '\',\'' + s.nama + '\')">📷 Scan</button> ' +
+          '<button class="neu-btn small danger" onclick="closeSesi(\'' + s.id + '\')">Tutup</button>'
+        : '<button class="neu-btn small" onclick="openScanPanel(\'' + s.id + '\',\'' + s.nama + '\')">Lihat</button>';
+      tbody.innerHTML += '<tr><td>' + s.nama + '</td><td>' + s.hotel + '</td><td>' + (s.departemen||'-') + '</td>' +
+        '<td><span class="badge ' + badgeClass + '">' + s.status + '</span></td><td>' + actionBtn + '</td></tr>';
+    });
+  }).getSesiOpnameList();
+}
+function closeSesi(id) {
+  google.script.run.withSuccessHandler(function(){ showToast(t('toast_saved')); refreshSesiOpnameTable(); })
+    .withFailureHandler(function(e){ showToast(e.message, 'error'); }).tutupSesiOpname(id);
+}
+function openScanPanel(idSesi, namaSesi) {
+  currentSesiOpname = idSesi;
+  document.getElementById('opnameScanTitle').textContent = (currentLang==='id'?'Scan Aset — ':'Scan Asset — ') + namaSesi;
+  document.getElementById('opnameScanPanel').classList.remove('hidden');
+  refreshOpnameResult();
+}
+function closeScanPanel() {
+  stopScanner();
+  document.getElementById('opnameScanPanel').classList.add('hidden');
+  currentSesiOpname = null;
+}
+function toggleScanner() {
+  if (scannerRunning) { stopScanner(); return; }
+  html5QrScanner = new Html5Qrcode('qrReader');
+  html5QrScanner.start({ facingMode: 'environment' }, { fps: 10, qrbox: 220 },
+    function(decodedText){ handleScanResult(decodedText); },
+    function(err){ }
+  ).then(function(){
+    scannerRunning = true;
+    document.getElementById('btnStartScan').textContent = t('btn_stop_scan');
+  }).catch(function(err){ showToast('Kamera tidak dapat diakses: ' + err, 'error'); });
+}
+function stopScanner() {
+  if (html5QrScanner && scannerRunning) { html5QrScanner.stop().then(function(){ html5QrScanner.clear(); }).catch(function(){}); }
+  scannerRunning = false;
+  var btn = document.getElementById('btnStartScan');
+  if (btn) btn.textContent = t('btn_start_scan');
+}
+function handleScanResult(kodeAset) {
+  if (!currentSesiOpname) return;
+  google.script.run.withSuccessHandler(function(res){
+    showToast((res.ditemukan ? '✓ Ditemukan: ' : '✕ Tidak dikenali: ') + kodeAset, res.ditemukan ? 'success' : 'error');
+    refreshOpnameResult();
+  }).withFailureHandler(function(e){ showToast(e.message, 'error'); }).scanOpname({ idSesi: currentSesiOpname, kodeAset: kodeAset });
+}
+function submitManualScan() {
+  var kode = val('opnameManualKode');
+  if (!kode) return;
+  handleScanResult(kode);
+  document.getElementById('opnameManualKode').value = '';
+}
+function refreshOpnameResult() {
+  if (!currentSesiOpname) return;
+  google.script.run.withSuccessHandler(function(hasil){
+    document.getElementById('opnTotalScan').textContent = hasil.totalScan;
+    document.getElementById('opnFound').textContent = hasil.totalDitemukan;
+    document.getElementById('opnAccuracy').textContent = hasil.akurasi + '%';
+    var wrap = document.getElementById('opnameResultList');
+    wrap.innerHTML = '';
+    hasil.scanned.slice().reverse().forEach(function(s){
+      wrap.innerHTML += '<div class="row-line"><span>' + s.kodeAset + (s.ditemukan==='Y' ? ' ✓' : ' ✕') + '</span><span>' + formatTime(s.waktu) + '</span></div>';
+    });
+  }).getHasilOpname(currentSesiOpname);
+}
+
+/* ================= MAINTENANCE ================= */
+function prefillMaintenance(kode) {
+  document.getElementById('mtnKodeAset').value = kode;
+  openModal('modalMaintenance');
+}
+function submitMaintenance() {
+  var payload = {
+    kodeAset: val('mtnKodeAset'), tglServis: val('mtnTglServis'), jenis: val('mtnJenis'),
+    biaya: val('mtnBiaya'), vendor: val('mtnVendor'), catatan: val('mtnCatatan'), tglServisBerikutnya: val('mtnTglBerikutnya')
+  };
+  if (!payload.kodeAset || !payload.tglServis) { showToast('Kode aset & tanggal servis wajib diisi', 'error'); return; }
+  google.script.run.withSuccessHandler(function(){
+    showToast(t('toast_saved')); closeModal('modalMaintenance'); refreshMaintenanceTable(); refreshMaintenanceBadge();
+  }).withFailureHandler(function(e){ showToast(e.message, 'error'); }).addMaintenance(payload);
+}
+function refreshMaintenanceTable() {
+  google.script.run.withSuccessHandler(function(list){
+    var tbody = document.querySelector('#tableMaintenance tbody');
+    tbody.innerHTML = '';
+    list.forEach(function(m){
+      tbody.innerHTML += '<tr><td>' + m.kodeAset + '</td><td>' + fmtDate(m.tglServis) + '</td><td>' + m.jenis + '</td>' +
+        '<td>Rp ' + Number(m.biaya||0).toLocaleString('id-ID') + '</td><td>' + m.vendor + '</td><td>' + fmtDate(m.tglBerikutnya) + '</td></tr>';
+    });
+    if (list.length === 0) tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted);">Belum ada data.</td></tr>';
+  }).getMaintenanceList();
+
+  google.script.run.withSuccessHandler(function(due){
+    var wrap = document.getElementById('maintenanceDueList');
+    wrap.innerHTML = '';
+    due.forEach(function(d){
+      wrap.innerHTML += '<div class="row-line"><span>' + d.kodeAset + '</span>' +
+        '<span><span class="badge ' + (d.overdue ? 'overdue' : 'upcoming') + '">' + fmtDate(d.tglBerikutnya) + '</span></span></div>';
+    });
+    if (due.length === 0) wrap.innerHTML = '<p style="color:var(--muted);font-size:13px;">Tidak ada jadwal servis mendatang.</p>';
+  }).getMaintenanceDueSoon();
+}
+function refreshMaintenanceBadge() {
+  google.script.run.withSuccessHandler(function(due){
+    var badge = document.getElementById('badgeMaintenance');
+    if (due.length > 0) { badge.textContent = due.length; badge.classList.remove('hidden'); }
+    else badge.classList.add('hidden');
+  }).getMaintenanceDueSoon();
+}
+
+/* ================= DEPRESIASI ================= */
+function jalankanDepresiasi() {
+  google.script.run.withSuccessHandler(function(res){
+    showToast((currentLang==='id' ? 'Depresiasi periode ' + res.periode + ' selesai, ' + res.jumlahDiproses + ' aset diproses.' : 'Depreciation for ' + res.periode + ' complete, ' + res.jumlahDiproses + ' assets processed.'));
+    refreshDepresiasiPage();
+  }).withFailureHandler(function(e){ showToast(e.message, 'error'); }).hitungDepresiasiBulanan();
+}
+function refreshDepresiasiPage() {
+  var hotel = document.getElementById('hotelSelector').value;
+  google.script.run.withSuccessHandler(function(sum){
+    document.getElementById('depAwal').textContent = 'Rp ' + Number(sum.totalHargaAwal).toLocaleString('id-ID');
+    document.getElementById('depSusut').textContent = 'Rp ' + Number(sum.totalPenyusutan).toLocaleString('id-ID');
+    document.getElementById('depBuku').textContent = 'Rp ' + Number(sum.totalNilaiBuku).toLocaleString('id-ID');
+  }).getDepresiasiSummary(hotel || null);
+
+  google.script.run.withSuccessHandler(function(list){
+    var tbody = document.querySelector('#tableDepresiasi tbody');
+    tbody.innerHTML = '';
+    list.forEach(function(d){
+      tbody.innerHTML += '<tr><td>' + d.kode + '</td><td>' + d.periode + '</td>' +
+        '<td>Rp ' + Number(d.nilaiAwal).toLocaleString('id-ID') + '</td>' +
+        '<td>Rp ' + Number(d.penyusutan).toLocaleString('id-ID') + '</td>' +
+        '<td>Rp ' + Number(d.nilaiBuku).toLocaleString('id-ID') + '</td><td>' + d.metode + '</td></tr>';
+    });
+    if (list.length === 0) tbody.innerHTML = '<tr><td colspan="6" style="color:var(--muted);">Belum ada perhitungan depresiasi.</td></tr>';
+  }).getDepresiasiLogList(100);
+}
+
+/* ================= WRITE-OFF (FASE 5) ================= */
+function prefillWriteOff(kode) {
+  document.getElementById('woKodeAset').value = kode;
+  openModal('modalWriteOff');
+}
+function submitWriteOff() {
+  var payload = {
+    kodeAset: val('woKodeAset'), alasan: val('woAlasan'),
+    fotoBase64: photoBase64Store['woPhotoPreview'] || '', fotoName: 'writeoff_' + new Date().getTime() + '.jpg'
+  };
+  if (!payload.kodeAset || !payload.alasan) { showToast('Kode aset & alasan wajib diisi', 'error'); return; }
+  google.script.run.withSuccessHandler(function(res){
+    if (res.success) { showToast(t('toast_saved')); closeModal('modalWriteOff'); refreshWriteOffList(); }
+    else showToast(res.message || t('toast_error'), 'error');
+  }).withFailureHandler(function(e){ showToast(e.message, 'error'); }).ajukanWriteOff(payload);
+}
+function refreshWriteOffList() {
+  google.script.run.withSuccessHandler(function(list){
+    var wrap = document.getElementById('writeoffCards');
+    wrap.innerHTML = '';
+    list.forEach(function(w){
+      var stepClass = function(s){ return s === 'Disetujui' ? 'done' : (s === 'Ditolak' ? 'rejected' : 'pending'); };
+      var baLink = w.linkBa ? '<a href="' + w.linkBa + '" target="_blank" class="neu-btn small">📄 Lihat BA (' + w.nomorBa + ')</a>' : '';
+      wrap.innerHTML += '<div class="neu-card" style="padding:20px;margin-bottom:14px;">' +
+        '<div class="toolbar" style="margin-bottom:6px;"><h3 style="font-size:14px;">' + w.kodeAset + '</h3>' +
+        '<span style="font-size:11px;color:var(--muted);">' + formatTime(w.tglPengajuan) + '</span></div>' +
+        '<p style="font-size:12px;color:var(--muted);margin-bottom:8px;">' + w.alasan + '</p>' +
+        '<div class="stepper">' +
+          '<div class="step ' + stepClass(w.statusDept) + '">Dept: ' + w.statusDept + '</div>' +
+          '<div class="step ' + stepClass(w.statusGm) + '">GM: ' + w.statusGm + '</div>' +
+          '<div class="step ' + stepClass(w.statusFinance) + '">Finance: ' + w.statusFinance + '</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+          (w.statusDept === 'Pending' ? '<button class="neu-btn small" onclick="approveWo(\''+w.id+'\',\'dept\',\'Disetujui\')">✓ Approve Dept</button>' : '') +
+          (w.statusDept === 'Disetujui' && w.statusGm === 'Pending' ? '<button class="neu-btn small" onclick="approveWo(\''+w.id+'\',\'gm\',\'Disetujui\')">✓ Approve GM</button>' : '') +
+          (w.statusGm === 'Disetujui' && w.statusFinance === 'Pending' ? '<button class="neu-btn small" onclick="approveWo(\''+w.id+'\',\'finance\',\'Disetujui\')">✓ Approve Finance</button>' : '') +
+          baLink +
+        '</div></div>';
+    });
+    if (list.length === 0) wrap.innerHTML = '<p style="color:var(--muted);font-size:13px;">Belum ada pengajuan write-off.</p>';
+  }).getWriteOffList();
+}
+function approveWo(id, tahap, keputusan) {
+  google.script.run.withSuccessHandler(function(res){
+    if (res.success) { showToast(t('toast_saved')); refreshWriteOffList(); refreshAsetTable(); }
+    else showToast(res.message, 'error');
+  }).withFailureHandler(function(e){ showToast(e.message, 'error'); }).approveWriteOff(id, tahap, keputusan);
+}
+
+/* ================= LAPORAN GABUNGAN (FASE 5) ================= */
+function setSortLaporan(mode, el) {
+  sortLaporanMode = mode;
+  document.querySelectorAll('#page-laporan .sort-row button').forEach(function(b){ b.classList.remove('selected'); });
+  el.classList.add('selected');
+  refreshLaporanGabungan();
+}
+function refreshLaporanGabungan() {
+  google.script.run.withSuccessHandler(function(list){
+    var tbody = document.querySelector('#tableLaporan tbody');
+    tbody.innerHTML = '';
+    list.forEach(function(r){
+      tbody.innerHTML += '<tr><td>' + r.sumber + '</td><td>' + r.kode + '</td><td>' + r.nama + '</td><td>' + fmtDate(r.tglInput) + '</td></tr>';
+    });
+    if (list.length === 0) tbody.innerHTML = '<tr><td colspan="4" style="color:var(--muted);">Belum ada data.</td></tr>';
+  }).getGabunganSemuaInput(sortLaporanMode);
+}
+
+/* ================= SUBMIT FORMS (FASE 1) ================= */
+function submitAset() {
+  var payload = {
+    nama: val('asetNama'), kategori: val('asetKategori'), brand: val('asetBrand'), serial: val('asetSerial'),
+    harga: val('asetHarga'), vendor: val('asetVendor'), hotel: val('asetHotel'), departemen: val('asetDept'),
+    gedung: val('asetGedung'), lantai: val('asetLantai'), ruangan: val('asetRuangan'), umur: val('asetUmur'),
+    tglBeli: new Date().toISOString(), metodeDepresiasi: val('asetMetodeDepresiasi'),
+    fotoBase64: photoBase64Store['asetPhotoPreview'] || '', fotoName: 'aset_' + new Date().getTime() + '.jpg'
+  };
+  if (!payload.nama) { showToast('Nama aset wajib diisi', 'error'); return; }
+  google.script.run.withSuccessHandler(function(res){
+    showToast(t('toast_saved')); closeModal('modalAset'); refreshAsetTable(); refreshDashboard();
+  }).withFailureHandler(function(e){ showToast(e.message, 'error'); }).addAset(payload);
+}
+function submitLokasi() {
+  var payload = { hotel: val('lokasiHotel'), gedung: val('lokasiGedung'), lantai: val('lokasiLantai'), ruangan: val('lokasiRuangan') };
+  google.script.run.withSuccessHandler(function(){
+    showToast(t('toast_saved')); closeModal('modalLokasi'); refreshLokasiTable();
+  }).withFailureHandler(function(e){ showToast(e.message, 'error'); }).addLokasi(payload);
+}
+function submitUser() {
+  var payload = {
+    email: val('userEmail'), nama: val('userNama'), role: val('userRole'), hotelAkses: val('userHotel'),
+    fotoBase64: photoBase64Store['userPhotoPreview'] || '', fotoName: 'user_' + new Date().getTime() + '.jpg'
+  };
+  if (!payload.email || !payload.nama) { showToast('Email & nama wajib diisi', 'error'); return; }
+  google.script.run.withSuccessHandler(function(res){
+    if (res.success) { showToast(t('toast_saved')); closeModal('modalUser'); refreshUserTable(); }
+    else showToast(res.message, 'error');
+  }).withFailureHandler(function(e){ showToast(e.message, 'error'); }).addUser(payload);
+}
+function submitHotel() {
+  var payload = {
+    kode: val('hotelKode'), nama: val('hotelNama'), alamat: val('hotelAlamat'),
+    fotoBase64: photoBase64Store['hotelPhotoPreview'] || '', fotoName: 'hotel_' + new Date().getTime() + '.jpg'
+  };
+  if (!payload.kode || !payload.nama) { showToast('Kode & nama unit wajib diisi', 'error'); return; }
+  google.script.run.withSuccessHandler(function(res){
+    if (res.success) {
+      showToast(t('toast_saved')); closeModal('modalHotel');
+      syncAppData(function(sync){
+        applyHotelMasterData(sync && sync.hotels ? sync.hotels : appCache.hotels);
+      }, true);
+    } else showToast(res.message, 'error');
+  }).withFailureHandler(function(e){ showToast(e.message, 'error'); }).addHotel(payload);
+}
+
+function val(id) { return document.getElementById(id).value; }
+
+/* ================= INIT ================= */
+// Guard: mencegah "Uncaught ReferenceError: google is not defined".
+// Objek `google.script.run` HANYA tersedia saat file ini dijalankan sebagai
+// GAS Web App (dibuka lewat URL /exec hasil Deploy), BUKAN saat file HTML
+// ini dibuka langsung di browser (mis. double-click file, atau preview lokal).
+function isGasEnvironment() {
+  return (typeof google !== 'undefined' && google.script && typeof google.script.run === 'object');
+}
+window.onload = function() {
+  setLanguage(currentLang);
+  tickClock();
+  if (!isGasEnvironment()) {
+    document.getElementById('view-login').innerHTML =
+      '<div style="margin:auto;max-width:480px;padding:40px;text-align:center;">' +
+      '<h2 style="margin-bottom:12px;">⚠ Halaman ini harus dibuka lewat URL Web App</h2>' +
+      '<p style="color:var(--muted);font-size:14px;line-height:1.6;">File Index.html ini hanya berfungsi penuh jika dijalankan melalui ' +
+      'Google Apps Script (Deploy → New deployment → Web app), lalu dibuka lewat URL <code>.../exec</code> yang dihasilkan. ' +
+      'Membuka file ini langsung di browser (double-click / drag-drop) tidak menyediakan koneksi ke Spreadsheet & Drive, ' +
+      'sehingga menyebabkan error <code>google is not defined</code>.</p></div>';
+    console.error('HAIMS: google.script.run tidak tersedia — file ini tidak dijalankan sebagai GAS Web App.');
+    return;
+  }
+  syncAppData(function(){ requestSessionCheck(); }, true);
+};
+</script>
+</body>
+</html>
