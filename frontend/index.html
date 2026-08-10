@@ -1,0 +1,2834 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>HAIMS — Hotel Asset Inventory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Lexend:wght@300;400;500;600&family=Amatic+SC:wght@400;700&family=Playfair+Display:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+<style>
+/* ========================== TOKEN — NEUMORPHISM "WARM SAND" ========================== */
+:root{
+  --bg:#eee6da; --sh:#cbc0af; --hl:#fffdf8; --soft:#e7ded0;
+  --ac:#a8794a; --acInk:#fff8ef;
+  --ink:#4a3f33; --ink2:#7f7060;
+  --danger:#a8483c; --ok:#4d7c53; --warn:#a87a2c;
+  --font:'Comfortaa'; --mono:'IBM Plex Mono';
+  --r:22px; --r2:14px;
+  --e-out:9px 9px 20px var(--sh), -9px -9px 20px var(--hl);
+  --e-out-sm:5px 5px 12px var(--sh), -5px -5px 12px var(--hl);
+  --e-in:inset 5px 5px 11px var(--sh), inset -5px -5px 11px var(--hl);
+  --e-in-sm:inset 3px 3px 7px var(--sh), inset -3px -3px 7px var(--hl);
+}
+html[data-theme="dark"]{
+  --bg:#2b2620; --sh:#1d1913; --hl:#3a342b; --soft:#332d25;
+  --ac:#cb9c66; --acInk:#241a10;
+  --ink:#ece3d6; --ink2:#a99b88;
+  --danger:#d4796c; --ok:#7fae86; --warn:#cfa752;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:var(--font),'Lexend',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased; font-size:14px; line-height:1.55;
+}
+button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:14px;color:inherit;border:0;background:none;outline:none;width:100%}
+[hidden]{display:none !important}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--sh);border-radius:99px;border:3px solid var(--bg)}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.mono{font-family:var(--mono),monospace}
+.muted{color:var(--ink2)}
+.tiny{font-size:11.5px}
+.center{text-align:center}
+.row{display:flex;align-items:center}
+.gap6{gap:6px}.gap10{gap:10px}.gap14{gap:14px}.gap20{gap:20px}
+.between{justify-content:space-between}
+.wrap{flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+
+/* ========================== KOMPONEN NEUMORFIK ========================== */
+.raise{background:var(--bg);box-shadow:var(--e-out);border-radius:var(--r)}
+.raise-sm{background:var(--bg);box-shadow:var(--e-out-sm);border-radius:var(--r2)}
+.inset{background:var(--bg);box-shadow:var(--e-in);border-radius:var(--r2)}
+.inp{
+  background:var(--bg);box-shadow:var(--e-in);border-radius:var(--r2);
+  height:46px;padding:0 15px;font-size:13.5px;color:var(--ink);
+}
+select.inp{appearance:none;padding-right:34px;
+  background-image:linear-gradient(45deg,transparent 50%,var(--ink2) 50%),linear-gradient(135deg,var(--ink2) 50%,transparent 50%);
+  background-position:calc(100% - 19px) 21px,calc(100% - 14px) 21px;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+textarea.inp{height:auto;min-height:84px;padding:12px 15px;resize:vertical;line-height:1.5}
+.fld{display:block;margin-bottom:14px}
+.fld>span{display:block;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;
+  font-family:var(--mono),monospace;color:var(--ink2);margin-bottom:7px}
+.btn{
+  background:var(--ac);color:var(--acInk);box-shadow:var(--e-out-sm);border-radius:var(--r2);
+  height:48px;padding:0 22px;font-weight:600;font-size:14px;display:inline-flex;align-items:center;
+  justify-content:center;gap:9px;transition:transform .12s,box-shadow .12s
+}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(1px);box-shadow:var(--e-in-sm)}
+.btn.ghost{background:var(--bg);color:var(--ink)}
+.btn.danger{background:var(--danger);color:#fff}
+.btn.sm{height:38px;padding:0 15px;font-size:12.5px;border-radius:11px}
+.btn.block{width:100%}
+.ico{
+  width:40px;height:40px;border-radius:12px;background:var(--bg);box-shadow:var(--e-out-sm);
+  display:grid;place-items:center;font-size:15px;flex:none;transition:box-shadow .12s
+}
+.ico:active{box-shadow:var(--e-in-sm)}
+.tag{
+  display:inline-block;padding:5px 11px;border-radius:9px;font-size:10.5px;letter-spacing:.06em;
+  font-family:var(--mono),monospace;background:var(--bg);box-shadow:var(--e-in-sm);white-space:nowrap
+}
+.tag.ok{color:var(--ok)}.tag.warn{color:var(--warn)}.tag.bad{color:var(--danger)}
+.seg{display:flex;gap:5px;padding:5px;border-radius:13px;background:var(--bg);box-shadow:var(--e-in)}
+.seg button{flex:1;padding:9px 12px;border-radius:9px;font-size:12.5px;color:var(--ink2)}
+.seg button.on{color:var(--ink);background:var(--bg);box-shadow:var(--e-out-sm)}
+.divider{display:flex;align-items:center;gap:12px;color:var(--ink2);font-size:10.5px;
+  letter-spacing:.14em;text-transform:uppercase;font-family:var(--mono),monospace;margin:20px 0}
+.divider::before,.divider::after{content:"";flex:1;height:2px;border-radius:2px;box-shadow:var(--e-in-sm)}
+.avatar{width:38px;height:38px;border-radius:50%;flex:none;background:var(--ac);color:var(--acInk);
+  display:grid;place-items:center;font-weight:600;font-size:13px;box-shadow:var(--e-out-sm);
+  object-fit:cover;overflow:hidden}
+img.avatar{padding:0}
+.logo{width:44px;height:44px;border-radius:14px;background:var(--ac);color:var(--acInk);flex:none;
+  display:grid;place-items:center;font-weight:700;font-size:17px;box-shadow:var(--e-out-sm)}
+.link{color:var(--ac);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.lbl{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;font-family:var(--mono),monospace;color:var(--ink2)}
+
+/* ========================== GATE (buka lewat /exec) ========================== */
+#gate{min-height:100vh;display:grid;place-items:center;padding:28px}
+#gate .raise{max-width:560px;padding:38px}
+
+/* ========================== BOOT ========================== */
+#boot{min-height:100vh;display:grid;place-items:center;gap:16px}
+.spin{width:46px;height:46px;border-radius:50%;box-shadow:var(--e-out-sm);
+  border:3px solid transparent;border-top-color:var(--ac);animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:3s}}
+
+/* ========================== LOGIN — SPLIT SCREEN 50:50 ========================== */
+#auth{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+.pane-brand{position:relative;overflow:hidden;background:var(--soft);
+  display:flex;flex-direction:column;justify-content:space-between;padding:46px}
+.pane-brand::after{content:"";position:absolute;width:520px;height:520px;border-radius:50%;
+  right:-190px;bottom:-210px;background:var(--bg);box-shadow:var(--e-out);opacity:.6}
+.pane-brand>*{position:relative;z-index:1}
+.hero{font-weight:700;font-size:clamp(30px,3.4vw,44px);line-height:1.14;letter-spacing:-.02em}
+.hero small{display:block;font-family:'Lexend',sans-serif;font-weight:400;font-size:14.5px;
+  line-height:1.65;color:var(--ink2);margin-top:18px;letter-spacing:0;max-width:38ch}
+.stats{display:flex;gap:12px;flex-wrap:wrap}
+.stat{padding:13px 16px;border-radius:15px;background:var(--bg);box-shadow:var(--e-out-sm);min-width:112px}
+.stat b{display:block;font-family:var(--mono),monospace;font-size:18px;font-weight:500}
+.stat span{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);font-family:var(--mono),monospace}
+.pane-form{display:grid;place-items:center;padding:46px 40px}
+.pane-form .card{width:100%;max-width:430px;padding:38px;background:var(--bg);
+  box-shadow:14px 14px 32px var(--sh),-14px -14px 32px var(--hl);border-radius:28px}
+.card h2{font-size:25px;font-weight:700;letter-spacing:-.02em}
+.card p.sub{color:var(--ink2);font-size:13px;margin-top:8px;line-height:1.6}
+.card .body{margin-top:26px}
+@media (max-width:920px){
+  #auth{grid-template-columns:1fr}
+  .pane-brand{padding:30px 24px;gap:24px}
+  .pane-brand .hero{font-size:27px}
+  .pane-brand .hero small{display:none}
+  .pane-brand::after{display:none}
+  .pane-form{padding:24px}
+  .pane-form .card{padding:26px;border-radius:22px}
+}
+
+/* ========================== SHELL APLIKASI ========================== */
+#app{min-height:100vh;display:flex}
+#sidebar{
+  width:250px;flex:none;padding:22px 16px;background:var(--soft);
+  display:flex;flex-direction:column;gap:20px;position:sticky;top:0;height:100vh;overflow-y:auto
+}
+.brandrow{display:flex;align-items:center;gap:12px;padding:0 6px}
+.brandrow b{font-size:17px;font-weight:700;letter-spacing:-.01em;display:block}
+.brandrow span{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink2);font-family:var(--mono),monospace}
+.nav{display:flex;flex-direction:column;gap:5px}
+.nav button{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:13px;
+  font-size:13.5px;color:var(--ink2);text-align:left;width:100%}
+.nav button i{font-style:normal;width:18px;text-align:center;font-size:14px}
+.nav button:hover{color:var(--ink)}
+.nav button.on{color:var(--ink);background:var(--bg);box-shadow:var(--e-out-sm)}
+.nav .badge{margin-left:auto;font-family:var(--mono),monospace;font-size:10px;padding:3px 7px;
+  border-radius:7px;background:var(--ac);color:var(--acInk)}
+.submenu{display:flex;flex-direction:column;gap:3px;margin:4px 0 6px 12px;padding-left:12px;
+  border-left:2px solid var(--sh)}
+.submenu button{padding:8px 11px;border-radius:10px;font-size:12.5px}
+.sidefoot{margin-top:auto;padding:14px;border-radius:16px;background:var(--bg);box-shadow:var(--e-out-sm)}
+#scrim{position:fixed;inset:0;background:rgba(30,24,18,.45);z-index:55;display:none}
+#scrim.on{display:block}
+
+.mainwrap{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;gap:12px;padding:18px 26px;flex-wrap:wrap}
+.topbar h1{font-size:19px;font-weight:700;letter-spacing:-.01em}
+.topbar .sub{font-size:11.5px;color:var(--ink2)}
+#clock{font-family:var(--mono),monospace;font-size:12.5px;padding:9px 13px;border-radius:11px;
+  background:var(--bg);box-shadow:var(--e-out-sm);white-space:nowrap}
+#hamb{display:none}
+main{padding:6px 26px 40px;display:flex;flex-direction:column;gap:18px}
+
+/* kartu & panel */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.kpi{padding:18px;border-radius:18px;background:var(--bg);box-shadow:var(--e-out-sm);
+  display:flex;flex-direction:column;gap:5px}
+.kpi u{text-decoration:none;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink2);font-family:var(--mono),monospace}
+.kpi b{font-family:var(--mono),monospace;font-size:24px;font-weight:500;letter-spacing:-.02em}
+.kpi em{font-style:normal;font-size:11px;color:var(--ink2)}
+.panel{padding:22px;border-radius:20px;background:var(--bg);box-shadow:var(--e-out)}
+.panel>header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.panel>header h3{font-size:15px;font-weight:600}
+.panel>header .lbl{white-space:nowrap}
+.grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+.bars{display:flex;align-items:flex-end;gap:10px;height:170px;padding-bottom:22px}
+.bars .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;position:relative}
+.bars .bar{border-radius:9px 9px 5px 5px;background:var(--ac);box-shadow:var(--e-out-sm);min-height:4px}
+.bars .col span{position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-size:9.5px;
+  color:var(--ink2);font-family:var(--mono),monospace}
+.bars .col em{position:absolute;top:-18px;left:0;right:0;text-align:center;font-size:9.5px;
+  font-style:normal;color:var(--ink2);font-family:var(--mono),monospace}
+.deptlist{display:flex;flex-direction:column;gap:9px;max-height:330px;overflow:auto}
+.deptlist div{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:12px;
+  background:var(--bg);box-shadow:var(--e-in-sm);font-size:12.5px}
+.deptlist b{margin-left:auto;font-family:var(--mono),monospace;font-weight:500}
+
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:720px}
+th{text-align:left;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);
+  font-weight:500;font-family:var(--mono),monospace;padding:0 12px 12px 0;white-space:nowrap}
+td{padding:12px 12px 12px 0;border-top:1px solid var(--sh);vertical-align:middle}
+tr:hover td{background:var(--soft)}
+td .rowact{display:flex;gap:7px}
+.empty{padding:40px 20px;text-align:center;color:var(--ink2);font-size:13px}
+.thumb{width:38px;height:38px;border-radius:11px;object-fit:cover;box-shadow:var(--e-out-sm);flex:none}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.toolbar .inp{height:42px}
+.toolbar .search{flex:1;min-width:190px}
+.toolbar .sortsel{width:170px}
+
+/* modal */
+#modal{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:20px;
+  background:rgba(35,28,20,.5);overflow:auto}
+#modal .box{width:100%;max-width:620px;background:var(--bg);border-radius:26px;padding:30px;
+  box-shadow:16px 16px 34px var(--sh),-16px -16px 34px var(--hl);margin:auto}
+#modal h3{font-size:19px;font-weight:700;letter-spacing:-.01em}
+#modal .mbody{margin:22px 0}
+#modal .mfoot{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.grid-f{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.grid-f .full{grid-column:1/-1}
+.fileline{display:flex;align-items:center;gap:12px}
+.fileline .prev{width:52px;height:52px;border-radius:14px;box-shadow:var(--e-in-sm);object-fit:cover;flex:none}
+/* Kolom "Choose File" bawaan browser tidak mengikuti tema neumorphic — input
+   aslinya disembunyikan (opacity 0) tapi tetap menutupi seluruh area supaya
+   klik di mana saja pada kotak tetap membuka dialog file, lalu diganti
+   tampilan kotak sunken yang sama dengan .inp lainnya. */
+.filewrap{position:relative;flex:1;min-width:0}
+.filewrap input[type="file"]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:2}
+.filewrap .fbtn{
+  height:46px;border-radius:14px;background:var(--bg);box-shadow:var(--e-in);
+  display:flex;align-items:center;gap:10px;padding:0 15px;font-size:12.5px;color:var(--ink2);
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis
+}
+.filewrap .fbtn i{font-style:normal;opacity:.65;flex:none;font-size:14px}
+.filewrap:hover .fbtn{box-shadow:var(--e-in-sm)}
+
+/* toast */
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:120;
+  display:flex;flex-direction:column;gap:9px;align-items:center;pointer-events:none}
+#toast div{padding:13px 20px;border-radius:14px;background:var(--bg);box-shadow:var(--e-out);
+  font-size:13px;max-width:88vw}
+#toast div.err{color:var(--danger)}
+#toast div.ok{color:var(--ok)}
+
+/* settings */
+.setgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.listcard{display:flex;align-items:center;gap:12px;padding:13px;border-radius:15px;
+  background:var(--bg);box-shadow:var(--e-out-sm)}
+.listcard .grow b{display:block;font-size:13px}
+.listcard .grow span{font-size:11px;color:var(--ink2)}
+
+/* FASE 5 — Write-Off, Notifikasi Bel, Laporan Gabungan */
+.bellwrap{position:relative}
+.bellbadge{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;border-radius:99px;
+  background:var(--danger);color:#fff;font-size:9px;font-family:var(--mono),monospace;
+  display:flex;align-items:center;justify-content:center;padding:0 4px}
+.notifpanel{position:absolute;top:calc(100% + 10px);right:0;width:300px;z-index:70;
+  background:var(--bg);border-radius:18px;box-shadow:16px 16px 34px var(--sh),-16px -16px 34px var(--hl);
+  padding:10px;display:flex;flex-direction:column;gap:6px}
+.notifpanel h5{font-family:'Comfortaa';font-size:12.5px;font-weight:600;padding:6px 8px 4px}
+.notifitem{display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:12px;font-size:12.5px;
+  background:var(--bg);box-shadow:var(--e-in-sm);text-align:left;width:100%}
+.notifitem b{margin-left:auto;font-family:var(--mono),monospace;color:var(--danger)}
+.notifempty{padding:16px 10px;text-align:center;color:var(--ink2);font-size:12px}
+.stagegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 2px}
+.stagecell{border-radius:11px;padding:8px 9px;background:var(--bg);box-shadow:var(--e-in-sm);font-size:10.5px}
+.stagecell u{text-decoration:none;display:block;font-family:var(--mono),monospace;letter-spacing:.08em;
+  text-transform:uppercase;font-size:9px;color:var(--ink2);margin-bottom:4px}
+.reportbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+
+/* FASE 4 — Stock Opname, Maintenance, Depresiasi */
+.kpis.k6{grid-template-columns:repeat(6,minmax(0,1fr))}
+@media (max-width:1024px){.kpis.k6{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:480px){.kpis.k6{grid-template-columns:1fr 1fr}}
+#reader{width:100%;max-width:420px;border-radius:16px;overflow:hidden;box-shadow:var(--e-in);margin:0 auto}
+#reader video{border-radius:16px}
+.scanrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.scanfeed{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow:auto}
+.scanfeed div{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;background:var(--bg);box-shadow:var(--e-in-sm);font-size:12px}
+.scanfeed b{margin-left:auto;font-family:var(--mono),monospace}
+.bignum{font-family:var(--mono),monospace;font-size:30px;font-weight:500;letter-spacing:-.02em}
+.progwrap{display:flex;flex-direction:column;gap:6px}
+
+/* FASE 2 — baris KPI 5 kolom */
+.kpis.k5{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media (max-width:1024px){.kpis.k5{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.kpis.k5{grid-template-columns:1fr 1fr}}
+.imgfail{display:grid;place-items:center;font-size:11px;opacity:.5}
+
+/* responsif */
+@media (max-width:1024px){
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid2{grid-template-columns:1fr}
+  .setgrid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:900px){
+  #sidebar{position:fixed;left:0;top:0;z-index:60;transform:translateX(-104%);transition:transform .22s ease;
+    box-shadow:14px 0 34px rgba(40,32,24,.28)}
+  #sidebar.open{transform:translateX(0)}
+  #hamb{display:grid}
+  .topbar{padding:14px 16px}
+  main{padding:4px 16px 34px}
+  .panel{padding:17px;border-radius:18px}
+}
+@media (max-width:480px){
+  body{font-size:13.5px}
+  .kpis{grid-template-columns:1fr 1fr;gap:11px}
+  .kpi{padding:14px}
+  .kpi b{font-size:20px}
+  .setgrid{grid-template-columns:1fr}
+  .grid-f{grid-template-columns:1fr}
+  .topbar h1{font-size:17px}
+  #clock{font-size:11px;padding:8px 10px}
+  #modal .box{padding:22px;border-radius:20px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================ GATE: bukan lingkungan GAS ============================ -->
+<div id="gate" hidden>
+  <div class="raise">
+    <div class="row gap14" style="margin-bottom:18px"><div class="logo">H</div>
+      <div><b style="font-size:17px">HAIMS</b><div class="lbl">Hotel Asset Inventory</div></div></div>
+    <h2 style="font-size:20px;font-weight:700;margin-bottom:10px">Buka lewat URL Web App</h2>
+    <p class="muted" style="font-size:13.5px;line-height:1.7">
+      File <b>Index.html</b> ini tidak bisa dijalankan langsung dari komputer atau dari editor Apps Script,
+      karena membutuhkan jembatan <span class="mono">google.script.run</span> ke server.
+    </p>
+    <div class="inset" style="padding:16px;margin-top:18px;font-size:13px;line-height:1.8">
+      1. Di editor Apps Script: <b>Deploy › New deployment › Web app</b><br>
+      2. <b>Execute as:</b> User accessing the web app<br>
+      3. <b>Who has access:</b> sesuai kebijakan hotel<br>
+      4. Buka URL yang berakhiran <span class="mono">/exec</span>
+    </div>
+    <p class="tiny muted" style="margin-top:16px">Setelah kode diubah, buat <b>New version</b> di Manage deployments agar URL /exec ikut ter-update.</p>
+    <p class="tiny mono muted" id="gateDiag" style="margin-top:14px"></p>
+  </div>
+</div>
+
+<!-- ============================ BOOT ============================ -->
+<div id="boot">
+  <div class="spin"></div>
+  <p class="muted tiny mono" id="bootMsg">Menghubungkan ke database…</p>
+</div>
+
+<!-- ============================ LOGIN (SPLIT SCREEN 50:50) ============================ -->
+<div id="auth" hidden>
+  <div class="pane-brand">
+    <div class="row gap14">
+      <div class="logo" id="authLogo">H</div>
+      <div><b id="authBrandName" style="font-size:17px;font-weight:700">HAIMS</b><div class="lbl" data-i18n="brandsub">Hotel Asset Inventory</div></div>
+    </div>
+    <div class="hero"><span id="authHeroTitle" data-i18n="heroTitle">Setiap aset<br>punya jejak.</span>
+      <small id="authHeroSub" data-i18n="heroSub">Catat, pindahkan, dan audit seluruh aset hotel dari satu tempat — lengkap dengan riwayat siapa mengubah apa.</small>
+    </div>
+    <div class="stats">
+      <div class="stat"><b class="mono">11</b><span data-i18n="statDept">Departemen</span></div>
+      <div class="stat"><b class="mono">2</b><span data-i18n="statUnit">Unit hotel</span></div>
+      <div class="stat"><b class="mono">ID·EN</b><span data-i18n="statLang">Bahasa</span></div>
+    </div>
+  </div>
+
+  <div class="pane-form">
+    <!-- LOGIN -->
+    <div class="card" id="cardLogin">
+      <div class="row between gap10" style="align-items:flex-start">
+        <div><h2 data-i18n="loginTitle">Masuk ke HAIMS</h2>
+          <p class="sub" data-i18n="loginSub">Gunakan akun Google hotel Anda. Kata sandi hanya diminta bila akun Anda sudah menetapkannya.</p></div>
+      </div>
+      <div class="seg" style="margin-top:20px;max-width:170px" id="langSeg">
+        <button data-act="lang" data-lang="id">ID</button>
+        <button data-act="lang" data-lang="en">EN</button>
+      </div>
+      <div class="body">
+        <label class="fld"><span data-i18n="fEmail">Email kerja</span>
+          <input class="inp" id="liEmail" type="email" autocomplete="username" placeholder="nama@hotel.com"></label>
+        <label class="fld"><span data-i18n="fPass">Kata sandi</span>
+          <input class="inp" id="liPass" type="password" autocomplete="current-password" placeholder="••••••••"></label>
+        <p class="tiny muted" id="liPassHint" hidden style="margin:-8px 0 10px" data-i18n="passOptionalHint">Akun ini belum menetapkan kata sandi — kosongkan kolom di atas lalu tekan Masuk.</p>
+        <div class="row between" style="margin:4px 0 20px">
+          <span class="tiny muted link" data-act="toOtp" data-i18n="forgot">Lupa kata sandi?</span>
+          <span class="tiny muted mono" id="liSession">—</span>
+        </div>
+        <button class="btn block" data-act="login" data-i18n="btnLogin">Masuk</button>
+        <div class="divider" data-i18n="or">atau</div>
+        <button class="btn ghost block" data-act="google" data-i18n="btnGoogle">Lanjut dengan akun Google</button>
+        <p class="tiny muted center" style="margin-top:18px" data-i18n="noAccess">Belum punya akses? Masuk dengan Google, lalu lengkapi registrasi.</p>
+      </div>
+    </div>
+
+    <!-- REGISTRASI -->
+    <div class="card" id="cardRegister" hidden>
+      <h2 data-i18n="regTitle">Lengkapi registrasi</h2>
+      <p class="sub" data-i18n="regSub">Akun Google Anda belum terdaftar. Isi data berikut, lalu Admin akan mengaktifkan akses Anda.</p>
+      <div class="body">
+        <div class="inset tiny mono" style="padding:12px 14px;margin-bottom:16px" id="regEmail">—</div>
+        <label class="fld"><span data-i18n="fName">Nama lengkap</span><input class="inp" id="rgNama" placeholder="Nama sesuai data HR"></label>
+        <label class="fld"><span data-i18n="fUnit">Unit hotel</span><select class="inp" id="rgUnit"></select></label>
+        <label class="fld"><span data-i18n="fDept">Departemen</span><select class="inp" id="rgDept"></select></label>
+        <label class="fld"><span data-i18n="fPassOpt">Kata sandi (opsional)</span>
+          <input class="inp" id="rgPass" type="password" placeholder="••••••••"></label>
+        <label class="fld"><span data-i18n="fPhoto">Foto (opsional)</span>
+          <div class="fileline"><img class="prev" id="rgPrev" alt="" hidden>
+            <div class="filewrap"><input id="rgFoto" type="file" accept="image/*">
+              <div class="fbtn"><i>📷</i><span id="rgFotoTxt" data-i18n="fChoose">Pilih foto…</span></div>
+            </div></div></label>
+        <button class="btn block" data-act="register" data-i18n="btnRegister">Kirim registrasi</button>
+        <p class="tiny muted center" style="margin-top:16px"><span class="link" data-act="toLogin" data-i18n="backLogin">Kembali ke halaman masuk</span></p>
+      </div>
+    </div>
+
+    <!-- OTP: minta kode -->
+    <div class="card" id="cardOtp" hidden>
+      <h2 data-i18n="otpTitle">Kirim kode akses</h2>
+      <p class="sub" data-i18n="otpSub">Kami kirim kode 6 angka ke email Anda. Kode berlaku 10 menit dan dipakai untuk menetapkan kata sandi baru.</p>
+      <div class="body">
+        <label class="fld"><span data-i18n="fEmail">Email kerja</span><input class="inp" id="otEmail" type="email" placeholder="nama@hotel.com"></label>
+        <button class="btn block" data-act="otpSend" data-i18n="btnOtpSend">Kirim kode</button>
+        <p class="tiny muted center" style="margin-top:16px"><span class="link" data-act="toLogin" data-i18n="backLogin">Kembali ke halaman masuk</span></p>
+      </div>
+    </div>
+
+    <!-- OTP: verifikasi -->
+    <div class="card" id="cardOtpVerify" hidden>
+      <h2 data-i18n="otpvTitle">Masukkan kode</h2>
+      <p class="sub" data-i18n="otpvSub">Cek kotak masuk email Anda, lalu tetapkan kata sandi baru untuk masuk.</p>
+      <div class="body">
+        <label class="fld"><span data-i18n="fOtp">Kode 6 angka</span>
+          <input class="inp mono" id="ovCode" inputmode="numeric" maxlength="6" placeholder="000000" style="letter-spacing:.4em;text-align:center;font-size:19px"></label>
+        <label class="fld"><span data-i18n="fNewPass">Kata sandi baru</span><input class="inp" id="ovPass" type="password" placeholder="••••••••"></label>
+        <button class="btn block" data-act="otpVerify" data-i18n="btnOtpVerify">Verifikasi &amp; masuk</button>
+        <p class="tiny muted center" style="margin-top:16px"><span class="link" data-act="otpSend" data-i18n="resend">Kirim ulang kode</span></p>
+      </div>
+    </div>
+
+    <!-- PENDING -->
+    <div class="card" id="cardPending" hidden>
+      <h2 data-i18n="pendTitle">Menunggu aktivasi</h2>
+      <p class="sub" data-i18n="pendSub">Registrasi Anda sudah masuk. Admin akan mengaktifkan akses lewat menu Add User, dan Anda menerima email begitu aktif.</p>
+      <div class="body">
+        <div class="inset tiny mono" style="padding:12px 14px;margin-bottom:18px" id="pendEmail">—</div>
+        <button class="btn ghost block" data-act="recheck" data-i18n="btnRecheck">Periksa ulang status</button>
+      </div>
+    </div>
+
+    <!-- SESI TIDAK TERBACA -->
+    <div class="card" id="cardNoEmail" hidden>
+      <h2 data-i18n="noEmailTitle">Sesi Google tidak terbaca</h2>
+      <p class="sub" data-i18n="noEmailSub">Aplikasi tidak bisa membaca email akun Google Anda. Ini hampir selalu karena pengaturan deployment.</p>
+      <div class="body">
+        <div class="inset" style="padding:16px;font-size:13px;line-height:1.8">
+          Deploy › Manage deployments › Edit<br>
+          <b>Execute as:</b> User accessing the web app<br>
+          <b>Who has access:</b> Anyone with Google account<br>
+          lalu pilih <b>Version: New version</b>.
+        </div>
+        <button class="btn ghost block" style="margin-top:18px" data-act="recheck" data-i18n="btnRecheck">Periksa ulang status</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ APLIKASI ============================ -->
+<div id="app" hidden>
+  <aside id="sidebar">
+    <div class="brandrow">
+      <div class="logo" id="sideLogo">H</div>
+      <div><b id="sideBrandName">HAIMS</b><span data-i18n="brandsub">Hotel Asset Inventory</span></div>
+    </div>
+
+    <div class="nav" id="navMain">
+      <button data-act="nav" data-view="dashboard" class="on"><i>▦</i><span data-i18n="mDash">Dashboard</span></button>
+      <button data-act="navDept"><i>▤</i><span data-i18n="mDept">Departemen</span><span id="deptCaret" style="margin-left:auto">▾</span></button>
+      <div class="submenu" id="deptSubmenu" hidden></div>
+      <button data-act="navMpl"><i>▥</i><span data-i18n="mMpl">MPL Asset</span><span id="mplCaret" style="margin-left:auto">▸</span></button>
+      <div class="submenu" id="mplSubmenu" hidden></div>
+      <button data-act="nav" data-view="mutasi"><i>⇄</i><span data-i18n="mMutasi">Mutasi Aset</span><span class="badge" id="badgeMutasi" hidden>0</span></button>
+      <button data-act="nav" data-view="opname"><i>◎</i><span data-i18n="mOpname">Stock Opname</span></button>
+      <button data-act="nav" data-view="maint"><i>⚒</i><span data-i18n="mMaint">Maintenance</span><span class="badge" id="badgeMaint" hidden>0</span></button>
+      <button data-act="nav" data-view="depr" data-role="full"><i>↓</i><span data-i18n="mDepr">Depresiasi</span></button>
+      <button data-act="nav" data-view="writeoff"><i>⤦</i><span data-i18n="mWriteoff">Write-Off</span><span class="badge" id="badgeWO" hidden>0</span></button>
+      <button data-act="nav" data-view="report"><i>≣</i><span data-i18n="mReport">Laporan Gabungan</span></button>
+      <button data-act="nav" data-view="users" data-role="full"><i>👤</i><span data-i18n="mUsers">Add User</span><span class="badge" id="badgeUsers" hidden>0</span></button>
+      <button data-act="nav" data-view="log" data-role="full"><i>≡</i><span data-i18n="mLog">ActivitiesLog</span></button>
+      <button data-act="nav" data-view="settings" data-role="full"><i>⚙</i><span data-i18n="mSettings">Pengaturan</span></button>
+    </div>
+
+    <div class="sidefoot">
+      <div class="row gap10">
+        <div class="avatar" id="sfAvatar">–</div>
+        <div class="grow" style="min-width:0">
+          <b style="font-size:12.5px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="sfName">—</b>
+          <span class="tiny muted mono" id="sfRole">—</span>
+        </div>
+      </div>
+      <button class="btn ghost sm block" style="margin-top:12px" data-act="logout" data-i18n="btnLogout">Keluar</button>
+    </div>
+  </aside>
+  <div id="scrim"></div>
+
+  <div class="mainwrap">
+    <header class="topbar">
+      <button class="ico" id="hamb" data-act="toggleSidebar" aria-label="Menu">☰</button>
+      <div class="grow" style="min-width:120px">
+        <h1 id="pgTitle">Dashboard</h1>
+        <div class="sub" id="pgSub">—</div>
+      </div>
+      <select class="inp" id="unitSel" style="width:auto;min-width:170px;height:42px"></select>
+      <div class="bellwrap">
+        <button class="ico" id="bellBtn" data-act="toggleNotif" title="Notifikasi">🔔<span class="bellbadge" id="bellBadge" hidden>0</span></button>
+        <div class="notifpanel" id="notifPanel" hidden>
+          <h5 data-i18n="notifTitle">Notifikasi</h5>
+          <div id="notifList"></div>
+        </div>
+      </div>
+      <div id="clock">—</div>
+      <div class="avatar" id="tbAvatar">–</div>
+    </header>
+
+    <main>
+      <!-- DASHBOARD -->
+      <section data-view="dashboard">
+        <div class="kpis k5" style="margin-bottom:18px">
+          <div class="kpi"><u data-i18n="kTotal">Total aset</u><b id="kTotal">0</b><em id="kTotalSub">—</em></div>
+          <div class="kpi"><u data-i18n="kValue">Nilai perolehan</u><b id="kValue">Rp 0</b><em data-i18n="kValueSub">Akumulasi harga beli</em></div>
+          <div class="kpi"><u data-i18n="kService">Perlu servis</u><b id="kService">0</b><em data-i18n="kServiceSub">Kondisi rusak / perlu servis</em></div>
+          <div class="kpi"><u data-i18n="kPending">Registrasi menunggu</u><b id="kPending">0</b><em data-i18n="kPendingSub">Menunggu aktivasi Admin</em></div>
+          <div class="kpi"><u data-i18n="kMpl">Aset MPL</u><b id="kMpl">0</b><em id="kMplSub">—</em></div>
+        </div>
+        <div class="grid2">
+          <div class="panel">
+            <header><h3 data-i18n="pBars">Jumlah aset per sub-departemen</h3><span class="lbl" id="barsUnit">—</span></header>
+            <div class="bars" id="dashBars"></div>
+          </div>
+          <div class="panel">
+            <header><h3 data-i18n="pValue">Nilai aset per sub-departemen</h3><span class="lbl">Rupiah</span></header>
+            <div class="deptlist" id="dashDeptList"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <header><h3 data-i18n="pRecent">Aset terbaru</h3><span class="lbl" data-i18n="pRecentSub">8 entri terakhir</span></header>
+          <div class="tablewrap"><table id="tblRecent"></table></div>
+        </div>
+      </section>
+
+      <!-- DEPARTEMEN -->
+      <section data-view="dept" hidden>
+        <div class="panel">
+          <header>
+            <h3 id="deptTitle">—</h3>
+            <button class="btn sm" data-act="assetNew"><span>＋</span><span data-i18n="btnAsset">Tambah aset</span></button>
+          </header>
+          <div class="toolbar" style="margin-bottom:16px">
+            <input class="inp search" id="assetQ" data-i18n-ph="phSearch" placeholder="Cari kode, nama, merk, lokasi, PIC…">
+            <select class="inp sortsel" id="assetSort">
+              <option value="terbaru" data-i18n="sNewest">Terbaru</option>
+              <option value="terlama" data-i18n="sOldest">Terlama</option>
+              <option value="az">Nama A–Z</option>
+              <option value="za">Nama Z–A</option>
+              <option value="termahal" data-i18n="sPrice">Harga tertinggi</option>
+            </select>
+            <button class="ico" data-act="assetReload" title="Muat ulang">↻</button>
+          </div>
+          <div class="tablewrap"><table id="tblAsset"></table></div>
+        </div>
+      </section>
+
+      <!-- MPL ASSET (FASE 2) -->
+      <section data-view="mpl" hidden>
+        <div class="panel">
+          <header>
+            <h3 id="mplTitle">—</h3>
+            <button class="btn sm" data-act="mplNew"><span>＋</span><span data-i18n="btnMpl">Tambah aset MPL</span></button>
+          </header>
+          <div class="toolbar" style="margin-bottom:16px">
+            <input class="inp search" id="mplQ" data-i18n-ph="phSearchMpl" placeholder="Cari kode, jenis, merk, lokasi, PIC…">
+            <select class="inp sortsel" id="mplSort">
+              <option value="terbaru" data-i18n="sNewest">Terbaru</option>
+              <option value="terlama" data-i18n="sOldest">Terlama</option>
+              <option value="az" data-i18n="sJenisAz">Jenis A–Z</option>
+              <option value="za" data-i18n="sJenisZa">Jenis Z–A</option>
+              <option value="termahal" data-i18n="sPrice">Harga tertinggi</option>
+            </select>
+            <button class="ico" data-act="mplReload" title="Muat ulang">↻</button>
+          </div>
+          <div class="tablewrap"><table id="tblMpl"></table></div>
+        </div>
+      </section>
+
+      <!-- MUTASI ASET (FASE 3) -->
+      <section data-view="mutasi" hidden>
+        <div class="panel">
+          <header>
+            <h3 data-i18n="mutTitle">Pengajuan mutasi aset</h3>
+            <button class="btn ghost sm" data-act="mutReload">↻ <span data-i18n="btnReload">Muat ulang</span></button>
+          </header>
+          <div class="seg" id="mutSeg" style="max-width:440px;margin-bottom:14px">
+            <button data-act="mutFilter" data-f="Pending" class="on" data-i18n="mutPending">Menunggu</button>
+            <button data-act="mutFilter" data-f="Disetujui" data-i18n="mutApproved">Disetujui</button>
+            <button data-act="mutFilter" data-f="Ditolak" data-i18n="mutRejected">Ditolak</button>
+            <button data-act="mutFilter" data-f="Semua" data-i18n="mutAll">Semua</button>
+          </div>
+          <p class="tiny muted" style="margin:0 0 16px" data-i18n="mutNote">Ajukan mutasi dari tombol ↺ pada baris aset di menu Departemen atau MPL Asset. Admin dan Manager memutuskan di sini; begitu disetujui, lokasi dan PIC aset langsung diperbarui di database.</p>
+          <div class="tablewrap"><table id="tblMut"></table></div>
+        </div>
+      </section>
+
+      <!-- STOCK OPNAME (FASE 4) -->
+      <section data-view="opname" hidden>
+        <div class="panel" id="opnameStartPanel">
+          <header><h3 data-i18n="opStartTitle">Mulai sesi stock opname</h3></header>
+          <div class="grid-f">
+            <label class="fld"><span data-i18n="fUnit">Unit hotel</span><select class="inp" id="opUnit"></select></label>
+            <label class="fld"><span data-i18n="fOpLoc">Lokasi (opsional)</span><input class="inp" id="opLokasi" data-i18n-ph="phOpLoc" placeholder="Mis. Lantai 3 — kosongkan untuk semua lokasi"></label>
+          </div>
+          <button class="btn" data-act="opStart" data-i18n="btnOpStart">Mulai sesi</button>
+        </div>
+
+        <div class="panel" id="opnameActivePanel" hidden>
+          <header><h3 id="opActiveTitle">—</h3><span class="lbl" id="opActiveMeta">—</span></header>
+          <div class="kpis" style="margin-bottom:18px">
+            <div class="kpi"><u data-i18n="opTarget">Target</u><b id="opKTarget">0</b></div>
+            <div class="kpi"><u data-i18n="opScan">Terpindai</u><b id="opKScan">0</b></div>
+            <div class="kpi"><u data-i18n="opFound">Ditemukan</u><b id="opKFound">0</b></div>
+            <div class="kpi"><u data-i18n="opProgress">Progres</u><b id="opKProgress">0%</b></div>
+          </div>
+          <div class="prog" style="margin-bottom:22px"><b id="opProgBar" style="width:0%"></b></div>
+
+          <div class="scanrow" style="margin-bottom:14px">
+            <input class="inp grow" id="opManualCode" data-i18n-ph="phScanCode" placeholder="Ketik atau tempel kode aset, lalu Enter">
+            <button class="btn sm" data-act="opManualScan" data-i18n="btnScan">Tandai ditemukan</button>
+            <button class="btn ghost sm" data-act="opCamToggle" id="opCamBtn" data-i18n="btnCam">Pindai kamera</button>
+          </div>
+          <div id="reader" hidden></div>
+
+          <div class="row between" style="margin:20px 0 10px">
+            <h4 style="font-size:13.5px;font-weight:600" data-i18n="opFeed">Riwayat pindaian sesi ini</h4>
+          </div>
+          <div class="scanfeed" id="opFeed"></div>
+
+          <div class="row" style="margin-top:22px;gap:10px">
+            <button class="btn danger" data-act="opClose" data-i18n="btnOpClose">Tutup sesi</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <header><h3 data-i18n="opHistory">Riwayat sesi opname</h3>
+            <button class="btn ghost sm" data-act="opHistReload">\u21bb <span data-i18n="btnReload">Muat ulang</span></button></header>
+          <div class="tablewrap"><table id="tblOpname"></table></div>
+        </div>
+      </section>
+
+      <!-- MAINTENANCE (FASE 4) -->
+      <section data-view="maint" hidden>
+        <div class="panel">
+          <header>
+            <h3 data-i18n="mtTitle">Jadwal maintenance &amp; kalibrasi</h3>
+            <button class="btn sm" data-act="maintNew"><span>\uff0b</span><span data-i18n="btnMaint">Jadwalkan servis</span></button>
+          </header>
+          <div class="seg" id="maintSeg" style="max-width:440px;margin-bottom:16px">
+            <button data-act="maintFilter" data-f="Aktif" class="on" data-i18n="mtActive">Aktif</button>
+            <button data-act="maintFilter" data-f="Terlambat" data-i18n="mtLate">Terlambat</button>
+            <button data-act="maintFilter" data-f="Selesai" data-i18n="mtDone">Selesai</button>
+          </div>
+          <div class="tablewrap"><table id="tblMaint"></table></div>
+        </div>
+      </section>
+
+      <!-- DEPRESIASI (FASE 4) -->
+      <section data-view="depr" hidden>
+        <div class="panel">
+          <header><h3 data-i18n="drTitle">Ringkasan nilai buku</h3>
+            <button class="btn sm" data-act="drRefresh" data-i18n="btnDrRefresh">Hitung ulang</button></header>
+          <p class="tiny muted" style="margin:-8px 0 16px" id="drMeta">\u2014</p>
+          <div class="kpis" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+            <div class="kpi"><u data-i18n="drAcq">Nilai perolehan</u><b id="drKAcq">Rp 0</b></div>
+            <div class="kpi"><u data-i18n="drBook">Nilai buku</u><b id="drKBook">Rp 0</b></div>
+            <div class="kpi"><u data-i18n="drDep">Akumulasi penyusutan</u><b id="drKDep">Rp 0</b></div>
+          </div>
+        </div>
+        <div class="panel">
+          <header><h3 data-i18n="drListTitle">Nilai buku per aset</h3><span class="lbl" id="drCount">\u2014</span></header>
+          <div class="tablewrap"><table id="tblDepr"></table></div>
+        </div>
+      </section>
+
+      <!-- WRITE-OFF (FASE 5) -->
+      <section data-view="writeoff" hidden>
+        <div class="panel">
+          <header>
+            <h3 data-i18n="woTitle">Pengajuan write-off aset</h3>
+          </header>
+          <div class="seg" id="woSeg" style="max-width:340px;margin-bottom:16px">
+            <button data-act="woFilter" data-f="Aktif" class="on" data-i18n="mtActive">Aktif</button>
+            <button data-act="woFilter" data-f="Selesai" data-i18n="mtDone">Selesai</button>
+            <button data-act="woFilter" data-f="Ditolak" data-i18n="mutRejected">Ditolak</button>
+          </div>
+          <p class="tiny muted" style="margin:-8px 0 16px" data-i18n="woNote">Ajukan dari tombol \u2926 pada baris aset di menu Departemen atau MPL Asset. Setiap pengajuan melewati tiga tahap berurutan: Departemen \u2192 General Manager \u2192 Finance. Begitu tahap Finance disetujui, aset dinonaktifkan dan berita acara PDF diterbitkan otomatis.</p>
+          <div id="woList" style="display:flex;flex-direction:column;gap:14px"></div>
+        </div>
+      </section>
+
+      <!-- LAPORAN GABUNGAN (FASE 5) -->
+      <section data-view="report" hidden>
+        <div class="panel">
+          <header><h3 data-i18n="repTitle">Laporan gabungan aset</h3><span class="lbl" id="repCount">\u2014</span></header>
+          <div class="reportbar">
+            <input class="inp search" id="repQ" data-i18n-ph="phSearch" placeholder="Cari kode, nama, merk, lokasi, PIC\u2026">
+            <select class="inp sortsel" id="repSort">
+              <option value="terbaru" data-i18n="sNewest">Terbaru</option>
+              <option value="terlama" data-i18n="sOldest">Terlama</option>
+              <option value="az">Nama A\u2013Z</option>
+              <option value="za">Nama Z\u2013A</option>
+              <option value="termahal" data-i18n="sPrice">Harga tertinggi</option>
+            </select>
+            <select class="inp" id="repSumber" style="width:150px">
+              <option value="" data-i18n="repAllSource">Semua sumber</option>
+              <option value="DEPT" data-i18n="repDeptOnly">Departemen saja</option>
+              <option value="MPL">MPL Asset</option>
+            </select>
+            <button class="btn ghost sm" data-act="repReload">\u21bb <span data-i18n="btnReload">Muat ulang</span></button>
+            <button class="btn sm" data-act="repExportCsv" data-i18n="btnExportCsv">Ekspor CSV</button>
+            <button class="btn ghost sm" data-act="repPrint" data-i18n="btnPrint">Cetak / PDF</button>
+          </div>
+          <p class="tiny muted" style="margin:-10px 0 14px" id="repTotal">\u2014</p>
+          <div class="tablewrap"><table id="tblReport"></table></div>
+        </div>
+      </section>
+
+      <!-- ADD USER -->
+      <section data-view="users" hidden>
+        <div class="panel">
+          <header><h3 data-i18n="uTitle">Pengguna aplikasi</h3>
+            <button class="btn sm" data-act="userNew"><span>＋</span><span data-i18n="btnUser">Tambah pengguna</span></button></header>
+          <p class="tiny muted" style="margin:-8px 0 16px" data-i18n="uNote">Admin dan Manager memperoleh akses penuh. Role User hanya dapat menambah dan mengubah aset.</p>
+          <div class="tablewrap"><table id="tblUsers"></table></div>
+        </div>
+      </section>
+
+      <!-- ACTIVITIES LOG -->
+      <section data-view="log" hidden>
+        <div class="panel">
+          <header><h3 data-i18n="lTitle">ActivitiesLog</h3>
+            <button class="btn ghost sm" data-act="logReload">↻ <span data-i18n="btnReload">Muat ulang</span></button></header>
+          <div class="tablewrap"><table id="tblLog"></table></div>
+        </div>
+      </section>
+
+      <!-- PENGATURAN -->
+      <section data-view="settings" hidden>
+        <div class="panel" data-role="full">
+          <header><h3 data-i18n="sBrand">Identitas aplikasi</h3><span class="lbl" data-i18n="sBrandNote">Tampil di halaman login &amp; sidebar</span></header>
+          <div class="fileline" style="margin-bottom:18px">
+            <img class="prev" id="brPrev" alt="" hidden>
+            <div class="filewrap"><input id="brFoto" type="file" accept="image/*">
+              <div class="fbtn"><i>🖼</i><span id="brFotoTxt" data-i18n="fChoose">Pilih foto…</span></div>
+            </div>
+            <button class="ico" data-act="brRemoveLogo" id="brRemoveBtn" title="Hapus logo" hidden>⊘</button>
+          </div>
+          <div class="grid-f">
+            <label class="fld full"><span data-i18n="fAppTitle">Judul aplikasi</span><input class="inp" id="brTitle" placeholder="HAIMS"></label>
+            <label class="fld full"><span data-i18n="fHeroTitle">Judul halaman login</span>
+              <textarea class="inp" id="brHeroTitle" rows="2" data-i18n-ph="phHeroTitle" placeholder="Kosongkan untuk memakai teks bawaan (mengikuti bahasa)"></textarea></label>
+            <label class="fld full"><span data-i18n="fHeroSub">Subjudul halaman login</span>
+              <textarea class="inp" id="brHeroSub" rows="2" data-i18n-ph="phHeroSub" placeholder="Kosongkan untuk memakai teks bawaan (mengikuti bahasa)"></textarea></label>
+          </div>
+          <p class="tiny muted" style="margin:-6px 0 16px" data-i18n="sBrandHint">Judul dan subjudul yang diisi manual akan tampil apa adanya di kedua bahasa, menggantikan teks bawaan.</p>
+          <button class="btn sm" data-act="saveBranding" data-i18n="btnSave">Simpan</button>
+        </div>
+
+        <div class="panel">
+          <header><h3 data-i18n="sTampilan">Tampilan &amp; bahasa</h3><span class="lbl" data-i18n="sLocal">Tersimpan di perangkat ini</span></header>
+          <div class="setgrid">
+            <label class="fld" style="margin:0"><span data-i18n="sLang">Bahasa aplikasi</span>
+              <select class="inp" id="setLang"><option value="id">Bahasa Indonesia</option><option value="en">English</option></select></label>
+            <label class="fld" style="margin:0"><span data-i18n="sFont">Font aplikasi</span>
+              <select class="inp" id="setFont">
+                <option value="Comfortaa">Comfortaa</option>
+                <option value="Amatic SC">Amatic SC</option>
+                <option value="Lexend">Lexend</option>
+                <option value="Playfair Display">Playfair Display</option>
+              </select></label>
+            <label class="fld" style="margin:0"><span data-i18n="sTheme">Mode tampilan</span>
+              <select class="inp" id="setTheme"><option value="light" data-i18n="sLight">Terang</option><option value="dark" data-i18n="sDark">Gelap</option></select></label>
+          </div>
+        </div>
+
+        <div class="panel">
+          <header><h3 data-i18n="sHotels">Unit hotel</h3>
+            <button class="btn sm" data-act="hotelNew">＋ <span data-i18n="btnHotel">Tambah unit</span></button></header>
+          <div id="hotelList" style="display:flex;flex-direction:column;gap:11px"></div>
+        </div>
+
+        <div class="panel">
+          <header><h3 data-i18n="sDepts">Sub-departemen</h3>
+            <button class="btn sm" data-act="deptNew">＋ <span data-i18n="btnDept">Tambah departemen</span></button></header>
+          <p class="tiny muted" style="margin:-8px 0 16px" data-i18n="sDeptNote">Setiap sub-departemen otomatis mendapat sheet Aset_&lt;KODE&gt; dan folder Drive sendiri.</p>
+          <div id="deptList" style="display:flex;flex-direction:column;gap:11px"></div>
+        </div>
+
+        <div class="panel">
+          <header><h3 data-i18n="sNotif">Email notifikasi tambahan</h3><span class="lbl" data-i18n="sServer">Tersimpan di spreadsheet</span></header>
+          <label class="fld"><span data-i18n="sNotifF">Pisahkan dengan koma</span>
+            <input class="inp" id="setNotif" placeholder="gm@hotel.com, finance@hotel.com"></label>
+          <button class="btn sm" data-act="saveNotif" data-i18n="btnSave">Simpan</button>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div id="modal" hidden><div class="box">
+  <h3 id="mTitle">—</h3><div class="mbody" id="mBody"></div>
+  <div class="mfoot">
+    <button class="btn ghost" data-act="modalClose" data-i18n="btnCancel">Batal</button>
+    <button class="btn" id="mSave" data-act="modalSave" data-i18n="btnSave">Simpan</button>
+  </div>
+</div></div>
+
+<div id="toast"></div>
+
+<script>
+/* ============================================================================
+   HAIMS — Frontend Fase 1
+   Tanpa onclick inline (CSP HtmlService): semua event lewat addEventListener.
+   ============================================================================ */
+
+var S = {
+  user: null, hotels: [], depts: [], settings: {},
+  lang: 'id', view: 'dashboard', dept: null, unit: '',
+  assets: [], users: [], photo: {}, otpEmail: '', deptOpen: true, modalSave: null,
+  /* FASE 2 — MPL Asset */
+  mpl: [], mplDept: null, mplOpen: false,
+  /* FASE 3 — Mutasi Aset */
+  mut: [], mutFilter: 'Pending', mutCanDecide: false,
+  /* FASE 4 — Stock Opname, Maintenance, Depresiasi */
+  opSesi: null, opScanner: null, opCamOn: false,
+  maint: [], maintFilter: 'Aktif', depr: [],
+  /* FASE 5 — Write-Off, Notifikasi, Laporan Gabungan */
+  wo: [], woFilter: 'Aktif', report: [], notifOpen: false
+};
+
+/* ------------------------------ i18n ------------------------------ */
+var I18N = {
+  id: {
+    brandsub:'Hotel Asset Inventory', heroTitle:'Setiap aset<br>punya jejak.',
+    heroSub:'Catat, pindahkan, dan audit seluruh aset hotel dari satu tempat — lengkap dengan riwayat siapa mengubah apa.',
+    statDept:'Departemen', statUnit:'Unit hotel', statLang:'Bahasa',
+    loginTitle:'Masuk ke HAIMS', loginSub:'Gunakan akun Google hotel Anda. Kata sandi hanya diminta bila akun Anda sudah menetapkannya.',
+    fEmail:'Email kerja', fPass:'Kata sandi', forgot:'Lupa kata sandi?', btnLogin:'Masuk', or:'atau',
+    btnGoogle:'Lanjut dengan akun Google', noAccess:'Belum punya akun? Cukup tekan "Lanjut dengan akun Google" — akun baru otomatis aktif sebagai User.',
+    regTitle:'Lengkapi registrasi', regSub:'Akun Google Anda belum terdaftar. Isi data berikut, lalu Admin akan mengaktifkan akses Anda.',
+    fName:'Nama lengkap', fUnit:'Unit hotel', fDept:'Departemen', fPassOpt:'Kata sandi (opsional)', fPhoto:'Foto (opsional)',
+    btnRegister:'Kirim registrasi', backLogin:'Kembali ke halaman masuk',
+    otpTitle:'Kirim kode akses', otpSub:'Kami kirim kode 6 angka ke email Anda. Kode berlaku 10 menit dan dipakai untuk menetapkan kata sandi baru.',
+    btnOtpSend:'Kirim kode', otpvTitle:'Masukkan kode', otpvSub:'Cek kotak masuk email Anda, lalu tetapkan kata sandi baru untuk masuk.',
+    fOtp:'Kode 6 angka', fNewPass:'Kata sandi baru', btnOtpVerify:'Verifikasi & masuk', resend:'Kirim ulang kode',
+    pendTitle:'Menunggu aktivasi', pendSub:'Registrasi Anda sudah masuk. Admin akan mengaktifkan akses lewat menu Add User, dan Anda menerima email begitu aktif.',
+    btnRecheck:'Periksa ulang status', noEmailTitle:'Sesi Google tidak terbaca',
+    noEmailSub:'Aplikasi tidak bisa membaca email akun Google Anda. Ini hampir selalu karena pengaturan deployment.',
+    mDash:'Dashboard', mDept:'Departemen', mUsers:'Add User', mLog:'ActivitiesLog', mSettings:'Pengaturan', btnLogout:'Keluar',
+    kTotal:'Total aset', kValue:'Nilai perolehan', kValueSub:'Akumulasi harga beli', kService:'Perlu servis',
+    kServiceSub:'Kondisi rusak / perlu servis', kPending:'Registrasi menunggu', kPendingSub:'Menunggu aktivasi Admin',
+    pBars:'Jumlah aset per sub-departemen', pValue:'Nilai aset per sub-departemen', pRecent:'Aset terbaru', pRecentSub:'8 entri terakhir',
+    btnAsset:'Tambah aset', phSearch:'Cari kode, nama, merk, lokasi, PIC…', sNewest:'Terbaru', sOldest:'Terlama', sPrice:'Harga tertinggi',
+    uTitle:'Pengguna aplikasi', btnUser:'Tambah pengguna',
+    uNote:'Admin dan Manager memperoleh akses penuh. Role User hanya dapat menambah dan mengubah aset.',
+    lTitle:'ActivitiesLog', btnReload:'Muat ulang',
+    sTampilan:'Tampilan & bahasa', sLocal:'Tersimpan di perangkat ini', sLang:'Bahasa aplikasi', sFont:'Font aplikasi',
+    sTheme:'Mode tampilan', sLight:'Terang', sDark:'Gelap', sHotels:'Unit hotel', btnHotel:'Tambah unit',
+    sDepts:'Sub-departemen', btnDept:'Tambah departemen',
+    sDeptNote:'Setiap sub-departemen otomatis mendapat sheet Aset_<KODE> dan folder Drive sendiri.',
+    sNotif:'Email notifikasi tambahan', sServer:'Tersimpan di spreadsheet', sNotifF:'Pisahkan dengan koma',
+    btnSave:'Simpan', btnCancel:'Batal', btnDelete:'Hapus', btnEdit:'Ubah',
+    thId:'Kode aset', thName:'Nama', thCat:'Kategori', thBrand:'Merk', thLoc:'Lokasi', thPic:'PIC',
+    thPrice:'Harga', thCond:'Kondisi', thAct:'Aksi', thDept:'Departemen', thRole:'Role', thUnit:'Unit',
+    thStatus:'Status', thEmail:'Email', thTime:'Waktu', thModul:'Modul', thAksi:'Aksi', thDetail:'Detail', thCreated:'Dibuat',
+    emptyAsset:'Belum ada aset di departemen ini. Tekan “Tambah aset” untuk mulai mencatat.',
+    emptyLog:'Belum ada aktivitas tercatat.', emptyUser:'Belum ada pengguna lain.',
+    mAssetNew:'Tambah aset', mAssetEdit:'Ubah aset', mUserNew:'Tambah pengguna', mUserEdit:'Ubah pengguna',
+    mHotelNew:'Tambah unit hotel', mHotelEdit:'Ubah unit hotel', mDeptNew:'Tambah sub-departemen', mDeptEdit:'Ubah sub-departemen',
+    fCat:'Kategori', fBrand:'Merk', fBuy:'Tanggal pembelian', fWarranty:'Garansi berakhir', fPrice:'Harga perolehan (Rp)',
+    fLoc:'Lokasi', fPic:'PIC penanggung jawab', fCond:'Kondisi', fVendor:'Vendor', fNote:'Keterangan',
+    fCode:'Kode', fAddress:'Alamat', fHead:'Kepala departemen', fStatus:'Status', fRole:'Role',
+    condGood:'Baik', condService:'Perlu Servis', condBroken:'Rusak', condLost:'Hilang',
+    savedOk:'Data tersimpan.', deletedOk:'Data dihapus.', confirmDel:'Hapus data ini? Aset tidak dihapus permanen, hanya dinonaktifkan.',
+    allUnit:'Semua unit', loading:'Memuat…',
+    mMpl:'MPL Asset', btnMpl:'Tambah aset MPL', phSearchMpl:'Cari kode, jenis, merk, lokasi, PIC…',
+    sJenisAz:'Jenis A–Z', sJenisZa:'Jenis Z–A', thJenis:'Jenis',
+    kMpl:'Aset MPL', kMplSub:'Total MPL semua departemen',
+    mMplNew:'Tambah aset MPL', mMplEdit:'Ubah aset MPL', fJenis:'Jenis aset',
+    emptyMpl:'Belum ada aset MPL di departemen ini. Tekan “Tambah aset MPL” untuk mulai mencatat.',
+    filterSwitch:'Filter unit dialihkan ke ', photoFail:'Foto tidak dapat dimuat — periksa izin berbagi file di Drive.',
+    mMutasi:'Mutasi Aset', mutTitle:'Pengajuan mutasi aset',
+    mutPending:'Menunggu', mutApproved:'Disetujui', mutRejected:'Ditolak', mutAll:'Semua',
+    mutNote:'Ajukan mutasi dari tombol ↺ pada baris aset di menu Departemen atau MPL Asset. Admin dan Manager memutuskan di sini; begitu disetujui, lokasi dan PIC aset langsung diperbarui di database.',
+    mMutNew:'Ajukan mutasi aset', btnMutasi:'Ajukan mutasi',
+    fCurLoc:'Lokasi sekarang', fCurPic:'PIC sekarang', fToLoc:'Lokasi baru', fToPic:'PIC baru', fReason:'Alasan mutasi',
+    thMut:'No. pengajuan', thMove:'Perpindahan', thReq:'Pemohon', thDate:'Diajukan', thDecider:'Penyetuju',
+    btnApprove:'Setujui', btnReject:'Tolak',
+    emptyMut:'Tidak ada pengajuan pada filter ini.',
+    mutSent:'Pengajuan mutasi terkirim: ', mutDecided:'Pengajuan diputuskan: ',
+    askApprove:'Setujui mutasi ini? Lokasi dan PIC aset akan langsung diperbarui.',
+    askReject:'Tolak mutasi ini?', askNote:'Catatan untuk pemohon (opsional):',
+    noChange:'(tidak berubah)', optional:'kosongkan bila tidak berubah',
+    passOptionalHint:'Akun ini belum menetapkan kata sandi — kosongkan kolom di atas lalu tekan Masuk.',
+    fChoose:'Pilih foto…',
+    mOpname:'Stock Opname', mMaint:'Maintenance', mDepr:'Depresiasi',
+    opStartTitle:'Mulai sesi stock opname', fOpLoc:'Lokasi (opsional)',
+    phOpLoc:'Mis. Lantai 3 — kosongkan untuk semua lokasi', btnOpStart:'Mulai sesi',
+    opTarget:'Target', opScan:'Terpindai', opFound:'Ditemukan', opProgress:'Progres',
+    phScanCode:'Ketik atau tempel kode aset, lalu Enter', btnScan:'Tandai ditemukan',
+    btnCam:'Pindai kamera', btnCamStop:'Hentikan kamera', opFeed:'Riwayat pindaian sesi ini',
+    btnOpClose:'Tutup sesi', opHistory:'Riwayat sesi opname',
+    thUnitCol:'Unit', thLoc:'Lokasi', thPetugas:'Petugas', thTarget:'Target', thAkurasi:'Akurasi',
+    askCloseOp:'Tutup sesi ini? Aset yang belum terpindai akan tercatat tidak ditemukan.',
+    opClosed:'Sesi ditutup. Akurasi: ', opNoActive:'Belum ada sesi opname berjalan.',
+    opAssetFound:'Ditemukan: ', opAssetMissing:'Tidak ada di database: ', camNoSupport:'Kamera tidak tersedia di perangkat/browser ini.',
+    mtTitle:'Jadwal maintenance & kalibrasi', btnMaint:'Jadwalkan servis',
+    mtActive:'Aktif', mtLate:'Terlambat', mtDone:'Selesai',
+    mMaintNew:'Jadwalkan servis', fJenisSvc:'Jenis pekerjaan', fTglJadwal:'Tanggal jadwal', fIdAsetSvc:'Kode aset',
+    thJenisSvc:'Jenis', thJadwal:'Jadwal', thRealisasi:'Realisasi', thVendor:'Vendor', thBiaya:'Biaya',
+    emptyMaint:'Tidak ada jadwal pada filter ini.', btnDone:'Selesaikan', btnCancelSvc:'Batalkan',
+    mDoneTitle:'Selesaikan servis', fTglRealisasi:'Tanggal realisasi', fBiaya:'Biaya (Rp)', fHasil:'Hasil pekerjaan',
+    askCancelSvc:'Batalkan jadwal ini?',
+    drTitle:'Ringkasan nilai buku', btnDrRefresh:'Hitung ulang', drAcq:'Nilai perolehan', drBook:'Nilai buku',
+    drDep:'Akumulasi penyusutan', drListTitle:'Nilai buku per aset', drRecalced:'Depresiasi dihitung ulang untuk ',
+    thMetode:'Metode', thUmur:'Umur (bln)', thPenyusutan:'Penyusutan/bln', thAkumulasi:'Akumulasi', thBuku:'Nilai buku',
+    emptyDepr:'Belum dihitung. Tekan “Hitung ulang”.',
+    sBrand:'Identitas aplikasi', sBrandNote:'Tampil di halaman login & sidebar',
+    fAppTitle:'Judul aplikasi', fHeroTitle:'Judul halaman login', fHeroSub:'Subjudul halaman login',
+    phHeroTitle:'Kosongkan untuk memakai teks bawaan (mengikuti bahasa)',
+    phHeroSub:'Kosongkan untuk memakai teks bawaan (mengikuti bahasa)',
+    sBrandHint:'Judul dan subjudul yang diisi manual akan tampil apa adanya di kedua bahasa, menggantikan teks bawaan.',
+    brandSaved:'Identitas aplikasi tersimpan.',
+    mWriteoff:'Write-Off', mReport:'Laporan Gabungan', btnWriteoff:'Ajukan write-off',
+    woTitle:'Pengajuan write-off aset',
+    woNote:'Ajukan dari tombol ⎘ pada baris aset di menu Departemen atau MPL Asset. Setiap pengajuan melewati tiga tahap berurutan: Departemen → General Manager → Finance. Begitu tahap Finance disetujui, aset dinonaktifkan dan berita acara PDF diterbitkan otomatis.',
+    mWoNew:'Ajukan write-off', fAlasanWO:'Alasan penghapusan', fNilaiBuku:'Nilai buku terakhir',
+    stgDept:'Departemen', stgGM:'General Manager', stgFinance:'Finance',
+    stMenunggu:'Menunggu', stDisetujui:'Disetujui', stDitolak:'Ditolak',
+    ovStDiajukan:'Menunggu Dept', ovStGM:'Menunggu GM', ovStFinance:'Menunggu Finance',
+    ovStSelesai:'Selesai', ovStDitolak:'Ditolak',
+    emptyWO:'Tidak ada pengajuan pada filter ini.', woBA:'Berita acara',
+    askWoApprove:'Setujui tahap ini? Bila ini tahap terakhir, aset akan langsung dinonaktifkan.',
+    askWoReject:'Tolak pengajuan write-off ini?', woSent:'Pengajuan write-off terkirim: ',
+    woDecided:'Tahap diputuskan.',
+    repTitle:'Laporan gabungan aset', repAllSource:'Semua sumber', repDeptOnly:'Departemen saja',
+    btnExportCsv:'Ekspor CSV', btnPrint:'Cetak / PDF', repTotalLabel:'total nilai',
+    notifTitle:'Notifikasi', notifEmpty:'Tidak ada notifikasi baru.'
+  },
+  en: {
+    brandsub:'Hotel Asset Inventory', heroTitle:'Every asset<br>leaves a trail.',
+    heroSub:'Record, move, and audit every hotel asset from one place — with a full history of who changed what.',
+    statDept:'Departments', statUnit:'Hotel units', statLang:'Language',
+    loginTitle:'Sign in to HAIMS', loginSub:'Use your hotel Google account. A password is only requested if your account has set one.',
+    fEmail:'Work email', fPass:'Password', forgot:'Forgot password?', btnLogin:'Sign in', or:'or',
+    btnGoogle:'Continue with Google', noAccess:'No account yet? Just press "Continue with Google" — new accounts are automatically active as User.',
+    regTitle:'Complete registration', regSub:'Your Google account is not registered yet. Fill this in and an Admin will activate your access.',
+    fName:'Full name', fUnit:'Hotel unit', fDept:'Department', fPassOpt:'Password (optional)', fPhoto:'Photo (optional)',
+    btnRegister:'Submit registration', backLogin:'Back to sign in',
+    otpTitle:'Send access code', otpSub:'We will email you a 6-digit code. It is valid for 10 minutes and lets you set a new password.',
+    btnOtpSend:'Send code', otpvTitle:'Enter the code', otpvSub:'Check your inbox, then set a new password to sign in.',
+    fOtp:'6-digit code', fNewPass:'New password', btnOtpVerify:'Verify & sign in', resend:'Resend code',
+    pendTitle:'Waiting for activation', pendSub:'Your registration is in. An Admin will activate access from Add User, and you will get an email once active.',
+    btnRecheck:'Check status again', noEmailTitle:'Google session not readable',
+    noEmailSub:'The app cannot read your Google account email. This is almost always a deployment setting.',
+    mDash:'Dashboard', mDept:'Departments', mUsers:'Add User', mLog:'Activity log', mSettings:'Settings', btnLogout:'Sign out',
+    kTotal:'Total assets', kValue:'Acquisition value', kValueSub:'Accumulated purchase price', kService:'Needs service',
+    kServiceSub:'Broken / needs service', kPending:'Pending registrations', kPendingSub:'Awaiting Admin activation',
+    pBars:'Assets per sub-department', pValue:'Asset value per sub-department', pRecent:'Latest assets', pRecentSub:'Last 8 entries',
+    btnAsset:'Add asset', phSearch:'Search code, name, brand, location, PIC…', sNewest:'Newest', sOldest:'Oldest', sPrice:'Highest price',
+    uTitle:'Application users', btnUser:'Add user',
+    uNote:'Admin and Manager get full access. The User role can only add and edit assets.',
+    lTitle:'Activity log', btnReload:'Reload',
+    sTampilan:'Appearance & language', sLocal:'Saved on this device', sLang:'App language', sFont:'App font',
+    sTheme:'Display mode', sLight:'Light', sDark:'Dark', sHotels:'Hotel units', btnHotel:'Add unit',
+    sDepts:'Sub-departments', btnDept:'Add department',
+    sDeptNote:'Each sub-department automatically gets its own Aset_<CODE> sheet and Drive folder.',
+    sNotif:'Extra notification emails', sServer:'Saved in the spreadsheet', sNotifF:'Separate with commas',
+    btnSave:'Save', btnCancel:'Cancel', btnDelete:'Delete', btnEdit:'Edit',
+    thId:'Asset code', thName:'Name', thCat:'Category', thBrand:'Brand', thLoc:'Location', thPic:'PIC',
+    thPrice:'Price', thCond:'Condition', thAct:'Actions', thDept:'Department', thRole:'Role', thUnit:'Unit',
+    thStatus:'Status', thEmail:'Email', thTime:'Time', thModul:'Module', thAksi:'Action', thDetail:'Detail', thCreated:'Created',
+    emptyAsset:'No assets in this department yet. Press “Add asset” to start.',
+    emptyLog:'No activity recorded yet.', emptyUser:'No other users yet.',
+    mAssetNew:'Add asset', mAssetEdit:'Edit asset', mUserNew:'Add user', mUserEdit:'Edit user',
+    mHotelNew:'Add hotel unit', mHotelEdit:'Edit hotel unit', mDeptNew:'Add sub-department', mDeptEdit:'Edit sub-department',
+    fCat:'Category', fBrand:'Brand', fBuy:'Purchase date', fWarranty:'Warranty ends', fPrice:'Acquisition price (Rp)',
+    fLoc:'Location', fPic:'Person in charge', fCond:'Condition', fVendor:'Vendor', fNote:'Notes',
+    fCode:'Code', fAddress:'Address', fHead:'Department head', fStatus:'Status', fRole:'Role',
+    condGood:'Good', condService:'Needs service', condBroken:'Broken', condLost:'Lost',
+    savedOk:'Saved.', deletedOk:'Removed.', confirmDel:'Remove this record? Assets are deactivated, not permanently deleted.',
+    allUnit:'All units', loading:'Loading…',
+    mMpl:'MPL Asset', btnMpl:'Add MPL asset', phSearchMpl:'Search code, type, brand, location, PIC…',
+    sJenisAz:'Type A–Z', sJenisZa:'Type Z–A', thJenis:'Type',
+    kMpl:'MPL assets', kMplSub:'Total MPL across departments',
+    mMplNew:'Add MPL asset', mMplEdit:'Edit MPL asset', fJenis:'Asset type',
+    emptyMpl:'No MPL assets in this department yet. Press “Add MPL asset” to start.',
+    filterSwitch:'Unit filter switched to ', photoFail:'Photo could not load — check the file sharing permission in Drive.',
+    mMutasi:'Asset transfers', mutTitle:'Asset transfer requests',
+    mutPending:'Pending', mutApproved:'Approved', mutRejected:'Rejected', mutAll:'All',
+    mutNote:'Request a transfer from the ↺ button on any asset row under Departments or MPL Asset. Admin and Manager decide here; once approved, the asset location and PIC are updated in the database immediately.',
+    mMutNew:'Request asset transfer', btnMutasi:'Request transfer',
+    fCurLoc:'Current location', fCurPic:'Current PIC', fToLoc:'New location', fToPic:'New PIC', fReason:'Reason for transfer',
+    thMut:'Request no.', thMove:'Movement', thReq:'Requested by', thDate:'Requested', thDecider:'Decided by',
+    btnApprove:'Approve', btnReject:'Reject',
+    emptyMut:'No requests match this filter.',
+    mutSent:'Transfer request sent: ', mutDecided:'Request decided: ',
+    askApprove:'Approve this transfer? The asset location and PIC will be updated right away.',
+    askReject:'Reject this transfer?', askNote:'Note for the requester (optional):',
+    noChange:'(unchanged)', optional:'leave empty if unchanged',
+    passOptionalHint:'This account has not set a password yet — leave the field above empty and press Sign in.',
+    fChoose:'Choose photo…',
+    mOpname:'Stock Opname', mMaint:'Maintenance', mDepr:'Depreciation',
+    opStartTitle:'Start a stock opname session', fOpLoc:'Location (optional)',
+    phOpLoc:'E.g. Floor 3 — leave empty for all locations', btnOpStart:'Start session',
+    opTarget:'Target', opScan:'Scanned', opFound:'Found', opProgress:'Progress',
+    phScanCode:'Type or paste the asset code, then Enter', btnScan:'Mark as found',
+    btnCam:'Scan with camera', btnCamStop:'Stop camera', opFeed:'Scan history for this session',
+    btnOpClose:'Close session', opHistory:'Session history',
+    thUnitCol:'Unit', thLoc:'Location', thPetugas:'Officer', thTarget:'Target', thAkurasi:'Accuracy',
+    askCloseOp:'Close this session? Unscanned assets will be recorded as not found.',
+    opClosed:'Session closed. Accuracy: ', opNoActive:'No active opname session yet.',
+    opAssetFound:'Found: ', opAssetMissing:'Not in database: ', camNoSupport:'Camera is not available on this device/browser.',
+    mtTitle:'Maintenance & calibration schedule', btnMaint:'Schedule service',
+    mtActive:'Active', mtLate:'Overdue', mtDone:'Done',
+    mMaintNew:'Schedule service', fJenisSvc:'Type of work', fTglJadwal:'Scheduled date', fIdAsetSvc:'Asset code',
+    thJenisSvc:'Type', thJadwal:'Scheduled', thRealisasi:'Completed', thVendor:'Vendor', thBiaya:'Cost',
+    emptyMaint:'No schedule matches this filter.', btnDone:'Complete', btnCancelSvc:'Cancel',
+    mDoneTitle:'Complete service', fTglRealisasi:'Completion date', fBiaya:'Cost (Rp)', fHasil:'Work result',
+    askCancelSvc:'Cancel this schedule?',
+    drTitle:'Book value summary', btnDrRefresh:'Recalculate', drAcq:'Acquisition value', drBook:'Book value',
+    drDep:'Accumulated depreciation', drListTitle:'Book value per asset', drRecalced:'Depreciation recalculated for ',
+    thMetode:'Method', thUmur:'Age (mo)', thPenyusutan:'Depreciation/mo', thAkumulasi:'Accumulated', thBuku:'Book value',
+    emptyDepr:'Not calculated yet. Press “Recalculate”.',
+    sBrand:'App identity', sBrandNote:'Shown on the login page & sidebar',
+    fAppTitle:'App title', fHeroTitle:'Login page headline', fHeroSub:'Login page subtext',
+    phHeroTitle:'Leave empty to use the default text (follows language)',
+    phHeroSub:'Leave empty to use the default text (follows language)',
+    sBrandHint:'A manually filled headline and subtext show as-is in both languages, replacing the default text.',
+    brandSaved:'App identity saved.',
+    mWriteoff:'Write-Off', mReport:'Combined Report', btnWriteoff:'Request write-off',
+    woTitle:'Asset write-off requests',
+    woNote:'Request from the ⎘ button on any asset row under Departments or MPL Asset. Each request passes three sequential stages: Department → General Manager → Finance. Once Finance approves, the asset is deactivated and a PDF minutes-of-meeting is issued automatically.',
+    mWoNew:'Request write-off', fAlasanWO:'Reason for write-off', fNilaiBuku:'Last book value',
+    stgDept:'Department', stgGM:'General Manager', stgFinance:'Finance',
+    stMenunggu:'Pending', stDisetujui:'Approved', stDitolak:'Rejected',
+    ovStDiajukan:'Awaiting Dept', ovStGM:'Awaiting GM', ovStFinance:'Awaiting Finance',
+    ovStSelesai:'Done', ovStDitolak:'Rejected',
+    emptyWO:'No requests match this filter.', woBA:'Minutes of meeting',
+    askWoApprove:'Approve this stage? If this is the final stage, the asset is deactivated right away.',
+    askWoReject:'Reject this write-off request?', woSent:'Write-off request sent: ',
+    woDecided:'Stage decided.',
+    repTitle:'Combined asset report', repAllSource:'All sources', repDeptOnly:'Departments only',
+    btnExportCsv:'Export CSV', btnPrint:'Print / PDF', repTotalLabel:'total value',
+    notifTitle:'Notifications', notifEmpty:'No new notifications.'
+  }
+};
+function t(k){ var d = I18N[S.lang] || I18N.id; return d[k] !== undefined ? d[k] : (I18N.id[k] !== undefined ? I18N.id[k] : k); }
+
+function applyI18n(){
+  var nodes = document.querySelectorAll('[data-i18n]');
+  for (var i=0;i<nodes.length;i++){
+    var k = nodes[i].getAttribute('data-i18n');
+    var v = t(k);
+    // Hanya tag yang diizinkan dirender sebagai HTML. Tanpa penyaring ini, teks
+    // seperti "sheet Aset_<KODE>" akan dianggap tag dan hilang dari tampilan.
+    if (/<(br|b|i|em|strong|span|small)[\s>\/]/i.test(v)) nodes[i].innerHTML = v;
+    else nodes[i].textContent = v;
+  }
+  var ph = document.querySelectorAll('[data-i18n-ph]');
+  for (var j=0;j<ph.length;j++) ph[j].setAttribute('placeholder', t(ph[j].getAttribute('data-i18n-ph')));
+  var seg = document.querySelectorAll('#langSeg button');
+  for (var s=0;s<seg.length;s++) seg[s].classList.toggle('on', seg[s].getAttribute('data-lang') === S.lang);
+  document.documentElement.setAttribute('lang', S.lang);
+  applyBranding();   // pastikan judul/hero/logo kustom tetap berlaku setelah teks i18n disegarkan
+}
+
+/**
+ * Menerapkan identitas aplikasi (logo, judul, judul & subjudul halaman login)
+ * dari Pengaturan ke halaman login dan sidebar. Aman dipanggil kapan saja —
+ * bila S.settings belum dimuat atau field-nya kosong, tampilan jatuh kembali
+ * ke default "HAIMS" / teks bawaan i18n.
+ */
+function applyBranding(){
+  var s = S.settings || {};
+  var title = String(s.appTitle || '').trim() || 'HAIMS';
+  var logo = String(s.logoURL || '').trim();
+  var heroT = String(s.loginHeroTitle || '').trim();
+  var heroS = String(s.loginHeroSub || '').trim();
+
+  var nameEls = [$('authBrandName'), $('sideBrandName')];
+  for (var i=0;i<nameEls.length;i++) if (nameEls[i]) nameEls[i].textContent = title;
+  try { document.title = title + ' — Hotel Asset Inventory'; } catch (e) {}
+
+  ['authLogo','sideLogo'].forEach(function(id){
+    var el = $(id);
+    if (!el || !el.parentNode) return;
+    if (logo) {
+      if (el.tagName === 'IMG') { el.src = logo; return; }
+      var img = document.createElement('img');
+      img.id = id; img.className = 'logo'; img.alt = ''; img.src = logo;
+      img.style.objectFit = 'cover';
+      el.parentNode.replaceChild(img, el);
+    } else {
+      if (el.tagName !== 'IMG') { el.textContent = title.charAt(0).toUpperCase() || 'H'; return; }
+      var div = document.createElement('div');
+      div.id = id; div.className = 'logo'; div.textContent = title.charAt(0).toUpperCase() || 'H';
+      el.parentNode.replaceChild(div, el);
+    }
+  });
+
+  if ($('authHeroTitle')) $('authHeroTitle').innerHTML = heroT ? esc(heroT).replace(/\n/g, '<br>') : t('heroTitle');
+  if ($('authHeroSub')) $('authHeroSub').textContent = heroS || t('heroSub');
+}
+
+/* ------------------------------ util ------------------------------ */
+function $(id){ return document.getElementById(id); }
+function esc(v){
+  return String(v === undefined || v === null ? '' : v)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function rp(n){
+  var x = Number(n||0);
+  return 'Rp ' + x.toLocaleString('id-ID', {maximumFractionDigits:0});
+}
+function rpShort(n){
+  var x = Number(n||0);
+  if (x >= 1e9) return 'Rp ' + (x/1e9).toFixed(1).replace('.',',') + ' M';
+  if (x >= 1e6) return 'Rp ' + (x/1e6).toFixed(1).replace('.',',') + ' jt';
+  return rp(x);
+}
+function toast(msg, kind){
+  var d = document.createElement('div');
+  d.className = kind || '';
+  d.textContent = String(msg);
+  $('toast').appendChild(d);
+  setTimeout(function(){ if (d.parentNode) d.parentNode.removeChild(d); }, 4200);
+}
+/**
+ * Bridge ke backend Vercel (menggantikan google.script.run). Server tetap
+ * dipanggil dengan nama fungsi + argumen yang sama persis seperti versi
+ * Apps Script — hanya transportnya yang berubah jadi fetch() ke /api/rpc,
+ * dengan sesi login dibawa lewat cookie httpOnly.
+ */
+function srun(fn){
+  var args = Array.prototype.slice.call(arguments, 1);
+  return fetch('/api/rpc', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'same-origin',
+    body: JSON.stringify({ fn: fn, args: args })
+  }).then(function(r){ return r.json(); }).then(function(res){
+    if (!res || !res.ok) throw new Error((res && res.error) || 'Permintaan gagal.');
+    return res.result;
+  });
+}
+function busy(btnSel, on){
+  var b = typeof btnSel === 'string' ? document.querySelector(btnSel) : btnSel;
+  if (!b) return;
+  b.disabled = !!on;
+  b.style.opacity = on ? '.6' : '';
+}
+function initials(name){
+  var s = String(name||'').trim();
+  if (!s) return '–';
+  var p = s.split(/\s+/);
+  return (p[0].charAt(0) + (p.length>1 ? p[1].charAt(0) : '')).toUpperCase();
+}
+/**
+ * Mengganti elemen avatar dengan <img> atau <div> inisial.
+ * Memakai replaceChild (bukan outerHTML) supaya tetap benar saat dipanggil ulang,
+ * misalnya setelah logout lalu login dengan akun lain.
+ */
+function setAvatar(el, user){
+  if (!el || !el.parentNode) return;
+  var url = user && user.fotoURL ? String(user.fotoURL) : '';
+  var fresh;
+  if (url) {
+    fresh = document.createElement('img');
+    fresh.src = url;
+    fresh.alt = '';
+  } else {
+    fresh = document.createElement('div');
+    fresh.textContent = initials(user ? user.nama : '');
+  }
+  fresh.className = 'avatar';
+  fresh.id = el.id;
+  el.parentNode.replaceChild(fresh, el);
+}
+
+/** Kompres + resize foto di browser sebelum dikirim ke Drive. */
+function readPhoto(file, maxW, quality){
+  maxW = maxW || 1100; quality = quality || 0.82;
+  return new Promise(function(resolve, reject){
+    if (!file) { resolve(''); return; }
+    if (!/^image\//.test(file.type)) { reject(new Error('File harus berupa gambar.')); return; }
+    var fr = new FileReader();
+    fr.onerror = function(){ reject(new Error('Gagal membaca file.')); };
+    fr.onload = function(){
+      var img = new Image();
+      img.onerror = function(){ reject(new Error('Gambar tidak dapat dibaca.')); };
+      img.onload = function(){
+        var w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * (maxW / w)); w = maxW; }
+        var c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(c.toDataURL('image/jpeg', quality));
+      };
+      img.src = fr.result;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+function bindPhoto(inputId, previewId, key){
+  var inp = $(inputId);
+  if (!inp) return;
+  var txt = $(inputId + 'Txt');   // konvensi: <inputId>Txt, mis. afFoto -> afFotoTxt
+  inp.addEventListener('change', function(){
+    var f = inp.files && inp.files[0];
+    if (!f) { S.photo[key] = ''; if (txt) txt.textContent = t('fChoose'); return; }
+    readPhoto(f).then(function(b64){
+      S.photo[key] = b64;
+      var pv = $(previewId);
+      if (pv) { pv.src = b64; pv.hidden = false; }
+      if (txt) txt.textContent = f.name;
+    })['catch'](function(e){ toast(e.message, 'err'); inp.value = ''; });
+  });
+}
+
+/* ------------------------------ preferensi lokal ------------------------------ */
+function loadPrefs(){
+  try {
+    S.lang = localStorage.getItem('haims_lang') || 'id';
+    var f = localStorage.getItem('haims_font') || 'Comfortaa';
+    var th = localStorage.getItem('haims_theme') || 'light';
+    applyFont(f); applyTheme(th);
+  } catch (e) { S.lang = 'id'; }
+}
+function applyFont(f){
+  document.documentElement.style.setProperty('--font', "'" + f + "'");
+  try { localStorage.setItem('haims_font', f); } catch (e) {}
+  if ($('setFont')) $('setFont').value = f;
+}
+function applyTheme(th){
+  document.documentElement.setAttribute('data-theme', th);
+  try { localStorage.setItem('haims_theme', th); } catch (e) {}
+  if ($('setTheme')) $('setTheme').value = th;
+}
+function setLang(l){
+  S.lang = l;
+  try { localStorage.setItem('haims_lang', l); } catch (e) {}
+  applyI18n();
+  if ($('setLang')) $('setLang').value = l;
+  if (!$('app').hidden) { renderNavTitles(); renderView(); }
+}
+
+/* ------------------------------ jam digital ------------------------------ */
+function startClock(){
+  function tick(){
+    var d = new Date();
+    var hari = { id:['Min','Sen','Sel','Rab','Kam','Jum','Sab'], en:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'] };
+    var p2 = function(n){ return (n<10?'0':'') + n; };
+    var el = $('clock');
+    if (el) el.textContent = p2(d.getHours()) + ':' + p2(d.getMinutes()) + ':' + p2(d.getSeconds()) +
+      ' · ' + (hari[S.lang]||hari.id)[d.getDay()] + ' ' + p2(d.getDate()) + '/' + p2(d.getMonth()+1);
+  }
+  tick(); setInterval(tick, 1000);
+}
+
+/* ------------------------------ boot & autentikasi ------------------------------ */
+function boot(){
+  loadPrefs(); applyI18n(); startClock();
+  var params = new URLSearchParams(window.location.search);
+  var authError = params.get('authError');
+  if (authError) {
+    toast(authError, 'err');
+    params.delete('authError');
+    var qs = params.toString();
+    history.replaceState(null, '', window.location.pathname + (qs ? '?' + qs : ''));
+  }
+  /* Identitas aplikasi (logo/judul/hero) diambil terpisah dari sesi login —
+     getSettings() tidak memerlukan otentikasi, jadi halaman login pun bisa
+     menampilkan identitas kustom sebelum pengguna masuk. */
+  srun('getSettings').then(function(s){ S.settings = s; applyBranding(); })['catch'](function(){});
+  $('bootMsg').textContent = t('loading');
+  srun('checkSession').then(handleSession)['catch'](function(e){
+    $('boot').hidden = true; $('auth').hidden = false; showCard('cardLogin');
+    toast(e.message, 'err');
+  });
+}
+
+function showCard(id){
+  var ids = ['cardLogin','cardRegister','cardOtp','cardOtpVerify','cardPending','cardNoEmail'];
+  for (var i=0;i<ids.length;i++) if ($(ids[i])) $(ids[i]).hidden = (ids[i] !== id);
+}
+
+function handleSession(res){
+  $('boot').hidden = true;
+  if (!res) { $('auth').hidden = false; showCard('cardLogin'); return; }
+
+  $('app').hidden = true;
+  $('auth').hidden = false;
+
+  if (res.stage === 'READY' || res.stage === 'LOGIN') {
+    showCard('cardLogin');
+    $('liEmail').value = res.googleEmail || '';
+    $('liSession').textContent = res.googleEmail || '';
+    $('liPass').value = '';
+    /* stage READY berarti akun belum menetapkan sandi — tombol Masuk tetap
+       wajib ditekan, dan server mengizinkan sandi kosong untuk akun ini. */
+    $('liPassHint').hidden = (res.stage !== 'READY');
+    return;
+  }
+  if (res.stage === 'REGISTER') {
+    showCard('cardRegister');
+    $('regEmail').textContent = res.googleEmail || '';
+    fillRegisterSelects();
+    return;
+  }
+  if (res.stage === 'PENDING') {
+    showCard('cardPending');
+    $('pendEmail').textContent = res.googleEmail || '';
+    return;
+  }
+  if (res.stage === 'NOEMAIL') { showCard('cardLogin'); return; }
+  showCard('cardLogin');
+}
+
+function fillRegisterSelects(){
+  Promise.all([srun('getHotels'), srun('getDepartments')]).then(function(r){
+    var hotels = r[0] || [], depts = r[1] || [];
+    S.hotels = hotels; S.depts = depts;
+    var hs = $('rgUnit'), ds = $('rgDept');
+    hs.innerHTML = hotels.filter(function(h){ return h.status !== 'Nonaktif'; })
+      .map(function(h){ return '<option value="' + esc(h.kode) + '">' + esc(h.nama) + '</option>'; }).join('');
+    ds.innerHTML = depts.filter(function(d){ return d.status !== 'Nonaktif'; })
+      .map(function(d){ return '<option value="' + esc(d.kode) + '">' + esc(d.kode) + ' — ' + esc(d.nama) + '</option>'; }).join('');
+    if (!hotels.length) toast('Sheet Hotels belum berisi unit. Jalankan resetSetupFlag() di editor.', 'err');
+  })['catch'](function(e){ toast(e.message, 'err'); });
+}
+
+function doLogin(){
+  var email = $('liEmail').value.trim(), pass = $('liPass').value;
+  if (!email) { toast(S.lang === 'en' ? 'Email is required.' : 'Email wajib diisi.', 'err'); return; }
+  busy('[data-act="login"]', true);
+  srun('loginWithPassword', email, pass).then(function(res){
+    busy('[data-act="login"]', false);
+    if (res && res.stage === 'READY') enterApp(res.user);
+  })['catch'](function(e){ busy('[data-act="login"]', false); toast(e.message, 'err'); });
+}
+
+function doGoogle(){
+  /* Berbeda dari GAS (identitas Google otomatis tersedia lewat Session),
+     di Vercel identitas baru ada setelah user lewat layar consent Google
+     OAuth. Tombol ini karena itu memeriksa sesi lebih dulu: kalau cookie
+     login belum ada (NOEMAIL), redirect ke alur OAuth; begitu kembali
+     dengan cookie terpasang, checkSession() langsung memutuskan
+     READY/LOGIN/REGISTER/PENDING seperti versi Apps Script semula. */
+  busy('[data-act="google"]', true);
+  srun('checkSession').then(function(res){
+    busy('[data-act="google"]', false);
+    if (!res) { toast(S.lang === 'en' ? 'Could not read session.' : 'Sesi tidak terbaca.', 'err'); return; }
+    if (res.stage === 'NOEMAIL') { window.location.href = '/api/auth/google/start'; return; }
+    if (res.stage === 'READY') {
+      if (res.autoProvisioned) {
+        toast(S.lang === 'en' ? 'Account created as User.' : 'Akun baru dibuat sebagai User.', 'ok');
+      }
+      enterApp(res.user);
+      return;
+    }
+    handleSession(res);
+    if (res.stage === 'LOGIN') toast(S.lang === 'en' ? 'Enter your password to continue.' : 'Masukkan kata sandi untuk melanjutkan.');
+  })['catch'](function(e){ busy('[data-act="google"]', false); toast(e.message, 'err'); });
+}
+
+function doRegister(){
+  var payload = {
+    nama: $('rgNama').value.trim(),
+    unit: $('rgUnit').value,
+    departemen: $('rgDept').value,
+    password: $('rgPass').value,
+    fotoBase64: S.photo.reg || ''
+  };
+  if (!payload.nama) { toast(S.lang === 'en' ? 'Full name is required.' : 'Nama lengkap wajib diisi.', 'err'); return; }
+  busy('[data-act="register"]', true);
+  srun('registerUser', payload).then(function(){
+    busy('[data-act="register"]', false);
+    showCard('cardPending');
+    $('pendEmail').textContent = $('regEmail').textContent;
+  })['catch'](function(e){ busy('[data-act="register"]', false); toast(e.message, 'err'); });
+}
+
+function doOtpSend(){
+  var email = ($('otEmail') && $('otEmail').value.trim()) || S.otpEmail || $('liEmail').value.trim();
+  if (!email) { toast(S.lang === 'en' ? 'Email is required.' : 'Email wajib diisi.', 'err'); return; }
+  S.otpEmail = email;
+  srun('requestOtp', email).then(function(res){
+    showCard('cardOtpVerify');
+    toast((S.lang === 'en' ? 'Code sent, valid for ' : 'Kode terkirim, berlaku ') + (res && res.menit ? res.menit : 10) + (S.lang === 'en' ? ' minutes.' : ' menit.'), 'ok');
+  })['catch'](function(e){ toast(e.message, 'err'); });
+}
+
+function doOtpVerify(){
+  var code = $('ovCode').value.trim(), pass = $('ovPass').value;
+  if (!code) { toast(S.lang === 'en' ? 'Code is required.' : 'Kode wajib diisi.', 'err'); return; }
+  busy('[data-act="otpVerify"]', true);
+  srun('verifyOtpAndLogin', S.otpEmail, code, pass).then(function(res){
+    busy('[data-act="otpVerify"]', false);
+    if (res && res.stage === 'READY') enterApp(res.user);
+  })['catch'](function(e){ busy('[data-act="otpVerify"]', false); toast(e.message, 'err'); });
+}
+
+function doLogout(){
+  srun('logLogout')['catch'](function(){}).then(function(){
+    window.location.href = '/api/auth/logout';
+  });
+}
+
+/* ------------------------------ masuk aplikasi ------------------------------ */
+function enterApp(user){
+  $('auth').hidden = true; $('boot').hidden = false;
+  $('bootMsg').textContent = t('loading');
+  srun('getBootstrap').then(function(b){
+    S.user = b.user; S.hotels = b.hotels || []; S.depts = b.depts || b.departments || []; S.settings = b.settings || {};
+    $('boot').hidden = true; $('app').hidden = false;
+
+    if (S.settings.emailNotifikasi !== undefined && $('setNotif')) $('setNotif').value = S.settings.emailNotifikasi;
+    if ($('setLang')) $('setLang').value = S.lang;
+    applyBranding();   // FASE — sinkronkan logo/judul ke sidebar setelah bootstrap
+    refreshBell();      // FASE 5 — hitung notifikasi begitu masuk aplikasi
+
+    $('sfName').textContent = S.user.nama || S.user.email;
+    $('sfRole').textContent = S.user.role + ' · ' + (S.user.unit || '-');
+    setAvatar($('sfAvatar'), S.user);
+    setAvatar($('tbAvatar'), S.user);
+
+    var full = S.user.full;
+    var restricted = document.querySelectorAll('[data-role="full"]');
+    for (var i=0;i<restricted.length;i++) restricted[i].hidden = !full;
+
+    renderUnitSelector();
+    renderDeptSubmenu();
+    renderMplSubmenu();          // FASE 2
+    applyI18n();
+    nav('dashboard');
+  })['catch'](function(e){
+    $('boot').hidden = true; $('auth').hidden = false; showCard('cardLogin');
+    toast(e.message, 'err');
+  });
+}
+
+function renderUnitSelector(){
+  var sel = $('unitSel');
+  var opts = ['<option value="">' + esc(t('allUnit')) + '</option>'];
+  for (var i=0;i<S.hotels.length;i++){
+    if (S.hotels[i].status === 'Nonaktif') continue;
+    opts.push('<option value="' + esc(S.hotels[i].kode) + '">' + esc(S.hotels[i].nama) + '</option>');
+  }
+  sel.innerHTML = opts.join('');
+  sel.value = S.unit || '';
+}
+
+function renderDeptSubmenu(){
+  var box = $('deptSubmenu');
+  var active = S.depts.filter(function(d){ return d.status !== 'Nonaktif'; });
+  box.innerHTML = active.map(function(d){
+    return '<button data-act="nav" data-view="dept" data-dept="' + esc(d.kode) + '">' +
+      '<span class="mono" style="font-size:10.5px;opacity:.7">' + esc(d.kode) + '</span>&nbsp; ' + esc(d.nama) + '</button>';
+  }).join('') || '<p class="tiny muted" style="padding:8px 11px">—</p>';
+  box.hidden = !S.deptOpen;
+  $('deptCaret').textContent = S.deptOpen ? '▾' : '▸';
+}
+
+function renderNavTitles(){
+  var titles = {
+    dashboard: [t('mDash'), S.user ? (S.user.nama + ' · ' + S.user.role) : ''],
+    dept: [t('mDept'), S.dept || ''],
+    mpl: [t('mMpl'), S.mplDept || ''],
+    mutasi: [t('mMutasi'), t('mutTitle')],
+    opname: [t('mOpname'), ''],
+    maint: [t('mMaint'), ''],
+    depr: [t('mDepr'), ''],
+    writeoff: [t('mWriteoff'), t('woTitle')],
+    report: [t('mReport'), ''],
+    users: [t('mUsers'), t('uNote')],
+    log: [t('mLog'), ''],
+    settings: [t('mSettings'), '']
+  };
+  var pair = titles[S.view] || titles.dashboard;
+  $('pgTitle').textContent = pair[0];
+  $('pgSub').textContent = pair[1] || '';
+}
+
+function nav(view, dept){
+  if (S.view === 'opname' && view !== 'opname') stopCamera();   // FASE 4
+  S.view = view;
+  /* FASE 2 — Departemen dan MPL Asset menyimpan pilihan sub-departemennya masing-masing */
+  if (dept) { if (view === 'mpl') S.mplDept = dept; else S.dept = dept; }
+
+  var secs = document.querySelectorAll('main section[data-view]');
+  for (var i=0;i<secs.length;i++) secs[i].hidden = (secs[i].getAttribute('data-view') !== view);
+
+  var btns = document.querySelectorAll('#navMain button[data-act="nav"]');
+  for (var j=0;j<btns.length;j++){
+    var isSame = btns[j].getAttribute('data-view') === view;
+    var sameDept = !dept || btns[j].getAttribute('data-dept') === dept;
+    btns[j].classList.toggle('on', isSame && sameDept);
+  }
+  var subs = document.querySelectorAll('#deptSubmenu button');
+  for (var k=0;k<subs.length;k++) subs[k].classList.toggle('on', view === 'dept' && subs[k].getAttribute('data-dept') === S.dept);
+  var msubs = document.querySelectorAll('#mplSubmenu button');   // FASE 2
+  for (var m=0;m<msubs.length;m++) msubs[m].classList.toggle('on', view === 'mpl' && msubs[m].getAttribute('data-dept') === S.mplDept);
+
+  closeSidebar();
+  renderNavTitles();
+  renderView();
+}
+
+function renderView(){
+  if (S.view === 'dashboard') loadDashboard();
+  else if (S.view === 'dept') loadAssets();
+  else if (S.view === 'mpl') loadMpl();          // FASE 2
+  else if (S.view === 'mutasi') loadMutasi();   // FASE 3
+  else if (S.view === 'opname') loadOpnameView();   // FASE 4
+  else if (S.view === 'maint') loadMaint();
+  else if (S.view === 'depr') loadDepr();
+  else if (S.view === 'writeoff') loadWriteOffs();   // FASE 5
+  else if (S.view === 'report') loadReport();
+  else if (S.view === 'users') loadUsers();
+  else if (S.view === 'log') loadLog();
+  else if (S.view === 'settings') renderSettings();
+}
+
+/* ------------------------------ dashboard ------------------------------ */
+function loadDashboard(){
+  $('dashBars').innerHTML = '<p class="tiny muted">' + esc(t('loading')) + '</p>';
+  srun('getDashboard', S.unit).then(function(d){
+    $('kTotal').textContent = Number(d.totalAset||0).toLocaleString('id-ID');
+    $('kTotalSub').textContent = d.jumlahDept + ' ' + t('statDept').toLowerCase();
+    $('kValue').textContent = rpShort(d.totalNilai);
+    $('kService').textContent = d.perluServis;
+    $('kPending').textContent = d.userMenunggu;
+    $('kMpl').textContent = Number(d.totalMpl || 0).toLocaleString('id-ID');   // FASE 2
+    $('kMplSub').textContent = rpShort(d.totalNilaiMpl || 0);
+    setMutBadge(d.mutasiPending || 0);                                         // FASE 3
+    setMaintBadge(d.maintTerlambat || 0);                                       // FASE 4
+    $('barsUnit').textContent = S.unit ? S.unit : t('allUnit');
+    $('badgeUsers').hidden = !(S.user.full && d.userMenunggu > 0);
+    $('badgeUsers').textContent = d.userMenunggu;
+
+    var per = d.perDept || [];
+    var max = 1;
+    for (var i=0;i<per.length;i++) if (per[i].jumlah > max) max = per[i].jumlah;
+    $('dashBars').innerHTML = per.map(function(p){
+      var h = Math.max(4, Math.round((p.jumlah / max) * 100));
+      return '<div class="col"><em>' + p.jumlah + '</em><div class="bar" style="height:' + h + '%"></div><span>' + esc(p.kode) + '</span></div>';
+    }).join('') || '<p class="tiny muted">—</p>';
+
+    var sorted = per.slice().sort(function(a,b){ return b.nilai - a.nilai; });
+    $('dashDeptList').innerHTML = sorted.map(function(p){
+      return '<div><span class="mono tiny" style="opacity:.7;width:44px">' + esc(p.kode) + '</span>' +
+        '<span class="grow">' + esc(p.nama) + '</span><b>' + esc(rpShort(p.nilai)) + '</b></div>';
+    }).join('') || '<p class="tiny muted">—</p>';
+
+    var rows = (d.recent||[]).map(function(a){
+      return '<tr><td class="mono">' + esc(a.idAset) + '</td><td>' + esc(a.nama) + '</td><td>' + esc(a.dept) +
+        '</td><td>' + esc(a.lokasi) + '</td><td class="mono">' + esc(rp(a.harga)) + '</td><td>' + condTag(a.kondisi) + '</td></tr>';
+    }).join('');
+    $('tblRecent').innerHTML = '<thead><tr><th>' + esc(t('thId')) + '</th><th>' + esc(t('thName')) + '</th><th>' +
+      esc(t('thDept')) + '</th><th>' + esc(t('thLoc')) + '</th><th>' + esc(t('thPrice')) + '</th><th>' +
+      esc(t('thCond')) + '</th></tr></thead><tbody>' + (rows || '<tr><td colspan="6" class="empty">' + esc(t('emptyAsset')) + '</td></tr>') + '</tbody>';
+  })['catch'](function(e){ toast(e.message, 'err'); $('dashBars').innerHTML = ''; });
+}
+
+function condTag(c){
+  var v = String(c||'Baik');
+  var cls = v === 'Baik' ? 'ok' : (v === 'Perlu Servis' ? 'warn' : 'bad');
+  var map = { 'Baik':t('condGood'), 'Perlu Servis':t('condService'), 'Rusak':t('condBroken'), 'Hilang':t('condLost') };
+  return '<span class="tag ' + cls + '">' + esc(map[v] || v) + '</span>';
+}
+
+/* ------------------------------ aset per departemen ------------------------------ */
+function deptName(kode){
+  for (var i=0;i<S.depts.length;i++) if (S.depts[i].kode === kode) return S.depts[i].nama;
+  return kode;
+}
+
+function loadAssets(){
+  if (!S.dept) {
+    var first = S.depts.filter(function(d){ return d.status !== 'Nonaktif'; })[0];
+    if (!first) { toast('Belum ada sub-departemen.', 'err'); return; }
+    S.dept = first.kode;
+  }
+  $('deptTitle').textContent = S.dept + ' — ' + deptName(S.dept);
+  $('pgSub').textContent = deptName(S.dept);
+  $('tblAsset').innerHTML = '<tbody><tr><td class="empty">' + esc(t('loading')) + '</td></tr></tbody>';
+
+  srun('getAssets', S.dept, { q: $('assetQ').value.trim(), sort: $('assetSort').value, unit: S.unit })
+    .then(function(res){
+      S.assets = res.items || [];
+      var canDel = !!res.canDelete;
+      var head = '<thead><tr><th></th><th>' + esc(t('thId')) + '</th><th>' + esc(t('thName')) + '</th><th>' +
+        esc(t('thCat')) + '</th><th>' + esc(t('thBrand')) + '</th><th>' + esc(t('thLoc')) + '</th><th>' +
+        esc(t('thPic')) + '</th><th>' + esc(t('thPrice')) + '</th><th>' + esc(t('thCond')) + '</th><th>' +
+        esc(t('thAct')) + '</th></tr></thead>';
+      var body = S.assets.map(function(a, idx){
+        var thumb = a.fotoURL ? '<img class="thumb" src="' + esc(a.fotoURL) + '" alt="">' :
+          '<div class="thumb" style="display:grid;place-items:center;font-size:11px;opacity:.5">–</div>';
+        return '<tr><td>' + thumb + '</td><td class="mono">' + esc(a.idAset) + '</td><td>' + esc(a.nama) +
+          '</td><td>' + esc(a.kategori) + '</td><td>' + esc(a.merk) + '</td><td>' + esc(a.lokasi) +
+          '</td><td>' + esc(a.pic) + '</td><td class="mono">' + esc(rp(a.harga)) + '</td><td>' + condTag(a.kondisi) +
+          '</td><td><div class="rowact"><button class="ico" data-act="mutasiNew" data-idx="' + idx + '" title="' + esc(t('btnMutasi')) + '">↺</button>' +
+          '<button class="ico" data-act="woNew" data-idx="' + idx + '" title="' + esc(t('btnWriteoff')) + '">⤦</button>' +
+          '<button class="ico" data-act="assetEdit" data-idx="' + idx + '" title="' + esc(t('btnEdit')) + '">✎</button>' +
+          (canDel ? '<button class="ico" data-act="assetDel" data-idx="' + idx + '" title="' + esc(t('btnDelete')) + '">🗑</button>' : '') +
+          '</div></td></tr>';
+      }).join('');
+      $('tblAsset').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="10" class="empty">' + esc(t('emptyAsset')) + '</td></tr>') + '</tbody>';
+    })['catch'](function(e){
+      toast(e.message, 'err');
+      $('tblAsset').innerHTML = '<tbody><tr><td class="empty">' + esc(e.message) + '</td></tr></tbody>';
+    });
+}
+
+function assetForm(a){
+  a = a || {};
+  var units = S.hotels.filter(function(h){ return h.status !== 'Nonaktif'; });
+  var conds = [['Baik',t('condGood')],['Perlu Servis',t('condService')],['Rusak',t('condBroken')],['Hilang',t('condLost')]];
+  return '<div class="grid-f">' +
+    '<label class="fld full"><span>' + esc(t('thName')) + '</span><input class="inp" id="afNama" value="' + esc(a.nama) + '"></label>' +
+    (a.idAset ? '<label class="fld"><span>' + esc(t('thId')) + '</span><input class="inp mono" value="' + esc(a.idAset) + '" disabled></label>'
+              : '<label class="fld"><span>' + esc(t('thUnit')) + '</span><select class="inp" id="afUnit">' +
+                units.map(function(h){ return '<option value="' + esc(h.kode) + '"' + (h.kode === (S.unit || S.user.unit) ? ' selected' : '') + '>' + esc(h.nama) + '</option>'; }).join('') +
+                '</select></label>') +
+    '<label class="fld"><span>' + esc(t('fCat')) + '</span><input class="inp" id="afKategori" value="' + esc(a.kategori) + '"></label>' +
+    '<label class="fld"><span>' + esc(t('fBrand')) + '</span><input class="inp" id="afMerk" value="' + esc(a.merk) + '"></label>' +
+    '<label class="fld"><span>' + esc(t('fBuy')) + '</span><input class="inp" id="afBeli" type="date" value="' + esc(a.tglPembelian) + '"></label>' +
+    '<label class="fld"><span>' + esc(t('fWarranty')) + '</span><input class="inp" id="afGaransi" type="date" value="' + esc(a.garansi) + '"></label>' +
+    '<label class="fld"><span>' + esc(t('fPrice')) + '</span><input class="inp mono" id="afHarga" type="number" min="0" step="1000" value="' + esc(a.harga || 0) + '"></label>' +
+    '<label class="fld"><span>' + esc(t('fLoc')) + '</span><input class="inp" id="afLokasi" value="' + esc(a.lokasi) + '"></label>' +
+    '<label class="fld"><span>' + esc(t('fPic')) + '</span><input class="inp" id="afPic" value="' + esc(a.pic) + '"></label>' +
+    '<label class="fld"><span>' + esc(t('fCond')) + '</span><select class="inp" id="afKondisi">' +
+      conds.map(function(c){ return '<option value="' + esc(c[0]) + '"' + (String(a.kondisi||'Baik') === c[0] ? ' selected' : '') + '>' + esc(c[1]) + '</option>'; }).join('') +
+    '</select></label>' +
+    '<label class="fld"><span>' + esc(t('fVendor')) + '</span><input class="inp" id="afVendor" value="' + esc(a.vendor) + '"></label>' +
+    '<label class="fld full"><span>' + esc(t('fPhoto')) + '</span><div class="fileline">' +
+      '<img class="prev" id="afPrev" src="' + esc(a.fotoURL || '') + '" alt=""' + (a.fotoURL ? '' : ' hidden') + '>' +
+      '<div class="filewrap"><input id="afFoto" type="file" accept="image/*">' +
+      '<div class="fbtn"><i>📷</i><span id="afFotoTxt">' + esc(t('fChoose')) + '</span></div></div></div></label>' +
+    '<label class="fld full"><span>' + esc(t('fNote')) + '</span><textarea class="inp" id="afKet">' + esc(a.keterangan) + '</textarea></label>' +
+    '</div>';
+}
+
+function openAssetModal(a){
+  var edit = !!(a && a.idAset);
+  S.photo.asset = '';
+  openModal(edit ? t('mAssetEdit') : t('mAssetNew'), assetForm(a), function(){
+    var payload = {
+      dept: S.dept,
+      mode: edit ? 'edit' : 'baru',
+      idAset: edit ? a.idAset : '',
+      unit: edit ? '' : ($('afUnit') ? $('afUnit').value : ''),
+      nama: $('afNama').value.trim(),
+      kategori: $('afKategori').value.trim(),
+      merk: $('afMerk').value.trim(),
+      tglPembelian: $('afBeli').value,
+      garansi: $('afGaransi').value,
+      harga: Number($('afHarga').value || 0),
+      lokasi: $('afLokasi').value.trim(),
+      pic: $('afPic').value.trim(),
+      kondisi: $('afKondisi').value,
+      vendor: $('afVendor').value.trim(),
+      keterangan: $('afKet').value.trim(),
+      fotoURL: (a && a.fotoURL) || '',
+      fotoBase64: S.photo.asset || ''
+    };
+    if (!payload.nama) { toast(t('thName') + ' ' + (S.lang === 'en' ? 'is required.' : 'wajib diisi.'), 'err'); return false; }
+    busy('#mSave', true);
+    srun('saveAsset', payload).then(function(res){
+      busy('#mSave', false); closeModal();
+      clearListFilters('dept');
+      syncUnitFilter(res);
+      toast((res.mode === 'baru' ? (S.lang === 'en' ? 'Asset created: ' : 'Aset dibuat: ') + res.idAset : t('savedOk')), 'ok');
+      loadAssets();
+    })['catch'](function(e){ busy('#mSave', false); toast(e.message, 'err'); });
+    return true;
+  });
+  bindPhoto('afFoto', 'afPrev', 'asset');
+}
+
+function delAsset(idx){
+  var a = S.assets[idx];
+  if (!a) return;
+  if (!confirm(t('confirmDel') + '\n\n' + a.idAset + ' — ' + a.nama)) return;
+  srun('deleteAsset', S.dept, a.idAset).then(function(){
+    toast(t('deletedOk'), 'ok'); loadAssets();
+  })['catch'](function(e){ toast(e.message, 'err'); });
+}
+
+/* ------------------------------ MPL Asset (FASE 2) ------------------------------ */
+function renderMplSubmenu(){
+  var box = $('mplSubmenu');
+  var active = S.depts.filter(function(d){ return d.status !== 'Nonaktif'; });
+  box.innerHTML = active.map(function(d){
+    return '<button data-act="nav" data-view="mpl" data-dept="' + esc(d.kode) + '">' +
+      '<span class="mono" style="font-size:10.5px;opacity:.7">' + esc(d.kode) + '</span>&nbsp; ' + esc(d.nama) + '</button>';
+  }).join('') || '<p class="tiny muted" style="padding:8px 11px">—</p>';
+  box.hidden = !S.mplOpen;
+  $('mplCaret').textContent = S.mplOpen ? '▾' : '▸';
+}
+
+function loadMpl(){
+  if (!S.mplDept) {
+    var first = S.depts.filter(function(d){ return d.status !== 'Nonaktif'; })[0];
+    if (!first) { toast('Belum ada sub-departemen.', 'err'); return; }
+    S.mplDept = first.kode;
+  }
+  $('mplTitle').textContent = 'MPL ' + S.mplDept + ' — ' + deptName(S.mplDept);
+  $('pgSub').textContent = deptName(S.mplDept);
+  $('tblMpl').innerHTML = '<tbody><tr><td class="empty">' + esc(t('loading')) + '</td></tr></tbody>';
+
+  srun('getMplAssets', S.mplDept, { q: $('mplQ').value.trim(), sort: $('mplSort').value, unit: S.unit })
+    .then(function(res){
+      S.mpl = res.items || [];
+      var canDel = !!res.canDelete;
+      var head = '<thead><tr><th></th><th>' + esc(t('thId')) + '</th><th>' + esc(t('thJenis')) + '</th><th>' +
+        esc(t('thBrand')) + '</th><th>' + esc(t('thLoc')) + '</th><th>' + esc(t('thPic')) + '</th><th>' +
+        esc(t('thPrice')) + '</th><th>' + esc(t('thCond')) + '</th><th>' + esc(t('thAct')) + '</th></tr></thead>';
+      var body = S.mpl.map(function(a, idx){
+        var thumb = a.fotoURL ? '<img class="thumb" src="' + esc(a.fotoURL) + '" alt="">' :
+          '<div class="thumb imgfail">–</div>';
+        return '<tr><td>' + thumb + '</td><td class="mono">' + esc(a.idAset) + '</td><td>' + esc(a.jenis) +
+          '</td><td>' + esc(a.merk) + '</td><td>' + esc(a.lokasi) + '</td><td>' + esc(a.pic) +
+          '</td><td class="mono">' + esc(rp(a.harga)) + '</td><td>' + condTag(a.kondisi) +
+          '</td><td><div class="rowact"><button class="ico" data-act="mplMutasiNew" data-idx="' + idx + '" title="' + esc(t('btnMutasi')) + '">↺</button>' +
+          '<button class="ico" data-act="mplWoNew" data-idx="' + idx + '" title="' + esc(t('btnWriteoff')) + '">⤦</button>' +
+          '<button class="ico" data-act="mplEdit" data-idx="' + idx + '" title="' + esc(t('btnEdit')) + '">✎</button>' +
+          (canDel ? '<button class="ico" data-act="mplDel" data-idx="' + idx + '" title="' + esc(t('btnDelete')) + '">🗑</button>' : '') +
+          '</div></td></tr>';
+      }).join('');
+      $('tblMpl').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="9" class="empty">' + esc(t('emptyMpl')) + '</td></tr>') + '</tbody>';
+    })['catch'](function(e){
+      toast(e.message, 'err');
+      $('tblMpl').innerHTML = '<tbody><tr><td class="empty">' + esc(e.message) + '</td></tr></tbody>';
+    });
+}
+
+function mplForm(a){
+  a = a || {};
+  var units = S.hotels.filter(function(h){ return h.status !== 'Nonaktif'; });
+  var conds = [['Baik',t('condGood')],['Perlu Servis',t('condService')],['Rusak',t('condBroken')],['Hilang',t('condLost')]];
+  return '<div class="grid-f">' +
+    '<label class="fld full"><span>' + esc(t('fJenis')) + '</span><input class="inp" id="mfJenis" value="' + esc(a.jenis) + '"></label>' +
+    (a.idAset ? '<label class="fld"><span>' + esc(t('thId')) + '</span><input class="inp mono" value="' + esc(a.idAset) + '" disabled></label>'
+              : '<label class="fld"><span>' + esc(t('thUnit')) + '</span><select class="inp" id="mfUnit">' +
+                units.map(function(x){ return '<option value="' + esc(x.kode) + '"' + (x.kode === (S.unit || S.user.unit) ? ' selected' : '') + '>' + esc(x.nama) + '</option>'; }).join('') +
+                '</select></label>') +
+    '<label class="fld"><span>' + esc(t('fBrand')) + '</span><input class="inp" id="mfMerk" value="' + esc(a.merk) + '"></label>' +
+    '<label class="fld"><span>' + esc(t('fBuy')) + '</span><input class="inp" id="mfBeli" type="date" value="' + esc(a.tglPembelian) + '"></label>' +
+    '<label class="fld"><span>' + esc(t('fWarranty')) + '</span><input class="inp" id="mfGaransi" type="date" value="' + esc(a.garansi) + '"></label>' +
+    '<label class="fld"><span>' + esc(t('fPrice')) + '</span><input class="inp mono" id="mfHarga" type="number" min="0" step="1000" value="' + esc(a.harga || 0) + '"></label>' +
+    '<label class="fld"><span>' + esc(t('fLoc')) + '</span><input class="inp" id="mfLokasi" value="' + esc(a.lokasi) + '"></label>' +
+    '<label class="fld"><span>' + esc(t('fPic')) + '</span><input class="inp" id="mfPic" value="' + esc(a.pic) + '"></label>' +
+    '<label class="fld"><span>' + esc(t('fVendor')) + '</span><input class="inp" id="mfVendor" value="' + esc(a.vendor) + '"></label>' +
+    '<label class="fld"><span>' + esc(t('fCond')) + '</span><select class="inp" id="mfKondisi">' +
+      conds.map(function(c){ return '<option value="' + esc(c[0]) + '"' + (String(a.kondisi||'Baik') === c[0] ? ' selected' : '') + '>' + esc(c[1]) + '</option>'; }).join('') +
+    '</select></label>' +
+    '<label class="fld full"><span>' + esc(t('fPhoto')) + '</span><div class="fileline">' +
+      '<img class="prev" id="mfPrev" src="' + esc(a.fotoURL || '') + '" alt=""' + (a.fotoURL ? '' : ' hidden') + '>' +
+      '<div class="filewrap"><input id="mfFoto" type="file" accept="image/*">' +
+      '<div class="fbtn"><i>📷</i><span id="mfFotoTxt">' + esc(t('fChoose')) + '</span></div></div></div></label>' +
+    '<label class="fld full"><span>' + esc(t('fNote')) + '</span><textarea class="inp" id="mfKet">' + esc(a.keterangan) + '</textarea></label>' +
+    '</div>';
+}
+
+function openMplModal(a){
+  var edit = !!(a && a.idAset);
+  S.photo.mpl = '';
+  openModal(edit ? t('mMplEdit') : t('mMplNew'), mplForm(a), function(){
+    var payload = {
+      dept: S.mplDept,
+      mode: edit ? 'edit' : 'baru',
+      idAset: edit ? a.idAset : '',
+      unit: edit ? '' : ($('mfUnit') ? $('mfUnit').value : ''),
+      jenis: $('mfJenis').value.trim(),
+      merk: $('mfMerk').value.trim(),
+      tglPembelian: $('mfBeli').value,
+      garansi: $('mfGaransi').value,
+      harga: Number($('mfHarga').value || 0),
+      lokasi: $('mfLokasi').value.trim(),
+      pic: $('mfPic').value.trim(),
+      vendor: $('mfVendor').value.trim(),
+      kondisi: $('mfKondisi').value,
+      keterangan: $('mfKet').value.trim(),
+      fotoURL: (a && a.fotoURL) || '',
+      fotoBase64: S.photo.mpl || ''
+    };
+    if (!payload.jenis) { toast(t('fJenis') + ' ' + (S.lang === 'en' ? 'is required.' : 'wajib diisi.'), 'err'); return false; }
+    busy('#mSave', true);
+    srun('saveMplAsset', payload).then(function(res){
+      busy('#mSave', false); closeModal();
+      clearListFilters('mpl');
+      syncUnitFilter(res);
+      toast(res.mode === 'baru' ? (S.lang === 'en' ? 'MPL asset created: ' : 'Aset MPL dibuat: ') + res.idAset : t('savedOk'), 'ok');
+      loadMpl();
+    })['catch'](function(e){ busy('#mSave', false); toast(e.message, 'err'); });
+    return true;
+  });
+  bindPhoto('mfFoto', 'mfPrev', 'mpl');
+}
+
+function delMpl(idx){
+  var a = S.mpl[idx];
+  if (!a) return;
+  if (!confirm(t('confirmDel') + '\n\n' + a.idAset + ' — ' + a.jenis)) return;
+  srun('deleteMplAsset', S.mplDept, a.idAset).then(function(){
+    toast(t('deletedOk'), 'ok'); loadMpl();
+  })['catch'](function(e){ toast(e.message, 'err'); });
+}
+
+/* ---------- Perbaikan "hasil input tidak muncul di halaman display" ----------
+   Dua penyebab yang ditemukan:
+   1. Kata kunci pencarian / urutan lama masih aktif sehingga baris baru tersaring keluar.
+   2. Filter unit di topbar berbeda dengan unit aset yang baru disimpan.
+   Kedua hal itu direset dan diselaraskan otomatis setiap kali penyimpanan berhasil. */
+function clearListFilters(which){
+  if (which === 'mpl') {
+    if ($('mplQ')) $('mplQ').value = '';
+    if ($('mplSort')) $('mplSort').value = 'terbaru';
+  } else {
+    if ($('assetQ')) $('assetQ').value = '';
+    if ($('assetSort')) $('assetSort').value = 'terbaru';
+  }
+}
+function syncUnitFilter(res){
+  if (!res || !res.unit) return;
+  if (S.unit && S.unit !== res.unit) {
+    S.unit = res.unit;
+    if ($('unitSel')) $('unitSel').value = res.unit;
+    toast(t('filterSwitch') + res.unit, 'ok');
+  }
+}
+
+/* ------------------------------ Mutasi Aset (FASE 3) ------------------------------ */
+function setMutBadge(n){
+  var b = $('badgeMutasi');
+  if (!b) return;
+  var v = Number(n || 0);
+  b.textContent = v;
+  b.hidden = v <= 0;
+}
+
+function loadMutasi(){
+  $('tblMut').innerHTML = '<tbody><tr><td class="empty">' + esc(t('loading')) + '</td></tr></tbody>';
+  var segs = document.querySelectorAll('#mutSeg button');
+  for (var s=0;s<segs.length;s++) segs[s].classList.toggle('on', segs[s].getAttribute('data-f') === S.mutFilter);
+
+  srun('getMutasi', S.mutFilter).then(function(res){
+    S.mut = res.items || [];
+    S.mutCanDecide = !!res.canDecide;
+    setMutBadge(res.pending);
+
+    var head = '<thead><tr><th>' + esc(t('thMut')) + '</th><th>' + esc(t('thId')) + '</th><th>' +
+      esc(t('thMove')) + '</th><th>' + esc(t('fReason')) + '</th><th>' + esc(t('thReq')) + '</th><th>' +
+      esc(t('thDate')) + '</th><th>' + esc(t('thStatus')) + '</th><th>' + esc(t('thAct')) + '</th></tr></thead>';
+
+    var body = S.mut.map(function(m, idx){
+      var lok = m.keLokasi ? (esc(m.dariLokasi || '-') + ' \u2192 ' + esc(m.keLokasi)) : '';
+      var pic = m.kePIC ? (esc(m.dariPIC || '-') + ' \u2192 ' + esc(m.kePIC)) : '';
+      var move = '<div class="tiny">' + (lok ? '<div>' + esc(t('fToLoc')) + ': ' + lok + '</div>' : '') +
+        (pic ? '<div>' + esc(t('fToPic')) + ': ' + pic + '</div>' : '') + '</div>';
+      var stCls = m.status === 'Disetujui' ? 'ok' : (m.status === 'Pending' ? 'warn' : 'bad');
+      var stTxt = m.status === 'Disetujui' ? t('mutApproved') : (m.status === 'Pending' ? t('mutPending') : t('mutRejected'));
+      var act = '';
+      if (S.mutCanDecide && m.status === 'Pending') {
+        act = '<div class="rowact"><button class="ico" data-act="mutOk" data-idx="' + idx + '" title="' + esc(t('btnApprove')) + '">\u2713</button>' +
+              '<button class="ico" data-act="mutNo" data-idx="' + idx + '" title="' + esc(t('btnReject')) + '">\u2715</button></div>';
+      } else if (m.penyetuju) {
+        act = '<span class="tiny muted">' + esc(m.penyetuju) + '</span>';
+      } else {
+        act = '<span class="tiny muted">\u2014</span>';
+      }
+      return '<tr><td class="mono">' + esc(m.idMutasi) + '</td><td class="mono">' + esc(m.idAset) +
+        (m.sumber === 'MPL' ? ' <span class="tag">MPL</span>' : '') + '</td><td>' + move +
+        '</td><td class="tiny">' + esc(m.alasan) + '</td><td class="tiny">' + esc(m.pemohon) +
+        '</td><td class="mono tiny">' + esc(m.tglAju) + '</td><td><span class="tag ' + stCls + '">' + esc(stTxt) +
+        '</span></td><td>' + act + '</td></tr>';
+    }).join('');
+
+    $('tblMut').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="8" class="empty">' + esc(t('emptyMut')) + '</td></tr>') + '</tbody>';
+  })['catch'](function(e){
+    toast(e.message, 'err');
+    $('tblMut').innerHTML = '<tbody><tr><td class="empty">' + esc(e.message) + '</td></tr></tbody>';
+  });
+}
+
+function openMutasiModal(sumber, a){
+  if (!a) return;
+  var dept = sumber === 'MPL' ? S.mplDept : S.dept;
+  var judul = sumber === 'MPL' ? (a.jenis || '') : (a.nama || '');
+  var body = '<div class="inset" style="padding:14px 16px;margin-bottom:18px">' +
+      '<div class="mono tiny">' + esc(a.idAset) + (sumber === 'MPL' ? ' \u00b7 MPL' : '') + ' \u00b7 ' + esc(dept) + '</div>' +
+      '<div style="font-size:14px;margin-top:4px">' + esc(judul) + '</div></div>' +
+    '<div class="grid-f">' +
+    '<label class="fld"><span>' + esc(t('fCurLoc')) + '</span><input class="inp" value="' + esc(a.lokasi || '-') + '" disabled></label>' +
+    '<label class="fld"><span>' + esc(t('fCurPic')) + '</span><input class="inp" value="' + esc(a.pic || '-') + '" disabled></label>' +
+    '<label class="fld"><span>' + esc(t('fToLoc')) + '</span><input class="inp" id="muLokasi" placeholder="' + esc(t('optional')) + '"></label>' +
+    '<label class="fld"><span>' + esc(t('fToPic')) + '</span><input class="inp" id="muPic" placeholder="' + esc(t('optional')) + '"></label>' +
+    '<label class="fld full"><span>' + esc(t('fReason')) + '</span><textarea class="inp" id="muAlasan"></textarea></label>' +
+    '</div>';
+
+  openModal(t('mMutNew'), body, function(){
+    var payload = {
+      sumber: sumber,
+      dept: dept,
+      idAset: a.idAset,
+      keLokasi: $('muLokasi').value.trim(),
+      kePIC: $('muPic').value.trim(),
+      alasan: $('muAlasan').value.trim()
+    };
+    if (!payload.keLokasi && !payload.kePIC) {
+      toast(S.lang === 'en' ? 'Fill in a new location or a new PIC.' : 'Isi minimal lokasi baru atau PIC baru.', 'err');
+      return false;
+    }
+    if (!payload.alasan) { toast(t('fReason') + ' ' + (S.lang === 'en' ? 'is required.' : 'wajib diisi.'), 'err'); return false; }
+    busy('#mSave', true);
+    srun('requestMutasi', payload).then(function(res){
+      busy('#mSave', false); closeModal();
+      toast(t('mutSent') + res.idMutasi, 'ok');
+      refreshMutBadge();
+    })['catch'](function(e){ busy('#mSave', false); toast(e.message, 'err'); });
+    return true;
+  }, t('btnMutasi'));
+}
+
+function decideMut(idx, keputusan){
+  var m = S.mut[idx];
+  if (!m) return;
+  var tanya = keputusan === 'Disetujui' ? t('askApprove') : t('askReject');
+  if (!confirm(tanya + '\n\n' + m.idMutasi + ' \u00b7 ' + m.idAset)) return;
+  var catatan = prompt(t('askNote'), '');
+  if (catatan === null) return;
+  srun('decideMutasi', m.idMutasi, keputusan, catatan).then(function(res){
+    toast(t('mutDecided') + res.status, 'ok');
+    loadMutasi();
+  })['catch'](function(e){ toast(e.message, 'err'); });
+}
+
+function refreshMutBadge(){
+  srun('getMutasi', 'Pending').then(function(res){ setMutBadge(res.pending); })['catch'](function(){});
+}
+
+/* ------------------------------ Stock Opname (FASE 4) ------------------------------ */
+function loadOpnameView(){
+  renderUnitSelector();
+  var us = $('opUnit');
+  us.innerHTML = S.hotels.filter(function(h){ return h.status !== 'Nonaktif'; })
+    .map(function(h){ return '<option value="' + esc(h.kode) + '">' + esc(h.nama) + '</option>'; }).join('');
+  if (S.unit) us.value = S.unit;
+
+  loadOpnameHistory();
+  findRunningOpname();
+}
+
+function findRunningOpname(){
+  srun('listOpnameSessions').then(function(list){
+    var mine = null;
+    for (var i=0;i<list.length;i++){
+      if (list[i].status === 'Berjalan' && list[i].petugas.toLowerCase() === S.user.email.toLowerCase()) { mine = list[i]; break; }
+    }
+    if (mine) openOpnameSession(mine.idSesi); else showOpnameStart();
+  })['catch'](function(e){ toast(e.message, 'err'); });
+}
+
+function showOpnameStart(){
+  S.opSesi = null;
+  $('opnameStartPanel').hidden = false;
+  $('opnameActivePanel').hidden = true;
+  stopCamera();
+}
+
+function openOpnameSession(idSesi){
+  srun('getOpnameSession', idSesi).then(function(sesi){
+    S.opSesi = sesi;
+    $('opnameStartPanel').hidden = true;
+    $('opnameActivePanel').hidden = false;
+    renderOpnameActive();
+  })['catch'](function(e){ toast(e.message, 'err'); showOpnameStart(); });
+}
+
+function renderOpnameActive(){
+  var s = S.opSesi;
+  if (!s) return;
+  $('opActiveTitle').textContent = s.idSesi + ' \u00b7 ' + s.unit + (s.lokasi ? ' \u00b7 ' + s.lokasi : '');
+  $('opActiveMeta').textContent = s.petugas;
+  $('opKTarget').textContent = s.totalTarget;
+  $('opKScan').textContent = s.totalScan;
+  $('opKFound').textContent = s.ditemukan;
+  var pct = s.totalTarget > 0 ? Math.round((s.ditemukan / s.totalTarget) * 100) : 0;
+  $('opKProgress').textContent = pct + '%';
+  $('opProgBar').style.width = pct + '%';
+
+  $('opFeed').innerHTML = s.items.map(function(it){
+    return '<div><span class="mono">' + esc(it.idAset) + '</span><span class="tiny muted">' + esc(it.nama || '\u2014') + '</span><b>' + esc(it.waktu.split(' ')[1] || '') + '</b></div>';
+  }).join('') || '<p class="tiny muted">\u2014</p>';
+}
+
+function doManualScan(){
+  var code = $('opManualCode').value.trim();
+  if (!code || !S.opSesi) return;
+  srun('scanOpnameAsset', S.opSesi.idSesi, code, 'Baik', '').then(function(res){
+    $('opManualCode').value = '';
+    toast((res.ditemukan ? t('opAssetFound') : t('opAssetMissing')) + res.idAset, res.ditemukan ? 'ok' : 'err');
+    return srun('getOpnameSession', S.opSesi.idSesi);
+  }).then(function(sesi){ S.opSesi = sesi; renderOpnameActive(); })
+    ['catch'](function(e){ toast(e.message, 'err'); });
+}
+
+function toggleCamera(){
+  if (S.opCamOn) { stopCamera(); return; }
+  if (typeof Html5Qrcode === 'undefined') { toast(t('camNoSupport'), 'err'); return; }
+  $('reader').hidden = false;
+  S.opScanner = new Html5Qrcode('reader');
+  S.opScanner.start(
+    { facingMode: 'environment' },
+    { fps: 10, qrbox: 220 },
+    function(decoded){
+      $('opManualCode').value = decoded;
+      doManualScan();
+    },
+    function(){ /* frame tanpa kode terdeteksi — diabaikan */ }
+  ).then(function(){
+    S.opCamOn = true;
+    $('opCamBtn').textContent = t('btnCamStop');
+  })['catch'](function(){
+    toast(t('camNoSupport'), 'err');
+    $('reader').hidden = true;
+  });
+}
+
+function stopCamera(){
+  if (S.opScanner && S.opCamOn) {
+    S.opScanner.stop().then(function(){ S.opScanner.clear(); })['catch'](function(){});
+  }
+  S.opCamOn = false;
+  S.opScanner = null;
+  if ($('reader')) $('reader').hidden = true;
+  if ($('opCamBtn')) $('opCamBtn').textContent = t('btnCam');
+}
+
+function closeOpnameSession(){
+  if (!S.opSesi) return;
+  if (!confirm(t('askCloseOp'))) return;
+  srun('closeOpname', S.opSesi.idSesi).then(function(sesi){
+    stopCamera();
+    toast(t('opClosed') + (sesi.akurasi === null ? '-' : sesi.akurasi + '%'), 'ok');
+    showOpnameStart();
+    loadOpnameHistory();
+  })['catch'](function(e){ toast(e.message, 'err'); });
+}
+
+function loadOpnameHistory(){
+  $('tblOpname').innerHTML = '<tbody><tr><td class="empty">' + esc(t('loading')) + '</td></tr></tbody>';
+  srun('listOpnameSessions').then(function(list){
+    var head = '<thead><tr><th>' + esc(t('thId')) + '</th><th>' + esc(t('thUnitCol')) + '</th><th>' +
+      esc(t('thLoc')) + '</th><th>' + esc(t('thPetugas')) + '</th><th>' + esc(t('thTarget')) + '</th><th>' +
+      esc(t('opFound')) + '</th><th>' + esc(t('thAkurasi')) + '</th><th>' + esc(t('thStatus')) + '</th></tr></thead>';
+    var body = list.map(function(s){
+      var stCls = s.status === 'Selesai' ? 'ok' : 'warn';
+      return '<tr><td class="mono">' + esc(s.idSesi) + '</td><td>' + esc(s.unit) + '</td><td>' + esc(s.lokasi || '\u2014') +
+        '</td><td class="tiny">' + esc(s.petugas) + '</td><td class="mono">' + esc(s.totalTarget) +
+        '</td><td class="mono">' + esc(s.ditemukan) + '</td><td class="mono">' + (s.akurasi === null ? '\u2014' : s.akurasi + '%') +
+        '</td><td><span class="tag ' + stCls + '">' + esc(s.status) + '</span></td></tr>';
+    }).join('');
+    $('tblOpname').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="8" class="empty">' + esc(t('opNoActive')) + '</td></tr>') + '</tbody>';
+  })['catch'](function(e){
+    toast(e.message, 'err');
+    $('tblOpname').innerHTML = '<tbody><tr><td class="empty">' + esc(e.message) + '</td></tr></tbody>';
+  });
+}
+
+/* ------------------------------ Maintenance (FASE 4) ------------------------------ */
+function loadMaint(){
+  $('tblMaint').innerHTML = '<tbody><tr><td class="empty">' + esc(t('loading')) + '</td></tr></tbody>';
+  var segs = document.querySelectorAll('#maintSeg button');
+  for (var s=0;s<segs.length;s++) segs[s].classList.toggle('on', segs[s].getAttribute('data-f') === S.maintFilter);
+
+  srun('getMaintenance', S.maintFilter).then(function(res){
+    S.maint = res.items || [];
+    setMaintBadge(res.terlambat);
+
+    var head = '<thead><tr><th>' + esc(t('thId')) + '</th><th>' + esc(t('thJenisSvc')) + '</th><th>' +
+      esc(t('thDept')) + '</th><th>' + esc(t('thJadwal')) + '</th><th>' + esc(t('thRealisasi')) + '</th><th>' +
+      esc(t('thVendor')) + '</th><th>' + esc(t('thBiaya')) + '</th><th>' + esc(t('thStatus')) + '</th><th>' +
+      esc(t('thAct')) + '</th></tr></thead>';
+
+    var body = S.maint.map(function(m, idx){
+      var stCls = m.status === 'Selesai' ? 'ok' : (m.terlambat ? 'bad' : 'warn');
+      var act = m.status === 'Terjadwal'
+        ? '<div class="rowact"><button class="ico" data-act="maintDone" data-idx="' + idx + '" title="' + esc(t('btnDone')) + '">\u2713</button>' +
+          '<button class="ico" data-act="maintCancel" data-idx="' + idx + '" title="' + esc(t('btnCancelSvc')) + '">\u2715</button></div>'
+        : '<span class="tiny muted">\u2014</span>';
+      return '<tr><td class="mono">' + esc(m.idServis) + '</td><td>' + esc(m.jenis) + '</td><td>' +
+        esc(m.dept) + (m.sumber === 'MPL' ? ' <span class="tag">MPL</span>' : '') + '</td><td class="mono">' + esc(m.tglJadwal) +
+        '</td><td class="mono">' + esc(m.tglRealisasi || '\u2014') + '</td><td>' + esc(m.vendor) +
+        '</td><td class="mono">' + esc(m.biaya ? rp(m.biaya) : '\u2014') + '</td><td><span class="tag ' + stCls + '">' +
+        esc(m.terlambat ? t('mtLate') : m.status) + '</span></td><td>' + act + '</td></tr>';
+    }).join('');
+    $('tblMaint').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="9" class="empty">' + esc(t('emptyMaint')) + '</td></tr>') + '</tbody>';
+  })['catch'](function(e){
+    toast(e.message, 'err');
+    $('tblMaint').innerHTML = '<tbody><tr><td class="empty">' + esc(e.message) + '</td></tr></tbody>';
+  });
+}
+
+function setMaintBadge(n){
+  var b = $('badgeMaint');
+  if (!b) return;
+  var v = Number(n || 0);
+  b.textContent = v;
+  b.hidden = v <= 0;
+}
+
+function openMaintModal(){
+  var body = '<div class="grid-f">' +
+    '<label class="fld full"><span>' + esc(t('fIdAsetSvc')) + '</span><input class="inp mono" id="mtIdAset" placeholder="APK-ENG-26-0001"></label>' +
+    '<label class="fld"><span>' + esc(t('fJenisSvc')) + '</span><input class="inp" id="mtJenis" placeholder="Kalibrasi / Servis rutin"></label>' +
+    '<label class="fld"><span>' + esc(t('fTglJadwal')) + '</span><input class="inp" id="mtTgl" type="date"></label>' +
+    '<label class="fld full"><span>' + esc(t('fVendor')) + '</span><input class="inp" id="mtVendor"></label>' +
+    '</div>';
+  openModal(t('mMaintNew'), body, function(){
+    var payload = {
+      idAset: $('mtIdAset').value.trim(), jenis: $('mtJenis').value.trim(),
+      tglJadwal: $('mtTgl').value, vendor: $('mtVendor').value.trim()
+    };
+    if (!payload.idAset || !payload.jenis || !payload.tglJadwal) {
+      toast(S.lang === 'en' ? 'Asset code, type, and date are required.' : 'Kode aset, jenis, dan tanggal wajib diisi.', 'err');
+      return false;
+    }
+    busy('#mSave', true);
+    srun('saveMaintenance', payload).then(function(res){
+      busy('#mSave', false); closeModal();
+      toast((res.mode === 'baru' ? (S.lang === 'en' ? 'Scheduled: ' : 'Terjadwal: ') + res.idServis : t('savedOk')), 'ok');
+      loadMaint();
+    })['catch'](function(e){ busy('#mSave', false); toast(e.message, 'err'); });
+    return true;
+  });
+}
+
+function openMaintDoneModal(idx){
+  var m = S.maint[idx];
+  if (!m) return;
+  var body = '<div class="grid-f">' +
+    '<label class="fld"><span>' + esc(t('fTglRealisasi')) + '</span><input class="inp" id="mdTgl" type="date"></label>' +
+    '<label class="fld"><span>' + esc(t('fBiaya')) + '</span><input class="inp mono" id="mdBiaya" type="number" min="0" step="1000" value="0"></label>' +
+    '<label class="fld full"><span>' + esc(t('fVendor')) + '</span><input class="inp" id="mdVendor" value="' + esc(m.vendor) + '"></label>' +
+    '<label class="fld full"><span>' + esc(t('fHasil')) + '</span><textarea class="inp" id="mdHasil"></textarea></label>' +
+    '</div>';
+  openModal(t('mDoneTitle'), body, function(){
+    var payload = {
+      tglRealisasi: $('mdTgl').value, biaya: Number($('mdBiaya').value || 0),
+      vendor: $('mdVendor').value.trim(), hasil: $('mdHasil').value.trim()
+    };
+    busy('#mSave', true);
+    srun('completeMaintenance', m.idServis, payload).then(function(){
+      busy('#mSave', false); closeModal(); toast(t('savedOk'), 'ok'); loadMaint();
+    })['catch'](function(e){ busy('#mSave', false); toast(e.message, 'err'); });
+    return true;
+  }, t('btnDone'));
+}
+
+function cancelMaint(idx){
+  var m = S.maint[idx];
+  if (!m) return;
+  if (!confirm(t('askCancelSvc') + '\n\n' + m.idServis + ' \u00b7 ' + m.idAset)) return;
+  srun('cancelMaintenance', m.idServis).then(function(){
+    toast(t('deletedOk'), 'ok'); loadMaint();
+  })['catch'](function(e){ toast(e.message, 'err'); });
+}
+
+/* ------------------------------ Depresiasi (FASE 4) ------------------------------ */
+function loadDepr(){
+  $('tblDepr').innerHTML = '<tbody><tr><td class="empty">' + esc(t('loading')) + '</td></tr></tbody>';
+  srun('getDepresiasi', '').then(function(res){
+    S.depr = res.items || [];
+    $('drKAcq').textContent = rpShort(res.totalPerolehan);
+    $('drKBook').textContent = rpShort(res.totalBuku);
+    $('drKDep').textContent = rpShort(res.totalPerolehan - res.totalBuku);
+    $('drMeta').textContent = res.dihitungPada ? ((S.lang === 'en' ? 'Last calculated: ' : 'Terakhir dihitung: ') + res.dihitungPada) : '';
+    $('drCount').textContent = S.depr.length;
+
+    var head = '<thead><tr><th>' + esc(t('thId')) + '</th><th>' + esc(t('thDept')) + '</th><th>' +
+      esc(t('thMetode')) + '</th><th>' + esc(t('fPrice')) + '</th><th>' + esc(t('thUmur')) + '</th><th>' +
+      esc(t('thAkumulasi')) + '</th><th>' + esc(t('thBuku')) + '</th></tr></thead>';
+    var body = S.depr.map(function(d){
+      return '<tr><td class="mono">' + esc(d.idAset) + (d.sumber === 'MPL' ? ' <span class="tag">MPL</span>' : '') +
+        '</td><td>' + esc(d.dept) + '</td><td class="tiny">' + esc(d.metode) + '</td><td class="mono">' + esc(rp(d.nilaiPerolehan)) +
+        '</td><td class="mono">' + esc(d.umurBulan) + '</td><td class="mono">' + esc(rp(d.akumulasi)) +
+        '</td><td class="mono">' + esc(rp(d.nilaiBuku)) + '</td></tr>';
+    }).join('');
+    $('tblDepr').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="7" class="empty">' + esc(t('emptyDepr')) + '</td></tr>') + '</tbody>';
+  })['catch'](function(e){
+    toast(e.message, 'err');
+    $('tblDepr').innerHTML = '<tbody><tr><td class="empty">' + esc(e.message) + '</td></tr></tbody>';
+  });
+}
+
+function refreshDepr(){
+  busy('[data-act="drRefresh"]', true);
+  srun('refreshDepresiasi').then(function(res){
+    busy('[data-act="drRefresh"]', false);
+    toast(t('drRecalced') + res.jumlah, 'ok');
+    loadDepr();
+  })['catch'](function(e){ busy('[data-act="drRefresh"]', false); toast(e.message, 'err'); });
+}
+
+/* ------------------------------ Write-Off (FASE 5) ------------------------------ */
+function stageTag(status){
+  var cls = status === 'Disetujui' ? 'ok' : (status === 'Ditolak' ? 'bad' : 'warn');
+  var label = status === 'Disetujui' ? t('stDisetujui') : (status === 'Ditolak' ? t('stDitolak') : t('stMenunggu'));
+  return '<span class="tag ' + cls + '">' + esc(label) + '</span>';
+}
+function overallWoTag(status){
+  var map = { 'Diajukan':['warn','ovStDiajukan'], 'Menunggu GM':['warn','ovStGM'], 'Menunggu Finance':['warn','ovStFinance'],
+    'Selesai':['ok','ovStSelesai'], 'Ditolak':['bad','ovStDitolak'] };
+  var m = map[status] || ['warn','ovStDiajukan'];
+  return '<span class="tag ' + m[0] + '">' + esc(t(m[1])) + '</span>';
+}
+
+function loadWriteOffs(){
+  $('woList').innerHTML = '<p class="tiny muted">' + esc(t('loading')) + '</p>';
+  var segs = document.querySelectorAll('#woSeg button');
+  for (var s=0;s<segs.length;s++) segs[s].classList.toggle('on', segs[s].getAttribute('data-f') === S.woFilter);
+
+  srun('getWriteOffs', S.woFilter).then(function(res){
+    S.wo = res.items || [];
+    if (!S.wo.length) { $('woList').innerHTML = '<p class="tiny muted">' + esc(t('emptyWO')) + '</p>'; return; }
+
+    $('woList').innerHTML = S.wo.map(function(w, idx){
+      var stages = '<div class="stagegrid">' +
+        '<div class="stagecell"><u>' + esc(t('stgDept')) + '</u>' + stageTag(w.statusDept) +
+          (w.penyetujuDept ? '<div class="tiny muted" style="margin-top:4px">' + esc(w.penyetujuDept) + '</div>' : '') + '</div>' +
+        '<div class="stagecell"><u>' + esc(t('stgGM')) + '</u>' + stageTag(w.statusGM) +
+          (w.penyetujuGM ? '<div class="tiny muted" style="margin-top:4px">' + esc(w.penyetujuGM) + '</div>' : '') + '</div>' +
+        '<div class="stagecell"><u>' + esc(t('stgFinance')) + '</u>' + stageTag(w.statusFinance) +
+          (w.penyetujuFinance ? '<div class="tiny muted" style="margin-top:4px">' + esc(w.penyetujuFinance) + '</div>' : '') + '</div>' +
+        '</div>';
+      var actBtn = '';
+      if (w.canDept) actBtn = { stage: 'Dept' };
+      else if (w.canGM) actBtn = { stage: 'GM' };
+      else if (w.canFinance) actBtn = { stage: 'Finance' };
+      else actBtn = null;
+      var actions = actBtn
+        ? '<div class="row gap10" style="margin-top:10px">' +
+          '<button class="btn sm" data-act="woOk" data-idx="' + idx + '" data-stage="' + actBtn.stage + '">' + esc(t('btnApprove')) + '</button>' +
+          '<button class="btn ghost sm" data-act="woNo" data-idx="' + idx + '" data-stage="' + actBtn.stage + '">' + esc(t('btnReject')) + '</button>' +
+          '</div>'
+        : (w.baURL ? '<div style="margin-top:10px"><a class="link" href="' + esc(w.baURL) + '" target="_blank" rel="noopener">' + esc(t('woBA')) + ' \u2197</a></div>' : '');
+
+      return '<div class="panel" style="box-shadow:var(--e-out-sm);padding:16px 18px">' +
+        '<div class="row between" style="margin-bottom:4px"><span class="mono" style="font-size:12.5px">' + esc(w.idWO) +
+          ' \u00b7 ' + esc(w.idAset) + (w.sumber === 'MPL' ? ' <span class="tag">MPL</span>' : '') + '</span>' + overallWoTag(w.status) + '</div>' +
+        '<div class="tiny muted" style="margin-bottom:8px">' + esc(w.dept) + ' \u00b7 ' + esc(w.pemohon) + ' \u00b7 ' + esc(w.tglAju) + '</div>' +
+        '<div class="tiny" style="margin-bottom:10px">' + esc(w.alasan) + ' \u2014 <span class="mono">' + esc(rp(w.nilaiBuku)) + '</span></div>' +
+        stages + actions + '</div>';
+    }).join('');
+  })['catch'](function(e){ toast(e.message, 'err'); $('woList').innerHTML = ''; });
+}
+
+function openWoModal(sumber, a){
+  if (!a) return;
+  var dept = sumber === 'MPL' ? S.mplDept : S.dept;
+  var judul = sumber === 'MPL' ? (a.jenis || '') : (a.nama || '');
+  var body = '<div class="inset" style="padding:14px 16px;margin-bottom:18px">' +
+      '<div class="mono tiny">' + esc(a.idAset) + (sumber === 'MPL' ? ' \u00b7 MPL' : '') + ' \u00b7 ' + esc(dept) + '</div>' +
+      '<div style="font-size:14px;margin-top:4px">' + esc(judul) + '</div></div>' +
+    '<div class="grid-f"><label class="fld full"><span>' + esc(t('fAlasanWO')) + '</span>' +
+    '<textarea class="inp" id="woAlasan" rows="3"></textarea></label></div>';
+  openModal(t('mWoNew'), body, function(){
+    var alasan = $('woAlasan').value.trim();
+    if (!alasan) { toast(t('fAlasanWO') + ' ' + (S.lang === 'en' ? 'is required.' : 'wajib diisi.'), 'err'); return false; }
+    busy('#mSave', true);
+    srun('requestWriteOff', { sumber: sumber, dept: dept, idAset: a.idAset, alasan: alasan }).then(function(res){
+      busy('#mSave', false); closeModal();
+      toast(t('woSent') + res.idWO, 'ok');
+      refreshBell();
+    })['catch'](function(e){ busy('#mSave', false); toast(e.message, 'err'); });
+    return true;
+  }, t('btnWriteoff'));
+}
+
+function decideWo(idx, stage, keputusan){
+  var w = S.wo[idx];
+  if (!w) return;
+  var tanya = keputusan === 'Setuju' ? t('askWoApprove') : t('askWoReject');
+  if (!confirm(tanya + '\n\n' + w.idWO + ' \u00b7 ' + w.idAset)) return;
+  var catatan = prompt(t('askNote'), '');
+  if (catatan === null) return;
+  srun('decideWriteOff', w.idWO, stage, keputusan, catatan).then(function(){
+    toast(t('woDecided'), 'ok');
+    loadWriteOffs(); refreshBell();
+  })['catch'](function(e){ toast(e.message, 'err'); });
+}
+
+/* ------------------------------ Notifikasi bel (FASE 5) ------------------------------ */
+function refreshBell(){
+  srun('getNotifications').then(renderBell)['catch'](function(){});
+}
+function renderBell(res){
+  var items = (res && res.items) || [];
+  var total = (res && res.total) || 0;
+  $('bellBadge').hidden = total <= 0;
+  $('bellBadge').textContent = total > 99 ? '99+' : total;
+  $('notifList').innerHTML = items.length
+    ? items.map(function(n){
+        return '<button class="notifitem" data-act="notifGo" data-view="' + esc(n.view) + '"><span>' + esc(n.label) + '</span><b>' + esc(n.count) + '</b></button>';
+      }).join('')
+    : '<div class="notifempty">' + esc(t('notifEmpty')) + '</div>';
+}
+function toggleNotif(){
+  S.notifOpen = !S.notifOpen;
+  $('notifPanel').hidden = !S.notifOpen;
+  if (S.notifOpen) refreshBell();
+}
+function closeNotif(){ S.notifOpen = false; $('notifPanel').hidden = true; }
+
+/* ------------------------------ Laporan Gabungan (FASE 5) ------------------------------ */
+function loadReport(){
+  $('tblReport').innerHTML = '<tbody><tr><td class="empty">' + esc(t('loading')) + '</td></tr></tbody>';
+  srun('getCombinedReport', {
+    q: $('repQ').value.trim(), sort: $('repSort').value, unit: S.unit, sumber: $('repSumber').value
+  }).then(function(res){
+    S.report = res.items || [];
+    $('repCount').textContent = res.total;
+    $('repTotal').textContent = res.total + ' ' + (S.lang === 'en' ? 'assets \u00b7 ' : 'aset \u00b7 ') + t('repTotalLabel') + ' ' + rp(res.totalNilai);
+
+    var head = '<thead><tr><th>' + esc(t('thId')) + '</th><th>' + esc(t('thName')) + '</th><th>' +
+      esc(t('thDept')) + '</th><th>' + esc(t('thLoc')) + '</th><th>' + esc(t('thPic')) + '</th><th>' +
+      esc(t('fVendor')) + '</th><th>' + esc(t('thPrice')) + '</th><th>' + esc(t('thCond')) + '</th></tr></thead>';
+    var body = S.report.map(function(a){
+      return '<tr><td class="mono">' + esc(a.idAset) + (a.sumber === 'MPL' ? ' <span class="tag">MPL</span>' : '') +
+        '</td><td>' + esc(a.nama) + '</td><td>' + esc(a.dept) + '</td><td>' + esc(a.lokasi) + '</td><td>' + esc(a.pic) +
+        '</td><td>' + esc(a.vendor) + '</td><td class="mono">' + esc(rp(a.harga)) + '</td><td>' + condTag(a.kondisi) + '</td></tr>';
+    }).join('');
+    $('tblReport').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="8" class="empty">' + esc(t('emptyAsset')) + '</td></tr>') + '</tbody>';
+  })['catch'](function(e){
+    toast(e.message, 'err');
+    $('tblReport').innerHTML = '<tbody><tr><td class="empty">' + esc(e.message) + '</td></tr></tbody>';
+  });
+}
+
+function csvCell_(v){
+  var s = String(v === undefined || v === null ? '' : v);
+  return '"' + s.replace(/"/g, '""') + '"';
+}
+function exportReportCsv(){
+  if (!S.report.length) { toast(t('emptyAsset'), 'err'); return; }
+  var head = ['Kode Aset','Sumber','Nama','Departemen','Lokasi','PIC','Vendor','Harga','Kondisi','Tgl Pembelian'];
+  var lines = [head.map(csvCell_).join(',')];
+  S.report.forEach(function(a){
+    lines.push([a.idAset, a.sumber, a.nama, a.dept, a.lokasi, a.pic, a.vendor, a.harga, a.kondisi, a.tglPembelian].map(csvCell_).join(','));
+  });
+  var blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var link = document.createElement('a');
+  link.href = url; link.download = 'HAIMS-Laporan-Gabungan-' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(link); link.click(); document.body.removeChild(link);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+}
+
+function printReport(){
+  if (!S.report.length) { toast(t('emptyAsset'), 'err'); return; }
+  var rows = S.report.map(function(a){
+    return '<tr><td>' + esc(a.idAset) + '</td><td>' + esc(a.sumber) + '</td><td>' + esc(a.nama) + '</td><td>' +
+      esc(a.dept) + '</td><td>' + esc(a.lokasi) + '</td><td>' + esc(a.pic) + '</td><td>' + esc(rp(a.harga)) +
+      '</td><td>' + esc(a.kondisi) + '</td></tr>';
+  }).join('');
+  var win = window.open('', '_blank');
+  if (!win) { toast(S.lang === 'en' ? 'Pop-up blocked by browser.' : 'Pop-up diblokir browser.', 'err'); return; }
+  win.document.write('<html><head><title>HAIMS - Laporan Gabungan</title><meta charset="utf-8">' +
+    '<style>body{font-family:Arial,sans-serif;padding:24px}h1{font-size:16px}table{width:100%;border-collapse:collapse;font-size:11px}' +
+    'th,td{border:1px solid #ccc;padding:5px 7px;text-align:left}th{background:#f2f2f2}</style></head><body>' +
+    '<h1>HAIMS \u2014 Laporan Gabungan Aset (' + new Date().toLocaleDateString() + ')</h1>' +
+    '<table><thead><tr><th>Kode</th><th>Sumber</th><th>Nama</th><th>Dept</th><th>Lokasi</th><th>PIC</th><th>Harga</th><th>Kondisi</th></tr></thead>' +
+    '<tbody>' + rows + '</tbody></table></body></html>');
+  win.document.close();
+  setTimeout(function(){ win.print(); }, 400);
+}
+
+/* ------------------------------ pengguna ------------------------------ */
+function loadUsers(){
+  $('tblUsers').innerHTML = '<tbody><tr><td class="empty">' + esc(t('loading')) + '</td></tr></tbody>';
+  srun('getUsers').then(function(list){
+    S.users = list || [];
+    var head = '<thead><tr><th></th><th>' + esc(t('thName')) + '</th><th>' + esc(t('thEmail')) + '</th><th>' +
+      esc(t('thRole')) + '</th><th>' + esc(t('thUnit')) + '</th><th>' + esc(t('thDept')) + '</th><th>' +
+      esc(t('thStatus')) + '</th><th>' + esc(t('thAct')) + '</th></tr></thead>';
+    var body = S.users.map(function(u, idx){
+      var av = u.fotoURL ? '<img class="thumb" src="' + esc(u.fotoURL) + '" alt="">' :
+        '<div class="thumb" style="display:grid;place-items:center;font-size:11px">' + esc(initials(u.nama)) + '</div>';
+      var stCls = u.status === 'Aktif' ? 'ok' : (u.status === 'Menunggu' ? 'warn' : 'bad');
+      var act = '<div class="rowact"><button class="ico" data-act="userEdit" data-idx="' + idx + '" title="' + esc(t('btnEdit')) + '">✎</button>' +
+        (u.status !== 'Aktif' ? '<button class="ico" data-act="userAct" data-idx="' + idx + '" title="Aktifkan">✓</button>' :
+                                '<button class="ico" data-act="userOff" data-idx="' + idx + '" title="Nonaktifkan">⊘</button>') + '</div>';
+      return '<tr><td>' + av + '</td><td>' + esc(u.nama) + '</td><td class="mono tiny">' + esc(u.email) +
+        '</td><td>' + esc(u.role) + '</td><td>' + esc(u.unit) + '</td><td>' + esc(u.departemen) +
+        '</td><td><span class="tag ' + stCls + '">' + esc(u.status) + '</span></td><td>' + act + '</td></tr>';
+    }).join('');
+    $('tblUsers').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="8" class="empty">' + esc(t('emptyUser')) + '</td></tr>') + '</tbody>';
+  })['catch'](function(e){
+    toast(e.message, 'err');
+    $('tblUsers').innerHTML = '<tbody><tr><td class="empty">' + esc(e.message) + '</td></tr></tbody>';
+  });
+}
+
+function userForm(u){
+  u = u || {};
+  var units = S.hotels.filter(function(h){ return h.status !== 'Nonaktif'; });
+  var depts = S.depts.filter(function(d){ return d.status !== 'Nonaktif'; });
+  var roles = ['Admin','Manager','User'];
+  var stats = ['Aktif','Menunggu','Nonaktif'];
+  return '<div class="grid-f">' +
+    '<label class="fld"><span>' + esc(t('thName')) + '</span><input class="inp" id="ufNama" value="' + esc(u.nama) + '"></label>' +
+    '<label class="fld"><span>' + esc(t('thEmail')) + '</span><input class="inp" id="ufEmail" type="email" value="' + esc(u.email) + '"' + (u.email ? ' disabled' : '') + '></label>' +
+    '<label class="fld"><span>' + esc(t('fRole')) + '</span><select class="inp" id="ufRole">' +
+      roles.map(function(r){ return '<option value="' + r + '"' + (String(u.role||'User') === r ? ' selected' : '') + '>' + r + '</option>'; }).join('') + '</select></label>' +
+    '<label class="fld"><span>' + esc(t('fStatus')) + '</span><select class="inp" id="ufStatus">' +
+      stats.map(function(r){ return '<option value="' + r + '"' + (String(u.status||'Aktif') === r ? ' selected' : '') + '>' + r + '</option>'; }).join('') + '</select></label>' +
+    '<label class="fld"><span>' + esc(t('fUnit')) + '</span><select class="inp" id="ufUnit">' +
+      units.map(function(h){ return '<option value="' + esc(h.kode) + '"' + (u.unit === h.kode ? ' selected' : '') + '>' + esc(h.nama) + '</option>'; }).join('') + '</select></label>' +
+    '<label class="fld"><span>' + esc(t('fDept')) + '</span><select class="inp" id="ufDept">' +
+      depts.map(function(d){ return '<option value="' + esc(d.kode) + '"' + (u.departemen === d.kode ? ' selected' : '') + '>' + esc(d.kode) + ' — ' + esc(d.nama) + '</option>'; }).join('') + '</select></label>' +
+    '<label class="fld full"><span>' + esc(t('fPhoto')) + '</span><div class="fileline">' +
+      '<img class="prev" id="ufPrev" src="' + esc(u.fotoURL || '') + '" alt=""' + (u.fotoURL ? '' : ' hidden') + '>' +
+      '<div class="filewrap"><input id="ufFoto" type="file" accept="image/*">' +
+      '<div class="fbtn"><i>📷</i><span id="ufFotoTxt">' + esc(t('fChoose')) + '</span></div></div></div></label>' +
+    '</div>' +
+    '<p class="tiny muted">' + (S.lang === 'en'
+      ? 'The user signs in with this Google account. A password is optional and can be set by the user through “Forgot password”.'
+      : 'Pengguna masuk memakai akun Google ini. Kata sandi bersifat opsional dan dapat ditetapkan sendiri lewat “Lupa kata sandi”.') + '</p>';
+}
+
+function openUserModal(u){
+  S.photo.user = '';
+  openModal(u ? t('mUserEdit') : t('mUserNew'), userForm(u), function(){
+    var payload = {
+      email: u ? u.email : $('ufEmail').value.trim(),
+      nama: $('ufNama').value.trim(),
+      role: $('ufRole').value,
+      status: $('ufStatus').value,
+      unit: $('ufUnit').value,
+      departemen: $('ufDept').value,
+      fotoURL: (u && u.fotoURL) || '',
+      fotoBase64: S.photo.user || ''
+    };
+    if (!payload.email) { toast('Email wajib diisi.', 'err'); return false; }
+    busy('#mSave', true);
+    srun('saveUser', payload).then(function(){
+      busy('#mSave', false); closeModal(); toast(t('savedOk'), 'ok'); loadUsers();
+    })['catch'](function(e){ busy('#mSave', false); toast(e.message, 'err'); });
+    return true;
+  });
+  bindPhoto('ufFoto', 'ufPrev', 'user');
+}
+
+function setStatus(idx, status){
+  var u = S.users[idx];
+  if (!u) return;
+  srun('setUserStatus', u.email, status).then(function(){
+    toast(t('savedOk'), 'ok'); loadUsers();
+  })['catch'](function(e){ toast(e.message, 'err'); });
+}
+
+/* ------------------------------ activities log ------------------------------ */
+function loadLog(){
+  $('tblLog').innerHTML = '<tbody><tr><td class="empty">' + esc(t('loading')) + '</td></tr></tbody>';
+  srun('getActivities', 250).then(function(list){
+    var head = '<thead><tr><th>' + esc(t('thTime')) + '</th><th>' + esc(t('thEmail')) + '</th><th>' +
+      esc(t('thRole')) + '</th><th>' + esc(t('thModul')) + '</th><th>' + esc(t('thAksi')) + '</th><th>' +
+      esc(t('thDetail')) + '</th></tr></thead>';
+    var body = (list||[]).map(function(l){
+      return '<tr><td class="mono tiny">' + esc(l.waktu) + '</td><td class="tiny">' + esc(l.email) +
+        '</td><td>' + esc(l.role) + '</td><td>' + esc(l.modul) + '</td><td>' + esc(l.aksi) +
+        '</td><td class="tiny muted">' + esc(l.detail) + '</td></tr>';
+    }).join('');
+    $('tblLog').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="6" class="empty">' + esc(t('emptyLog')) + '</td></tr>') + '</tbody>';
+  })['catch'](function(e){
+    toast(e.message, 'err');
+    $('tblLog').innerHTML = '<tbody><tr><td class="empty">' + esc(e.message) + '</td></tr></tbody>';
+  });
+}
+
+/* ------------------------------ pengaturan ------------------------------ */
+function renderSettings(){
+  $('setLang').value = S.lang;
+  $('setNotif').value = S.settings.emailNotifikasi || '';
+
+  /* FASE — identitas aplikasi */
+  $('brTitle').value = S.settings.appTitle || '';
+  $('brHeroTitle').value = S.settings.loginHeroTitle || '';
+  $('brHeroSub').value = S.settings.loginHeroSub || '';
+  if (S.settings.logoURL) {
+    $('brPrev').src = S.settings.logoURL; $('brPrev').hidden = false;
+    $('brRemoveBtn').hidden = false;
+  } else {
+    $('brPrev').hidden = true; $('brRemoveBtn').hidden = true;
+  }
+
+  $('hotelList').innerHTML = S.hotels.map(function(h, idx){
+    var img = h.fotoURL ? '<img class="thumb" src="' + esc(h.fotoURL) + '" alt="">' :
+      '<div class="thumb" style="display:grid;place-items:center;font-size:11px;opacity:.6">' + esc(h.kode) + '</div>';
+    return '<div class="listcard">' + img + '<div class="grow"><b>' + esc(h.nama) + '</b>' +
+      '<span class="mono">' + esc(h.kode) + (h.alamat ? ' · ' + esc(h.alamat) : '') + '</span></div>' +
+      '<span class="tag ' + (h.status === 'Nonaktif' ? 'bad' : 'ok') + '">' + esc(h.status) + '</span>' +
+      '<button class="ico" data-act="hotelEdit" data-idx="' + idx + '">✎</button>' +
+      '<button class="ico" data-act="hotelDel" data-idx="' + idx + '">⊘</button></div>';
+  }).join('') || '<p class="tiny muted">—</p>';
+
+  $('deptList').innerHTML = S.depts.map(function(d, idx){
+    return '<div class="listcard"><div class="thumb mono" style="display:grid;place-items:center;font-size:10.5px">' +
+      esc(d.kode) + '</div><div class="grow"><b>' + esc(d.nama) + '</b><span class="mono">Aset_' + esc(d.kode) +
+      (d.kepala ? ' · ' + esc(d.kepala) : '') + '</span></div>' +
+      '<span class="tag ' + (d.status === 'Nonaktif' ? 'bad' : 'ok') + '">' + esc(d.status) + '</span>' +
+      '<button class="ico" data-act="deptEdit" data-idx="' + idx + '">✎</button>' +
+      '<button class="ico" data-act="deptDel" data-idx="' + idx + '">⊘</button></div>';
+  }).join('') || '<p class="tiny muted">—</p>';
+}
+
+function openHotelModal(h){
+  S.photo.hotel = '';
+  var edit = !!h;
+  var body = '<div class="grid-f">' +
+    '<label class="fld"><span>' + esc(t('fCode')) + '</span><input class="inp mono" id="hfKode" value="' + esc(h ? h.kode : '') + '"' + (edit ? ' disabled' : '') + ' placeholder="APK"></label>' +
+    '<label class="fld"><span>' + esc(t('thName')) + '</span><input class="inp" id="hfNama" value="' + esc(h ? h.nama : '') + '"></label>' +
+    '<label class="fld full"><span>' + esc(t('fAddress')) + '</span><input class="inp" id="hfAlamat" value="' + esc(h ? h.alamat : '') + '"></label>' +
+    '<label class="fld"><span>' + esc(t('fStatus')) + '</span><select class="inp" id="hfStatus">' +
+      ['Aktif','Nonaktif'].map(function(s){ return '<option value="' + s + '"' + (h && h.status === s ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></label>' +
+    '<label class="fld"><span>' + esc(t('fPhoto')) + '</span><div class="fileline">' +
+      '<img class="prev" id="hfPrev" src="' + esc(h ? h.fotoURL : '') + '" alt=""' + (h && h.fotoURL ? '' : ' hidden') + '>' +
+      '<div class="filewrap"><input id="hfFoto" type="file" accept="image/*">' +
+      '<div class="fbtn"><i>📷</i><span id="hfFotoTxt">' + esc(t('fChoose')) + '</span></div></div></div></label></div>';
+  openModal(edit ? t('mHotelEdit') : t('mHotelNew'), body, function(){
+    var payload = {
+      kode: edit ? h.kode : $('hfKode').value.trim(),
+      nama: $('hfNama').value.trim(),
+      alamat: $('hfAlamat').value.trim(),
+      status: $('hfStatus').value,
+      fotoURL: (h && h.fotoURL) || '',
+      fotoBase64: S.photo.hotel || ''
+    };
+    busy('#mSave', true);
+    srun('saveHotel', payload).then(function(list){
+      S.hotels = list; busy('#mSave', false); closeModal();
+      renderUnitSelector(); renderSettings(); toast(t('savedOk'), 'ok');
+    })['catch'](function(e){ busy('#mSave', false); toast(e.message, 'err'); });
+    return true;
+  });
+  bindPhoto('hfFoto', 'hfPrev', 'hotel');
+}
+
+function openDeptModal(d){
+  var edit = !!d;
+  var body = '<div class="grid-f">' +
+    '<label class="fld"><span>' + esc(t('fCode')) + '</span><input class="inp mono" id="dfKode" value="' + esc(d ? d.kode : '') + '"' + (edit ? ' disabled' : '') + ' placeholder="ENG"></label>' +
+    '<label class="fld"><span>' + esc(t('thName')) + '</span><input class="inp" id="dfNama" value="' + esc(d ? d.nama : '') + '"></label>' +
+    '<label class="fld"><span>' + esc(t('fHead')) + '</span><input class="inp" id="dfKepala" value="' + esc(d ? d.kepala : '') + '"></label>' +
+    '<label class="fld"><span>' + esc(t('fStatus')) + '</span><select class="inp" id="dfStatus">' +
+      ['Aktif','Nonaktif'].map(function(s){ return '<option value="' + s + '"' + (d && d.status === s ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></label></div>';
+  openModal(edit ? t('mDeptEdit') : t('mDeptNew'), body, function(){
+    var payload = {
+      kode: edit ? d.kode : $('dfKode').value.trim(),
+      nama: $('dfNama').value.trim(),
+      kepala: $('dfKepala').value.trim(),
+      status: $('dfStatus').value
+    };
+    busy('#mSave', true);
+    srun('saveDepartment', payload).then(function(list){
+      S.depts = list; busy('#mSave', false); closeModal();
+      renderDeptSubmenu(); renderMplSubmenu(); renderSettings(); toast(t('savedOk'), 'ok');
+    })['catch'](function(e){ busy('#mSave', false); toast(e.message, 'err'); });
+    return true;
+  });
+}
+
+/* ------------------------------ modal ------------------------------ */
+function openModal(title, html, onSave, saveLabel){
+  $('mTitle').textContent = title;
+  $('mBody').innerHTML = html;
+  S.modalSave = onSave;
+  $('mSave').textContent = saveLabel || t('btnSave');   // FASE 3 — label tombol bisa disesuaikan
+  $('modal').hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(){
+  $('modal').hidden = true;
+  $('mBody').innerHTML = '';
+  S.modalSave = null;
+  document.body.style.overflow = '';
+}
+
+/* ------------------------------ sidebar mobile ------------------------------ */
+function toggleSidebar(){
+  var open = $('sidebar').classList.toggle('open');
+  $('scrim').classList.toggle('on', open);
+}
+function closeSidebar(){
+  $('sidebar').classList.remove('open');
+  $('scrim').classList.remove('on');
+}
+
+/* ------------------------------ event delegation ------------------------------ */
+document.addEventListener('click', function(e){
+  var el = e.target.closest ? e.target.closest('[data-act]') : null;
+  if (!el) return;
+  var act = el.getAttribute('data-act');
+  var idx = Number(el.getAttribute('data-idx'));
+
+  if (act === 'lang') { setLang(el.getAttribute('data-lang')); return; }
+  if (act === 'login') { doLogin(); return; }
+  if (act === 'google') { doGoogle(); return; }
+  if (act === 'register') { doRegister(); return; }
+  if (act === 'toOtp') { S.otpEmail = $('liEmail').value.trim(); showCard('cardOtp'); if ($('otEmail')) $('otEmail').value = S.otpEmail; return; }
+  if (act === 'toLogin') { showCard('cardLogin'); return; }
+  if (act === 'otpSend') { doOtpSend(); return; }
+  if (act === 'otpVerify') { doOtpVerify(); return; }
+  if (act === 'recheck') { srun('checkSession').then(handleSession)['catch'](function(err){ toast(err.message, 'err'); }); return; }
+  if (act === 'logout') { doLogout(); return; }
+
+  if (act === 'nav') { nav(el.getAttribute('data-view'), el.getAttribute('data-dept')); return; }
+  if (act === 'navDept') { S.deptOpen = !S.deptOpen; renderDeptSubmenu(); return; }
+  if (act === 'toggleSidebar') { toggleSidebar(); return; }
+
+  if (act === 'assetNew') { openAssetModal(null); return; }
+  if (act === 'assetEdit') { openAssetModal(S.assets[idx]); return; }
+  if (act === 'assetDel') { delAsset(idx); return; }
+  if (act === 'assetReload') { loadAssets(); return; }
+
+  if (act === 'navMpl') { S.mplOpen = !S.mplOpen; renderMplSubmenu(); return; }   // FASE 2
+  if (act === 'mplNew') { openMplModal(null); return; }
+  if (act === 'mplEdit') { openMplModal(S.mpl[idx]); return; }
+  if (act === 'mplDel') { delMpl(idx); return; }
+  if (act === 'mplReload') { loadMpl(); return; }
+
+  /* FASE 3 — Mutasi Aset */
+  if (act === 'mutasiNew') { openMutasiModal('DEPT', S.assets[idx]); return; }
+  if (act === 'mplMutasiNew') { openMutasiModal('MPL', S.mpl[idx]); return; }
+  if (act === 'mutFilter') { S.mutFilter = el.getAttribute('data-f'); loadMutasi(); return; }
+  if (act === 'mutReload') { loadMutasi(); return; }
+  if (act === 'mutOk') { decideMut(idx, 'Disetujui'); return; }
+  if (act === 'mutNo') { decideMut(idx, 'Ditolak'); return; }
+
+  /* FASE 4 — Stock Opname */
+  if (act === 'opStart') {
+    var unit = $('opUnit').value;
+    if (!unit) { toast(S.lang === 'en' ? 'Pick a hotel unit.' : 'Pilih unit hotel.', 'err'); return; }
+    busy('[data-act="opStart"]', true);
+    srun('startOpname', { unit: unit, lokasi: $('opLokasi').value.trim() }).then(function(sesi){
+      busy('[data-act="opStart"]', false);
+      S.opSesi = sesi; $('opnameStartPanel').hidden = true; $('opnameActivePanel').hidden = false;
+      renderOpnameActive(); loadOpnameHistory();
+    })['catch'](function(err){ busy('[data-act="opStart"]', false); toast(err.message, 'err'); });
+    return;
+  }
+  if (act === 'opManualScan') { doManualScan(); return; }
+  if (act === 'opCamToggle') { toggleCamera(); return; }
+  if (act === 'opClose') { closeOpnameSession(); return; }
+  if (act === 'opHistReload') { loadOpnameHistory(); return; }
+
+  /* FASE 4 — Maintenance */
+  if (act === 'maintNew') { openMaintModal(); return; }
+  if (act === 'maintDone') { openMaintDoneModal(idx); return; }
+  if (act === 'maintCancel') { cancelMaint(idx); return; }
+  if (act === 'maintFilter') { S.maintFilter = el.getAttribute('data-f'); loadMaint(); return; }
+
+  /* FASE 4 — Depresiasi */
+  if (act === 'drRefresh') { refreshDepr(); return; }
+
+  /* FASE 5 — Write-Off */
+  if (act === 'woNew') { openWoModal('DEPT', S.assets[idx]); return; }
+  if (act === 'mplWoNew') { openWoModal('MPL', S.mpl[idx]); return; }
+  if (act === 'woFilter') { S.woFilter = el.getAttribute('data-f'); loadWriteOffs(); return; }
+  if (act === 'woOk') { decideWo(idx, el.getAttribute('data-stage'), 'Setuju'); return; }
+  if (act === 'woNo') { decideWo(idx, el.getAttribute('data-stage'), 'Tolak'); return; }
+
+  /* FASE 5 — Notifikasi bel */
+  if (act === 'toggleNotif') { toggleNotif(); return; }
+  if (act === 'notifGo') { closeNotif(); nav(el.getAttribute('data-view')); return; }
+
+  /* FASE 5 — Laporan Gabungan */
+  if (act === 'repReload') { loadReport(); return; }
+  if (act === 'repExportCsv') { exportReportCsv(); return; }
+  if (act === 'repPrint') { printReport(); return; }
+
+  if (act === 'userNew') { openUserModal(null); return; }
+  if (act === 'userEdit') { openUserModal(S.users[idx]); return; }
+  if (act === 'userAct') { setStatus(idx, 'Aktif'); return; }
+  if (act === 'userOff') { setStatus(idx, 'Nonaktif'); return; }
+
+  if (act === 'logReload') { loadLog(); return; }
+
+  if (act === 'hotelNew') { openHotelModal(null); return; }
+  if (act === 'hotelEdit') { openHotelModal(S.hotels[idx]); return; }
+  if (act === 'hotelDel') {
+    if (!confirm(t('confirmDel'))) return;
+    srun('deleteHotel', S.hotels[idx].kode).then(function(list){
+      S.hotels = list; renderUnitSelector(); renderSettings(); toast(t('deletedOk'), 'ok');
+    })['catch'](function(err){ toast(err.message, 'err'); });
+    return;
+  }
+  if (act === 'deptNew') { openDeptModal(null); return; }
+  if (act === 'deptEdit') { openDeptModal(S.depts[idx]); return; }
+  if (act === 'deptDel') {
+    if (!confirm(t('confirmDel'))) return;
+    srun('deleteDepartment', S.depts[idx].kode).then(function(list){
+      S.depts = list; renderDeptSubmenu(); renderMplSubmenu(); renderSettings(); toast(t('deletedOk'), 'ok');
+    })['catch'](function(err){ toast(err.message, 'err'); });
+    return;
+  }
+
+  if (act === 'saveBranding') {
+    var payload = {
+      appTitle: $('brTitle').value.trim(),
+      loginHeroTitle: $('brHeroTitle').value.trim(),
+      loginHeroSub: $('brHeroSub').value.trim(),
+      fotoBase64: S.photo.brand || ''
+    };
+    busy('[data-act="saveBranding"]', true);
+    srun('saveBranding', payload).then(function(s){
+      busy('[data-act="saveBranding"]', false);
+      S.settings = s; S.photo.brand = '';
+      applyBranding(); renderSettings();
+      toast(t('brandSaved'), 'ok');
+    })['catch'](function(err){ busy('[data-act="saveBranding"]', false); toast(err.message, 'err'); });
+    return;
+  }
+  if (act === 'brRemoveLogo') {
+    srun('saveBranding', { appTitle: $('brTitle').value.trim(), loginHeroTitle: $('brHeroTitle').value.trim(),
+      loginHeroSub: $('brHeroSub').value.trim(), removeLogo: true }).then(function(s){
+      S.settings = s; applyBranding(); renderSettings(); toast(t('brandSaved'), 'ok');
+    })['catch'](function(err){ toast(err.message, 'err'); });
+    return;
+  }
+
+  if (act === 'saveNotif') {
+    srun('saveSettings', { emailNotifikasi: $('setNotif').value.trim() }).then(function(s){
+      S.settings = s; toast(t('savedOk'), 'ok');
+    })['catch'](function(err){ toast(err.message, 'err'); });
+    return;
+  }
+
+  if (act === 'modalClose') { closeModal(); return; }
+  if (act === 'modalSave') { if (S.modalSave) S.modalSave(); return; }
+});
+
+/* Foto Drive bisa gagal dimuat kalau izin berbagi diblokir kebijakan domain.
+   Event 'error' pada <img> tidak menggelembung, jadi ditangkap di fase capture
+   lalu diganti placeholder agar tabel tidak menampilkan ikon gambar rusak. */
+document.addEventListener('error', function(e){
+  var el = e.target;
+  if (!el || el.tagName !== 'IMG') return;
+  if (el.getAttribute('data-fallback') === '1') return;
+  el.setAttribute('data-fallback', '1');
+  var ph = document.createElement('div');
+  ph.className = el.className + ' imgfail';
+  ph.textContent = '⚠';
+  ph.title = t('photoFail');
+  if (el.parentNode) el.parentNode.replaceChild(ph, el);
+}, true);
+
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape' && !$('modal').hidden) closeModal();
+  if (e.key === 'Escape' && S.notifOpen) closeNotif();
+  if (e.key === 'Enter' && !$('auth').hidden) {
+    if (!$('cardLogin').hidden) doLogin();
+    else if (!$('cardOtpVerify').hidden) doOtpVerify();
+  }
+  if (e.key === 'Enter' && document.activeElement && document.activeElement.id === 'opManualCode') {
+    e.preventDefault(); doManualScan();
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  bindPhoto('rgFoto', 'rgPrev', 'reg');
+  bindPhoto('brFoto', 'brPrev', 'brand');   // FASE — identitas aplikasi
+
+  $('scrim').addEventListener('click', closeSidebar);
+  $('modal').addEventListener('click', function(e){ if (e.target === $('modal')) closeModal(); });
+  document.addEventListener('click', function(e){                     // FASE 5 — tutup panel notifikasi
+    if (!S.notifOpen) return;
+    if (e.target.closest('.bellwrap')) return;
+    closeNotif();
+  });
+
+  $('unitSel').addEventListener('change', function(){
+    S.unit = $('unitSel').value;
+    renderView();
+  });
+  $('assetQ').addEventListener('input', function(){
+    clearTimeout(S._qt);
+    S._qt = setTimeout(loadAssets, 320);
+  });
+  $('assetSort').addEventListener('change', loadAssets);
+  $('mplQ').addEventListener('input', function(){          // FASE 2
+    clearTimeout(S._mqt);
+    S._mqt = setTimeout(loadMpl, 320);
+  });
+  $('mplSort').addEventListener('change', loadMpl);
+  $('repQ').addEventListener('input', function(){                    // FASE 5
+    clearTimeout(S._rqt);
+    S._rqt = setTimeout(loadReport, 320);
+  });
+  $('repSort').addEventListener('change', loadReport);
+  $('repSumber').addEventListener('change', loadReport);
+  $('setLang').addEventListener('change', function(){ setLang($('setLang').value); });
+  $('setFont').addEventListener('change', function(){ applyFont($('setFont').value); });
+  $('setTheme').addEventListener('change', function(){ applyTheme($('setTheme').value); });
+
+  boot();
+});
+</script>
+</body>
+</html>
